@@ -1,6 +1,0 @@
-Base path: '/Volumes/XCode Projekte/unity/6000.1.11f1/Unity.app/Contents', plugins path '/Volumes/XCode Projekte/unity/6000.1.11f1/PlaybackEngines'
-Cmd: initializeCompiler
-
-Unhandled exception: Protocol error - failed to read magic number. Error code 0x80000004 (Not connected). (transferred 0/4)
-
-Quitting shader compiler process
