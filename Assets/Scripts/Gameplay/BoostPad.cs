@@ -66,9 +66,9 @@ namespace Sanicball.Gameplay
                 Rigidbody rb = other.GetComponent<Rigidbody>();
                 if (rb)
                 {
-                    float speed = rb.velocity.magnitude;
+                    float speed = rb.linearVelocity.magnitude;
                     speed = Mathf.Min(speed + this.speed, speedLimit);
-                    rb.velocity = transform.rotation * Vector3.forward * speed;
+                    rb.linearVelocity = transform.rotation * Vector3.forward * speed;
 
                     AudioSource aSource = GetComponent<AudioSource>();
                     if (aSource)

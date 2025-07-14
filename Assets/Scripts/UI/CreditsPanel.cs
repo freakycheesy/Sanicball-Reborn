@@ -25,6 +25,7 @@ namespace Sanicball.UI {
 			{
 				tracksText.Add ("<b>" + s.name + "</b>");
 			}
+			tracksText.Add("<b>Music provided by NCS </b>");
 			trackList.text = string.Join ("\n", tracksText.ToArray ());
 		}
 		

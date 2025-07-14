@@ -130,7 +130,7 @@ namespace Sanicball.Gameplay
             attachedCamera.transform.position = transform.TransformPoint(targetPoint);
 
             //Set camera FOV to get higher with more velocity
-            AttachedCamera.fieldOfView = Mathf.Lerp(AttachedCamera.fieldOfView, Mathf.Min(60f + (Target.velocity.magnitude), 100f), Time.deltaTime * 4);
+            AttachedCamera.fieldOfView = Mathf.Lerp(AttachedCamera.fieldOfView, Mathf.Min(60f + (Target.linearVelocity.magnitude), 100f), Time.deltaTime * 4);
         }
 
         private void OnDestroy()

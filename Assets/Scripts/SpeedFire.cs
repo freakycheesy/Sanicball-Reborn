@@ -31,18 +31,18 @@ namespace Sanicball {
 				return;
 			}
 
-			float power = Mathf.InverseLerp(120, 500, rb.velocity.magnitude);
+			float power = Mathf.InverseLerp(120, 500, rb.linearVelocity.magnitude);
 			power = power * power;
 
 			rot += Time.deltaTime * 1000;
 			transform.position = ball.transform.position;
-			Vector3 look = rb.velocity;
+			Vector3 look = rb.linearVelocity;
 			if (look == Vector3.zero)
 			{
 				look = Vector3.forward;
 			}
 			Quaternion q = Quaternion.LookRotation(look);
-			q = Quaternion.AngleAxis(Random.Range(0,360), rb.velocity) * q;
+			q = Quaternion.AngleAxis(Random.Range(0,360), rb.linearVelocity) * q;
 			transform.rotation = q;
 
 			mr.material.color = new Color(1,1,1,power);

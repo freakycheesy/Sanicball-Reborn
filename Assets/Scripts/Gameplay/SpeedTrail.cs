@@ -20,7 +20,7 @@ namespace Sanicball.Gameplay
         {
             if (!tr.enabled) return;
 
-            float spd = Mathf.Max(0, GetComponent<Rigidbody>().velocity.magnitude - 60);
+            float spd = Mathf.Max(0, GetComponent<Rigidbody>().linearVelocity.magnitude - 60);
             tr.time = Mathf.Clamp(spd / 20, 0, 5);
             tr.startWidth = Mathf.Clamp(spd / 80, 0, 0.8f);
             tr.material.mainTextureScale = new Vector2(tr.time * 100, 1);

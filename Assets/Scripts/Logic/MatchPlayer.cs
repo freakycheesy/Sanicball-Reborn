@@ -48,7 +48,7 @@ namespace Sanicball.Logic
 
                 BallObject.transform.position = movement.Position;
                 BallObject.transform.rotation = movement.Rotation;
-                ballRb.velocity = movement.Velocity;
+                ballRb.linearVelocity = movement.Velocity;
                 ballRb.angularVelocity = movement.AngularVelocity;
                 BallObject.DirectionVector = movement.DirectionVector;
 

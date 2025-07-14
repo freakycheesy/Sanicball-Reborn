@@ -65,7 +65,7 @@ namespace Sanicball.Gameplay
             ball.Brake = false;
             if (target)
             {
-                Vector3 velocity = GetComponent<Rigidbody>().velocity;
+                Vector3 velocity = GetComponent<Rigidbody>().linearVelocity;
                 Quaternion towardsVelocity = (velocity != Vector3.zero) ? Quaternion.LookRotation(velocity) : Quaternion.LookRotation(target.transform.position);
 
                 Ray ray = new Ray(transform.position, towardsVelocity * Vector3.forward);

@@ -26,9 +26,9 @@ namespace Sanicball.Gameplay
             Rigidbody rBody = target.GetComponent<Rigidbody>();
             AudioSource aSource = DriftAudio;
 
-            float speed = rBody.velocity.magnitude;
+            float speed = rBody.linearVelocity.magnitude;
             float rot = rBody.angularVelocity.magnitude / 2;
-            float angle = Vector3.Angle(rBody.velocity, Quaternion.Euler(0, -90, 0) * rBody.angularVelocity);
+            float angle = Vector3.Angle(rBody.linearVelocity, Quaternion.Euler(0, -90, 0) * rBody.angularVelocity);
 
             if (((angle > 50 && (rot > 10 || speed > 10)) || (rot > 30 && speed < 30)) && grounded)
             {
