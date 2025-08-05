@@ -10,13 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Custom
+  m_Name: Packed Assets
   m_EditorClassIdentifier: 
-  m_GroupName: Custom
-  m_GUID: e05e5f923297807478c63ba0581bb65d
+  m_GroupName: Packed Assets
+  m_GUID: f4518c189a58198468e8adf852c3ddae
   m_SerializeEntries:
-  - m_GUID: 201e5e74f016855428eac7698f025e27
-    m_Address: CustomLevels
+  - m_GUID: 02460f397f1b79a41aa630b8b16e6850
+    m_Address: Assets/CustomLevels/Main.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - pallet
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6367b49ef3e1d1b4b9c42ae7fbea9193
+    m_Address: Assets/CustomLevels/Extra.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - pallet
@@ -25,5 +31,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: f3cc4978b51474a468fcec683f4c74b8, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 4021a026d63b5d843a3fce0a437f35fd, type: 2}
-    - {fileID: 11400000, guid: 0dc816581acd00d4eac99a6860e2bb4b, type: 2}
+    - {fileID: 11400000, guid: 48eef24ce1203184fb0d340acf5a2325, type: 2}
+    - {fileID: 11400000, guid: 94ca3e4cd845bf04fbe2f842d1990907, type: 2}
