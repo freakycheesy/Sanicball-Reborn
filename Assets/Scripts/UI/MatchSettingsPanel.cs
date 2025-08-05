@@ -84,7 +84,7 @@ namespace Sanicball.UI
 
         public void IncrementStage()
         {
-            if (tempSettings.StageId < ActiveData.Stages.Length - 1) tempSettings.StageId++;
+            if (tempSettings.StageId < ActiveData.Stages.Count - 1) tempSettings.StageId++;
             else
                 tempSettings.StageId = 0;
             UpdateUiFields();
@@ -94,7 +94,7 @@ namespace Sanicball.UI
         {
             if (tempSettings.StageId > 0) tempSettings.StageId--;
             else
-                tempSettings.StageId = ActiveData.Stages.Length - 1;
+                tempSettings.StageId = ActiveData.Stages.Count - 1;
             UpdateUiFields();
         }
 
@@ -140,7 +140,7 @@ namespace Sanicball.UI
             do
             {
                 characterId++;
-                if (characterId >= ActiveData.Characters.Length)
+                if (characterId >= ActiveData.Characters.Count)
                 {
                     characterId = 0;
                 }
@@ -158,7 +158,7 @@ namespace Sanicball.UI
                 characterId--;
                 if (characterId < 0)
                 {
-                    characterId = ActiveData.Characters.Length - 1;
+                    characterId = ActiveData.Characters.Count - 1;
                 }
             } while (ActiveData.Characters[characterId].hidden);
 

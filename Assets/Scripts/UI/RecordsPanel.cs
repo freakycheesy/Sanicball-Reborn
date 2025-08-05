@@ -25,7 +25,7 @@ namespace Sanicball.UI
         public void IncrementStage()
         {
             selectedStage++;
-            if (selectedStage >= ActiveData.Stages.Length)
+            if (selectedStage >= ActiveData.Stages.Count)
             {
                 selectedStage = 0;
             }
@@ -37,7 +37,7 @@ namespace Sanicball.UI
             selectedStage--;
             if (selectedStage < 0)
             {
-                selectedStage = ActiveData.Stages.Length - 1;
+                selectedStage = ActiveData.Stages.Count - 1;
             }
             UpdateStageName();
         }

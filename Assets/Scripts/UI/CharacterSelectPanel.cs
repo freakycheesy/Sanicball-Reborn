@@ -168,7 +168,7 @@ namespace Sanicball.UI
             else
             {
                 if (CharacterSelected != null)
-                    CharacterSelected(this, new CharacterSelectionArgs(Array.IndexOf(ActiveData.Characters, selectedChar)));
+                    CharacterSelected(this, new CharacterSelectionArgs(Array.IndexOf(ActiveData.Characters.ToArray(), selectedChar)));
             }
         }
 

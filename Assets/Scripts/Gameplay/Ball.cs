@@ -99,14 +99,14 @@ namespace Sanicball.Gameplay
         private BallMotionSounds sounds;
 
         //State
-        private BallStats characterStats;
-        private bool canMove = true;
-        private BallControlInput input;
-        private bool grounded = false;
-        private float groundedTimer = 0;
-        private float upResetTimer = 0;
-        private DriftySmoke smoke;
-        private SpeedFire speedFire;
+        public BallStats characterStats;
+        public bool canMove = true;
+        public BallControlInput input;
+        public bool grounded = false;
+        public float groundedTimer = 0;
+        public float upResetTimer = 0;
+        public DriftySmoke smoke;
+        public SpeedFire speedFire;
 
         public bool CanMove { get { return canMove; } set { canMove = value; } }
         public bool AutoBrake { get; set; }
@@ -170,7 +170,7 @@ namespace Sanicball.Gameplay
             gameObject.name = type.ToString() + " - " + nickname;
 
             //Set character
-            if (CharacterId >= 0 && CharacterId < ActiveData.Characters.Length)
+            if (CharacterId >= 0 && CharacterId < ActiveData.Characters.Count)
             {
                 SetCharacter(ActiveData.Characters[CharacterId]);
             }

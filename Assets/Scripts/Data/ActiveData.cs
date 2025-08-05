@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using Sanicball.Logic;
+using Sanicball.Powerups;
 using SanicballCore;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -27,12 +28,6 @@ namespace Sanicball.Data
         //This data is set from the editor and remains constant
         [Header("Static data")]
         [SerializeField]
-        private List<CustomStages> customStagesPallets;
-
-        [SerializeField]
-        private CharacterInfo[] characters;
-
-        [SerializeField]
         private GameJoltInfo gameJoltInfo;
 
         [SerializeField]
@@ -55,15 +50,10 @@ namespace Sanicball.Data
         public static MatchSettings MatchSettings { get { return instance.matchSettings; } set { instance.matchSettings = value; } }
         public static List<RaceRecord> RaceRecords { get { return instance.raceRecords; } }
 
-        public static CustomStages[] CustomStagesPallets { get { return instance.customStagesPallets.ToArray(); } }
-        public static StageInfo[] Stages { get {
-                List<StageInfo> dumped = new();
-                foreach (var stages in CustomStagesPallets) {
-                    foreach (var stage in stages.Stages) dumped.Add(stage);
-                }
-                return dumped.ToArray();
-                } }
-        public static CharacterInfo[] Characters { get { return instance.characters; } }
+        public static List<SanicPallet> CustomStagesPallets = new();
+        public static List<StageInfo> Stages = new();
+        public static List<PowerupLogic> Powerups = new();
+        public static List<CharacterInfo> Characters = new();
         public static GameJoltInfo GameJoltInfo { get { return instance.gameJoltInfo; } }
         public static GameObject ChristmasHat { get { return instance.christmasHat; } }
         public static Material ESportsTrail { get { return instance.eSportsTrail; } }
@@ -123,21 +113,23 @@ namespace Sanicball.Data
 
         public static void FindLevels()
         {
-            var levels = Addressables.LoadAssetsAsync<CustomStages>("level", LoadLevelCallback);
+            var levels = Addressables.LoadAssetsAsync<SanicPallet>("level", LoadLevelCallback);
         }
 
-        public static void LoadLevelCallback(CustomStages stages)
+        public static void LoadLevelCallback(SanicPallet stages)
         {
+            CustomStagesPallets.Add(stages);
             foreach (var scene in stages.Stages)
             {
                 scene.scene.LoadAssetAsync<Object>();
             }
-            instance.customStagesPallets.Add(stages);
+            Stages.AddRange(stages.Stages);
             foreach (var song in stages.Playlist)
             {
                 song.resource.LoadAssetAsync<AudioResource>();
             }
             MusicPlayer.Playlist.AddRange(stages.Playlist);
+            Characters.AddRange(stages.Avatars);
         }
 
         private void OnEnable()

@@ -27,7 +27,7 @@ namespace Sanicball.UI
         private void Start()
         {
             //Add all stages to list
-            for (int i = 0; i < ActiveData.CustomStagesPallets.Length; i++)
+            for (int i = 0; i < ActiveData.CustomStagesPallets.Count; i++)
             {
                 StageInfo s = ActiveData.GetStage(i);
                 StageImage simg = Instantiate(stageImagePrefab);

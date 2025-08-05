@@ -10,18 +10,21 @@ namespace Sanicball
     {
         private Camera cam;
         private AudioListener listener;
-        public static List<CameraSplitter> splitters;
+        public static List<CameraSplitter> splitters = new();
         public int SplitscreenIndex { get; set; }
         void OnDestroy()
         {
-            splitters.Remove(this);
+            if(splitters.Contains(this))splitters.Remove(this);
+        }
+        void OnEnable()
+        {
+            splitters.Add(this);
         }
         private void Start()
         {
             cam = GetComponent<Camera>();
             listener = GetComponent<AudioListener>();
-            splitters.Add(this);
-            
+
             int count = splitters.Count;
             int index = SplitscreenIndex;
 

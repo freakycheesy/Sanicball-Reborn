@@ -43,6 +43,16 @@ namespace Sanicball.UI
             activePanel.Close();
             activePanel = null;
         }
+        public class GameVersion
+        {
+            public const float AS_FLOAT = 0.82f;
+
+            public const bool IS_TESTING = false;
+
+            public const string AS_STRING = "PEAK";
+
+            public const string TAGLINE = "THE BEST MEME GAME REVAMPED! BETTER THEN ANY BRAINROT SLOP!";
+        }
 
         private void Start()
         {

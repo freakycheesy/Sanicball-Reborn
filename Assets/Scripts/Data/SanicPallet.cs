@@ -4,20 +4,17 @@ using UnityEngine.Audio;
 using Sanicball;
 using UnityEngine.AddressableAssets;
 using System.Collections.Generic;
-
-
-
-
+using Sanicball.Powerups;
 
 #if UNITY_EDITOR
 using UnityEditor;
-[CustomEditor(typeof(CustomStages),true)]
+[CustomEditor(typeof(SanicPallet),true)]
 public class CustomStagesEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        var customStages = (CustomStages)target;
+        var customStages = (SanicPallet)target;
         if (GUILayout.Button("Fix Barcodes"))
         {
             EditorUtility.SetDirty(customStages);
@@ -35,12 +32,14 @@ public class CustomStagesEditor : Editor
 }
 #endif
 
-[CreateAssetMenu(fileName = "CustomStages", menuName = "Sanicball/CustomStages")]
-public class CustomStages : ScriptableObject
+[CreateAssetMenu(fileName = "SanicPallet", menuName = "Sanicball/SanicPallet")]
+public class SanicPallet : ScriptableObject
 {
     public string Author;
     public List<StageInfo> Stages;
     public List<Song> Playlist;
+    public List<Sanicball.Data.CharacterInfo> Avatars;
+    public List<PowerupLogic> Powerups;
     void OnValidate()
     {
         if (string.IsNullOrEmpty(Author)) Author = Application.companyName;
