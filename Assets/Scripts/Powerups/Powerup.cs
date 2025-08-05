@@ -32,6 +32,7 @@ namespace Sanicball.Powerups
             if (Disabled) return;
             if (other.attachedRigidbody.TryGetComponent(out Ball ball)) if (ball.TryGetComponent(out LocalPowerupManager manager))
                 {
+                    if (manager.selectedPowerup) return;
                     Disabled = true;
                     containedPowerup.manager = manager;
                     manager.PickedUp(containedPowerup);

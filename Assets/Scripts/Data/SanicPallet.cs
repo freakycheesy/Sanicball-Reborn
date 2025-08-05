@@ -24,7 +24,7 @@ public class CustomStagesEditor : Editor
         if (GUILayout.Button("Add Song"))
         {
             EditorUtility.SetDirty(customStages);
-            customStages.AddSong(customStages.song);
+            customStages.AddSong();
             AssetDatabase.SaveAssetIfDirty(customStages);
         }
     }
@@ -57,9 +57,8 @@ public class SanicPallet : ScriptableObject
     }
 #if UNITY_EDITOR
     public AssetReferenceT<AudioResource> song;
-#endif
 
-    public void AddSong(AssetReferenceT<AudioResource> song)
+    public void AddSong()
     {
         Song newSong = new();
         newSong.resource = song;
@@ -68,5 +67,6 @@ public class SanicPallet : ScriptableObject
         if (!Playlist.Contains(newSong))
             Playlist.Add(newSong);
     }
+#endif
 }
 

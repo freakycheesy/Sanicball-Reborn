@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class AutoPlacement : MonoBehaviour
 {
-    [SerializeField]
-    private LayerMask placementLayers;
+    public LayerMask placementLayers;
+    public Vector3 offset;
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -32,7 +32,7 @@ public class AutoPlacement : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 100, placementLayers, QueryTriggerInteraction.Ignore))
         {
             PosRot placement = new PosRot();
-            placement.Position = hit.point;
+            placement.Position = hit.point + offset;
 
             Quaternion alongNormal = Quaternion.FromToRotation(Vector3.up, hit.normal);
             float angle = transform.rotation.eulerAngles.y;

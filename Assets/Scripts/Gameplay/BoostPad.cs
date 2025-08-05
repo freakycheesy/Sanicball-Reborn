@@ -12,17 +12,17 @@ namespace Sanicball.Gameplay
         [SerializeField]
         private float speedLimit = 200f;
 
-        private float offset;
+        private float rampoffset;
         
         private void Update()
         {
             //Animate the panel on the boost pad
-            offset -= 5f * Time.deltaTime;
-            if (offset <= 0f)
+            rampoffset -= 5f * Time.deltaTime;
+            if (rampoffset <= 0f)
             {
-                offset += 1f;
+                rampoffset += 1f;
             }
-            GetComponent<Renderer>().materials[1].SetTextureOffset("_MainTex", new Vector2(0f, offset));
+            GetComponent<Renderer>().materials[1].SetTextureOffset("_MainTex", new Vector2(0f, rampoffset));
         }
 
         private void OnTriggerEnter(Collider other)

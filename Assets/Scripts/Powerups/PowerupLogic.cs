@@ -15,6 +15,7 @@ namespace Sanicball.Powerups
         public float powerUpDuration = 10;
         public bool LoseAllPowerupWhenLost = true;
 
+        public void AddForce(Vector3 force, ForceMode mode) => manager.AddForce(force, mode);
 
         public void ResetDamping(bool resetLinear = true, bool resetAngular = true) => manager.ResetDamping(resetLinear, resetAngular);
 
@@ -42,5 +43,6 @@ namespace Sanicball.Powerups
         public void ResetMass();
         public void SetDamping(float linearDamping = -1, float angularDamping = -1);
         public void ResetDamping(bool resetLinear = true, bool resetAngular = true);
+        public void AddForce(Vector3 force, ForceMode mode);
     }
 }

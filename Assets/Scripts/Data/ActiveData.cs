@@ -7,6 +7,7 @@ using SanicballCore;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Audio;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Sanicball.Data
 {
@@ -110,26 +111,29 @@ namespace Sanicball.Data
                 Destroy(gameObject);
             }
         }
-
+        public static AsyncOperationHandle<IList<SanicPallet>> PalletHandle;
         public static void FindLevels()
         {
-            var levels = Addressables.LoadAssetsAsync<SanicPallet>("level", LoadLevelCallback);
+            PalletHandle = Addressables.LoadAssetsAsync<SanicPallet>("pallet", LoadLevelCallback);
+            PalletHandle.Completed += (_) => Debug.Log("Completed Loading Pallet!");
         }
 
-        public static void LoadLevelCallback(SanicPallet stages)
+        public static void LoadLevelCallback(SanicPallet pallet)
         {
-            CustomStagesPallets.Add(stages);
-            foreach (var scene in stages.Stages)
+            CustomStagesPallets.Add(pallet);
+            foreach (var scene in pallet.Stages)
             {
                 scene.scene.LoadAssetAsync<Object>();
             }
-            Stages.AddRange(stages.Stages);
-            foreach (var song in stages.Playlist)
+            Stages.AddRange(pallet.Stages);
+            foreach (var song in pallet.Playlist)
             {
                 song.resource.LoadAssetAsync<AudioResource>();
             }
-            MusicPlayer.Playlist.AddRange(stages.Playlist);
-            Characters.AddRange(stages.Avatars);
+            MusicPlayer.Playlist.AddRange(pallet.Playlist);
+            Characters.AddRange(pallet.Avatars);
+            Powerups.AddRange(Powerups);
+            Debug.Log($"Loaded Pallet: ({pallet.Author}.{pallet.name})");
         }
 
         private void OnEnable()
@@ -141,6 +145,7 @@ namespace Sanicball.Data
         private void OnApplicationQuit()
         {
             SaveAll();
+            PalletHandle.Release();
         }
 
         #endregion Unity functions

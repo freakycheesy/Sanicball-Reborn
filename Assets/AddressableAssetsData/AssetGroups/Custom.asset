@@ -19,7 +19,7 @@ MonoBehaviour:
     m_Address: CustomLevels
     m_ReadOnly: 0
     m_SerializedLabels:
-    - level
+    - pallet
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f3cc4978b51474a468fcec683f4c74b8, type: 2}

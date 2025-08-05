@@ -8,7 +8,7 @@ namespace Sanicball.Powerups
     public class LocalPowerupManager : MonoBehaviour, IPlayerModifiers
     {
         private DefaultValues _defaultValues = new();
-        private PowerupLogic _selectedPowerup;
+        public PowerupLogic selectedPowerup { get; private set; }
         private UltEvent _onPickupPowerupEvent;
         private UltEvent _onPowerupUpdateEvent;
         private UltEvent _onLostPowerupEvent;
@@ -17,9 +17,13 @@ namespace Sanicball.Powerups
 
         void Start()
         {
+            Invoke(nameof(Setup), 1);        
+        }
+
+        private void Setup()
+        {
             TryGetComponent(out _ball);
             TryGetComponent(out _rb);
-
             _defaultValues = new()
             {
                 speed = _ball.characterStats.rollSpeed,
@@ -30,12 +34,14 @@ namespace Sanicball.Powerups
             };
         }
 
+
         public void PickedUp(PowerupLogic powerup)
         {
-            _selectedPowerup = powerup;
-            _onPickupPowerupEvent = _selectedPowerup.onPickupPowerupEvent;
-            _onPowerupUpdateEvent = _selectedPowerup.onPowerupUpdateEvent;
-            _onLostPowerupEvent = _selectedPowerup.onLostPowerupEvent;
+            if (selectedPowerup) return;
+            selectedPowerup = powerup;
+            _onPickupPowerupEvent = selectedPowerup.onPickupPowerupEvent;
+            _onPowerupUpdateEvent = selectedPowerup.onPowerupUpdateEvent;
+            _onLostPowerupEvent = selectedPowerup.onLostPowerupEvent;
 
             _onPickupPowerupEvent.Invoke();
             if(powerup.powerUpDuration <= 255) Invoke(nameof(LosePowerup), powerup.powerUpDuration);
@@ -43,7 +49,7 @@ namespace Sanicball.Powerups
 
         void Update()
         {
-            if (_selectedPowerup)
+            if (selectedPowerup)
             {
                 _onPowerupUpdateEvent?.Invoke();
             }
@@ -51,9 +57,9 @@ namespace Sanicball.Powerups
 
         public void LosePowerup()
         {
-            if (_selectedPowerup.LoseAllPowerupWhenLost) ResetAllValues();
+            if (selectedPowerup.LoseAllPowerupWhenLost) ResetAllValues();
             _onLostPowerupEvent.Invoke();
-            _selectedPowerup = null;
+            selectedPowerup = null;
         }
 
         private void ResetAllValues()
@@ -106,6 +112,12 @@ namespace Sanicball.Powerups
         {
             _ball.characterStats.rollSpeed = speed;
         }
+
+        public void AddForce(Vector3 force, ForceMode mode)
+        {
+            _rb.AddForce(force + _ball.Up, mode);
+        }
+
     }
 
     [Serializable]

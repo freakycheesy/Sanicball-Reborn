@@ -5419,6 +5419,7 @@ MonoBehaviour:
   placementLayers:
     serializedVersion: 2
     m_Bits: 512
+  offset: {x: 0, y: 3.5, z: 0}
 --- !u!1 &6467321887924035160
 GameObject:
   m_ObjectHideFlags: 0

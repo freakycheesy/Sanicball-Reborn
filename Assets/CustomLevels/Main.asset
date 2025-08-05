@@ -524,6 +524,9 @@ MonoBehaviour:
     hidden: 1
   Powerups:
   - {fileID: 11400000, guid: b5dbb1884bb044940b87805d146b0cdd, type: 2}
+  - {fileID: 11400000, guid: 7cecf37b9f4043d419bfd21734b1c824, type: 2}
+  - {fileID: 11400000, guid: 24693b85f02b7584ab7cecb4875e1303, type: 2}
+  - {fileID: 11400000, guid: 28ce7051ad7fabf49b2656d9a3fab877, type: 2}
   song:
     m_AssetGUID: 8e6a1b8eeb5643741871ab2b85cdef38
     m_SubObjectName: 
