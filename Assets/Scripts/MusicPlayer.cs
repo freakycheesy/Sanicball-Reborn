@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 using Sanicball.UI;
+using Sanicball.Logic;
 
 namespace Sanicball
 {
@@ -72,8 +73,7 @@ namespace Sanicball
 
             if (ActiveData.ESportsFullyReady)
             {
-                Sanicball.Logic.MatchManager m = FindObjectOfType<Sanicball.Logic.MatchManager>();
-                if (!m.InLobby) {
+                if (!MatchManager.Instance.InLobby) {
                     List<Song> p = playlist.ToList();
                     Song s = new Song();
                     s.name = "Skrollex - Bungee Ride";

@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e31d7c00ccbd29a45851d5897efe9288, type: 3}
+  m_Name: CustomStages
+  m_EditorClassIdentifier: 
+  Author: BK-TN
+  Stages:
+  - BARCODE: .Green Hill Zone
+    name: Green Hill Zone
+    scene:
+      m_AssetGUID: dd3bbb09ce1af034192ad01d199b5a98
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    picture: {fileID: 21300000, guid: dc57cdcc46adee64d900215deab711b3, type: 3}
+    overviewPrefab: {fileID: 120352, guid: b92fe95a3f8ff594cafa50f76cc55858, type: 3}
+  - BARCODE: .Flame Core
+    name: Flame Core
+    scene:
+      m_AssetGUID: 8912b8b165639fe4285eff0f6d6d3b66
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    picture: {fileID: 21300000, guid: 9bcec5996a6fdb245ba294c8d86c550d, type: 3}
+    overviewPrefab: {fileID: 106172, guid: 776929cd993de29429473a9a6bcc039b, type: 3}
+  - BARCODE: .Ice Mountain
+    name: Ice Mountain
+    scene:
+      m_AssetGUID: b2b8ab8885b2c404985feb6cf44156e0
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    picture: {fileID: 21300000, guid: d40157bf96b0396468a82dbfcacc592e, type: 3}
+    overviewPrefab: {fileID: 192978, guid: 7ff5f6fb8ee4cf446994c3b6ee13052e, type: 3}
+  - BARCODE: .Dusty Desert
+    name: Dusty Desert
+    scene:
+      m_AssetGUID: a786b0209e96abe4c8fd49cc4d26f4ac
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1
+    picture: {fileID: 21300000, guid: aa4ed67424b96f7428b3787be36fb735, type: 3}
+    overviewPrefab: {fileID: 152692, guid: 58a107525dc8c9842b4a718ba470c3d3, type: 3}
+  - BARCODE: .Rainbow Road
+    name: Rainbow Road
+    scene:
+      m_AssetGUID: c6ff669b6a5dbd44bba8bdd7dbef35ff
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1
+    picture: {fileID: 21300000, guid: af8ac845d97f57e45a78119b192cca54, type: 3}
+    overviewPrefab: {fileID: 181008, guid: cfb95fbdd5d7c3b40965abafdb30631c, type: 3}

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Sanicball.UI
 {
@@ -7,6 +8,9 @@ namespace Sanicball.UI
         public void Quit()
         {
             //Beb
+            #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+            #endif
             Application.Quit();
         }
     }

@@ -3,12 +3,13 @@
 --- !u!1 &116384
 GameObject:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
   m_Component:
-  - 4: {fileID: 410042}
-  - 114: {fileID: 11456720}
+  - component: {fileID: 410042}
+  - component: {fileID: 11456720}
   m_Layer: 0
   m_Name: MatchManager
   m_TagString: Untagged
@@ -18,53 +19,46 @@ GameObject:
   m_IsActive: 1
 --- !u!4 &410042
 Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 116384}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 673.6974, y: 367.21255, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11456720
 MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 116384}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d840ab754b706e64cac02c36439af403, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbySceneName: Lobby
-  pauseMenuPrefab: {fileID: 11429824, guid: 26112b52065230d4d957e3f9d87cb82e, type: 2}
-  chatPrefab: {fileID: 11491130, guid: 5161f6d36bd9b40418c825fd34b1deb7, type: 2}
-  raceManagerPrefab: {fileID: 11420630, guid: e716ae2f6176c9442addf97bb30866ee, type: 2}
+  menuScene:
+    m_AssetGUID: 451586f28ff22a946b895ef0d457d0d9
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  lobbyScene:
+    m_AssetGUID: c1e00a02ec0c7304584fa323ef166aaf
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  pauseMenuPrefab: {fileID: 11429824, guid: 26112b52065230d4d957e3f9d87cb82e, type: 3}
+  chatPrefab: {fileID: 11491130, guid: 5161f6d36bd9b40418c825fd34b1deb7, type: 3}
+  raceManagerPrefab: {fileID: 11420630, guid: e716ae2f6176c9442addf97bb30866ee, type: 3}
   disconnectedPopupPrefab: {fileID: 11490040, guid: 11ce84fdcf53cfe47a5dae11b1a8076a,
-    type: 2}
-  markerPrefab: {fileID: 11459252, guid: 4beca760f831c984e9f5e1b517aff2c2, type: 2}
---- !u!1001 &100100000
-Prefab:
-  m_ObjectHideFlags: 1
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 0}
-      propertyPath: pauseMenuPrefab
-      value: 
-      objectReference: {fileID: 11429824, guid: 26112b52065230d4d957e3f9d87cb82e,
-        type: 2}
-    - target: {fileID: 0}
-      propertyPath: raceManagerPrefab
-      value: 
-      objectReference: {fileID: 11420630, guid: e716ae2f6176c9442addf97bb30866ee,
-        type: 2}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 116384}
-  m_IsPrefabParent: 1
+    type: 3}
+  markerPrefab: {fileID: 11459252, guid: 4beca760f831c984e9f5e1b517aff2c2, type: 3}

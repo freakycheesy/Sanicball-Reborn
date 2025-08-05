@@ -4,6 +4,7 @@ using Sanicball.Data;
 using SanicballCore;
 using UnityEngine;
 using UnityEngine.UI;
+using Sanicball.Logic;
 
 namespace Sanicball.UI
 {
@@ -24,7 +25,7 @@ namespace Sanicball.UI
         public void IncrementStage()
         {
             selectedStage++;
-            if (selectedStage >= ActiveData.Stages.Length)
+            if (selectedStage >= ActiveData.CustomStagesPallets.Length)
             {
                 selectedStage = 0;
             }
@@ -36,7 +37,7 @@ namespace Sanicball.UI
             selectedStage--;
             if (selectedStage < 0)
             {
-                selectedStage = ActiveData.Stages.Length - 1;
+                selectedStage = ActiveData.CustomStagesPallets.Length - 1;
             }
             UpdateStageName();
         }
@@ -61,7 +62,8 @@ namespace Sanicball.UI
 
         private void UpdateFields()
         {
-            var records = ActiveData.RaceRecords.Where(a => a.Stage == selectedStage && a.GameVersion == GameVersion.AS_FLOAT && a.WasTesting == GameVersion.IS_TESTING).OrderBy(a => a.Time);
+            string selectedStageBarcode = ActiveData.GetStage(selectedStage).BARCODE;
+            var records = ActiveData.RaceRecords.Where(a => a.Stage == selectedStageBarcode && a.GameVersion == GameVersion.AS_FLOAT && a.WasTesting == GameVersion.IS_TESTING).OrderBy(a => a.Time);
 
 			for (int i = 0; i < recordTypes.Count (); i++) {
 				var ctrl = recordTypes [i];

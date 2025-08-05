@@ -3,6 +3,7 @@ using System.IO;
 using Newtonsoft.Json;
 using SanicballCore;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Sanicball.Data
 {
@@ -24,7 +25,7 @@ namespace Sanicball.Data
         //This data is set from the editor and remains constant
         [Header("Static data")]
         [SerializeField]
-        private StageInfo[] stages;
+        private List<CustomStages> customStagesPallets;
 
         [SerializeField]
         private CharacterInfo[] characters;
@@ -52,17 +53,26 @@ namespace Sanicball.Data
         public static MatchSettings MatchSettings { get { return instance.matchSettings; } set { instance.matchSettings = value; } }
         public static List<RaceRecord> RaceRecords { get { return instance.raceRecords; } }
 
-        public static StageInfo[] Stages { get { return instance.stages; } }
+        public static CustomStages[] CustomStagesPallets { get { return instance.customStagesPallets.ToArray(); } }
+        public static StageInfo[] Stages { get {
+                List<StageInfo> dumped = new();
+                foreach (var stages in CustomStagesPallets) {
+                    foreach (var stage in stages.Stages) dumped.Add(stage);
+                }
+                return dumped.ToArray();
+                } }
         public static CharacterInfo[] Characters { get { return instance.characters; } }
         public static GameJoltInfo GameJoltInfo { get { return instance.gameJoltInfo; } }
         public static GameObject ChristmasHat { get { return instance.christmasHat; } }
-        public static Material ESportsTrail {get{return instance.eSportsTrail;}}
-        public static GameObject ESportsHat {get{return instance.eSportsHat;}}
-        public static AudioClip ESportsMusic {get{return instance.eSportsMusic;}}
-        public static ESportMode ESportsPrefab {get{return instance.eSportsPrefab;}}
+        public static Material ESportsTrail { get { return instance.eSportsTrail; } }
+        public static GameObject ESportsHat { get { return instance.eSportsHat; } }
+        public static AudioClip ESportsMusic { get { return instance.eSportsMusic; } }
+        public static ESportMode ESportsPrefab { get { return instance.eSportsPrefab; } }
 
-        public static bool ESportsFullyReady {
-            get {
+        public static bool ESportsFullyReady
+        {
+            get
+            {
                 bool possible = false;
                 if (GameSettings.eSportsReady)
                 {
@@ -70,9 +80,11 @@ namespace Sanicball.Data
                     if (m)
                     {
                         var players = m.Players;
-                        foreach (var p in players) {
-                            if (p.CtrlType != SanicballCore.ControlType.None) {
-                                if (p.CharacterId == 13) 
+                        foreach (var p in players)
+                        {
+                            if (p.CtrlType != SanicballCore.ControlType.None)
+                            {
+                                if (p.CharacterId == 13)
                                 {
                                     possible = true;
                                 }
@@ -99,11 +111,26 @@ namespace Sanicball.Data
             {
                 instance = this;
                 DontDestroyOnLoad(gameObject);
+                FindLevels();          
             }
             else
             {
                 Destroy(gameObject);
             }
+        }
+
+        public static void FindLevels()
+        {
+            var levels = Addressables.LoadAssetsAsync<CustomStages>("level", LoadLevelCallback);
+        }
+
+        public static void LoadLevelCallback(CustomStages stages)
+        {
+            foreach (var scene in stages.Stages)
+            {
+                scene.scene.LoadAssetAsync<Object>();
+            }
+            instance.customStagesPallets.Add(stages);
         }
 
         private void OnEnable()
@@ -183,7 +210,15 @@ namespace Sanicball.Data
             }
             Debug.Log(filename + " saved successfully.");
         }
-
         #endregion Saving and loading
+
+        public static StageInfo GetStage(int index)
+        {
+            foreach (var stage in Stages)
+            {
+                if (stage == Stages[index]) return stage;
+            }
+            return null;
+        }
     }
 }

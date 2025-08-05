@@ -233,7 +233,7 @@ namespace Sanicball.Logic
                 {
 					CharacterTier tier = ActiveData.Characters[Character].tier;
                     string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-                    int stage = ActiveData.Stages.Where(a => a.sceneName == sceneName).First().id;
+                    string stage = ActiveData.Stages.Where(a => a.scene.Asset.name.Equals(sceneName)).First().BARCODE;
 
                     ActiveData.RaceRecords.Add(new RaceRecord(
 						tier,

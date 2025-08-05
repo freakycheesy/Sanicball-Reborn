@@ -88,7 +88,7 @@ namespace Sanicball.Logic
                     case RaceState.Waiting:
                         activeWaitingCam = Instantiate(waitingCamPrefab);
                         activeWaitingUI = Instantiate(waitingUIPrefab);
-                        activeWaitingUI.StageNameToShow = ActiveData.Stages[settings.StageId].name;
+                        activeWaitingUI.StageNameToShow = ActiveData.CustomStagesPallets[settings.StageId].name;
                         if (matchManager.OnlineMode)
                         {
                             if (joinedWhileRaceInProgress)

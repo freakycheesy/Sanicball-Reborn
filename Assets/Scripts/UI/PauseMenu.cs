@@ -1,5 +1,6 @@
 ﻿using Sanicball.Logic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -8,7 +9,6 @@ namespace Sanicball.UI
     public class PauseMenu : MonoBehaviour
     {
         private const string pauseTag = "Pause";
-
         [SerializeField]
         private GameObject firstSelected = null;
 
@@ -85,10 +85,9 @@ namespace Sanicball.UI
 
         public void BackToLobby()
         {
-            var matchManager = FindObjectOfType<MatchManager>();
-            if (matchManager)
+            if (MatchManager.Instance)
             {
-                matchManager.RequestLoadLobby();
+                MatchManager.Instance.RequestLoadLobby();
                 Close();
             }
             else
@@ -99,16 +98,13 @@ namespace Sanicball.UI
 
         public void QuitMatch()
         {
-            var matchManager = FindObjectOfType<MatchManager>();
-            if (matchManager)
+            if (MatchManager.Instance)
             {
-                matchManager.QuitMatch();
+                MatchManager.Instance.QuitMatch();
             }
             else
             {
-                //Backup solution in case the match manager bugs out for whatever reason
-                //Why would it ever bug out? I have no clue
-                SceneManager.LoadScene("Menu");
+                Addressables.LoadSceneAsync(MatchManager.Instance.menuScene);
             }
         }
     }

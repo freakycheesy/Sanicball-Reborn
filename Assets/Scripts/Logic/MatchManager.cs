@@ -8,6 +8,7 @@ using Sanicball.UI;
 using SanicballCore;
 using SanicballCore.MatchMessages;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Sanicball.Logic
 {
@@ -26,8 +27,9 @@ namespace Sanicball.Logic
 
         #region Exposed fields
 
-        [SerializeField]
-        private string lobbySceneName = "Lobby";
+        public static MatchManager Instance;
+        public AssetReference menuScene;
+        public AssetReference lobbyScene;
 
         //Prefabs
         [SerializeField]
@@ -350,6 +352,12 @@ namespace Sanicball.Logic
 
         private void Start()
         {
+            if (Instance && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
             DontDestroyOnLoad(gameObject);
 
             //A messenger should be created by now! Time to create some message listeners
@@ -475,12 +483,12 @@ namespace Sanicball.Logic
 
             loadingStage = false;
             loadingLobby = true;
-            UnityEngine.SceneManagement.SceneManager.LoadScene(lobbySceneName);
+            Addressables.LoadSceneAsync(lobbyScene);
         }
 
         private void GoToStage()
         {
-            var targetStage = ActiveData.Stages[currentSettings.StageId];
+            var targetStage = ActiveData.GetStage(currentSettings.StageId);
 
             loadingStage = true;
             loadingLobby = false;
@@ -490,8 +498,7 @@ namespace Sanicball.Logic
                 p.ReadyToRace = false;
             }
 
-            UnityEngine.SceneManagement.SceneManager.LoadScene(targetStage.sceneName);
-            ;
+            Addressables.LoadSceneAsync(targetStage.scene);
         }
 
         //Check if we were loading the lobby or the race
@@ -544,14 +551,14 @@ namespace Sanicball.Logic
 
         private IEnumerator QuitMatchInternal(string reason)
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
+            Addressables.LoadSceneAsync(menuScene);
 
             if (reason != null)
             {
                 yield return null;
 
-                FindObjectOfType<UI.PopupHandler>().OpenPopup(disconnectedPopupPrefab);
-                FindObjectOfType<UI.PopupDisconnected>().Reason = reason;
+                FindAnyObjectByType<UI.PopupHandler>().OpenPopup(disconnectedPopupPrefab);
+                FindAnyObjectByType<UI.PopupDisconnected>().Reason = reason;
             }
 
             Destroy(gameObject);

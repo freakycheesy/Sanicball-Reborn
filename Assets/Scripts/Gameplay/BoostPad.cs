@@ -27,13 +27,9 @@ namespace Sanicball.Gameplay
         private LayerMask placementLayers;
 
         private float offset;
-
-        private void Start()
-        {
-            PosRot placement = CalcTargetPlacement();
-            transform.position = placement.Position;
-            transform.rotation = placement.Rotation;
-        }
+        
+        void Awake() => Place();
+        void Start() => Place();
 
         private void Update()
         {
@@ -44,6 +40,13 @@ namespace Sanicball.Gameplay
                 offset += 1f;
             }
             GetComponent<Renderer>().materials[1].SetTextureOffset("_MainTex", new Vector2(0f, offset));
+        }
+
+        private void Place()
+        {
+            PosRot placement = CalcTargetPlacement();
+            transform.position = placement.Position;
+            transform.rotation = placement.Rotation;
         }
 
         private void OnDrawGizmos()
