@@ -56,13 +56,13 @@ public class SanicPallet : ScriptableObject
         }
     }
 #if UNITY_EDITOR
-    public AssetReferenceT<AudioResource> song;
+    public AudioResource song;
 
     public void AddSong()
     {
         Song newSong = new();
         newSong.resource = song;
-        newSong.name = song.editorAsset.name;
+        newSong.name = song.name;
         newSong.BARCODE = $"{Author}.{name}.{newSong.name}";
         if (!Playlist.Contains(newSong))
             Playlist.Add(newSong);

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.ResourceProviders;
 
 namespace Sanicball.Data
 {
@@ -8,7 +9,7 @@ namespace Sanicball.Data
     {
         public string BARCODE;
         public string name;
-        public AssetReference scene;
+        public SceneReference scene;
         public Sprite picture;
         public GameObject overviewPrefab;
     }

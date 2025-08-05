@@ -88,7 +88,7 @@ namespace Sanicball
             }
 
             currentSongID = 0;
-            aSource.resource = Playlist[currentSongID].resource.Asset as AudioResource;
+            aSource.resource = Playlist[currentSongID].resource;
             isPlaying = aSource.isPlaying;
             if (startPlaying && ActiveData.GameSettings.music)
             {
@@ -121,7 +121,7 @@ namespace Sanicball
                 {
                     currentSongID = 0;
                 }
-                aSource.resource = Playlist[currentSongID].resource.Asset as AudioResource;
+                aSource.resource = Playlist[currentSongID].resource;
                 slidePosition = slidePositionMax;
                 Play();
             }
@@ -168,6 +168,6 @@ namespace Sanicball
     {
         public string BARCODE;
         public string name;
-        public AssetReferenceT<AudioResource> resource;
+        public AudioResource resource;
     }
 }

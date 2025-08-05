@@ -22,6 +22,7 @@ namespace Sanicball.Powerups
 
         private void RandomisePowerup()
         {
+            if (ActiveData.Powerups.Count <= 0) return;
             containedPowerup = ActiveData.Powerups[Random.Range(0, ActiveData.Powerups.Count - 1)];
             icon.sprite = containedPowerup.icon;
         }

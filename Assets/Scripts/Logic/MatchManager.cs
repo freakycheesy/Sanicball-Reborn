@@ -9,6 +9,7 @@ using SanicballCore;
 using SanicballCore.MatchMessages;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 
 namespace Sanicball.Logic
@@ -29,8 +30,8 @@ namespace Sanicball.Logic
         #region Exposed fields
 
         public static MatchManager Instance;
-        public AssetReference menuScene;
-        public AssetReference lobbyScene;
+        public SceneReference menuScene;
+        public SceneReference lobbyScene;
 
         //Prefabs
         [SerializeField]
@@ -485,7 +486,7 @@ namespace Sanicball.Logic
 
             loadingStage = false;
             loadingLobby = true;
-            Addressables.LoadSceneAsync(lobbyScene);
+            ActiveData.LoadLevel(lobbyScene);
         }
 
         private void GoToStage()
@@ -500,7 +501,7 @@ namespace Sanicball.Logic
                 p.ReadyToRace = false;
             }
 
-            Addressables.LoadSceneAsync(CurrentStage.scene);
+            ActiveData.LoadLevel(CurrentStage.scene);
         }
 
         public static StageInfo CurrentStage;

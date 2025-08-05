@@ -13,28 +13,28 @@ MonoBehaviour:
   m_Name: Default Local Group
   m_EditorClassIdentifier: 
   m_GroupName: Default Local Group
-  m_GUID: e2ad183feedb28f4ca19441d729f1432
+  m_GUID: b36840cd09d769644ac048c7015d9607
   m_SerializeEntries:
-  - m_GUID: 1a28856dc668791428d2687bb00cec6e
-    m_Address: Ingame
+  - m_GUID: 201e5e74f016855428eac7698f025e27
+    m_Address: CustomLevels
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - mod
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 36c4ea7b89ce35447886010c537d7a99
+    m_Address: Art
     m_ReadOnly: 0
     m_SerializedLabels:
     - default
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2f9199882fd1722468a4ee0d4a73288f
-    m_Address: Default
+  - m_GUID: ad64b90dd304bac4b839f464e633441f
+    m_Address: Prefabs
     m_ReadOnly: 0
     m_SerializedLabels:
     - default
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 87143da41e4b3454db70e7c5ca652a3a
-    m_Address: Characters
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - default
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9ecce5e7b8c279c4ea123d0699ef3dd8
-    m_Address: Fonts
+  - m_GUID: ff27eb4e06c871e4c9cbfcfa778a5c3d
+    m_Address: Scenes
     m_ReadOnly: 0
     m_SerializedLabels:
     - default

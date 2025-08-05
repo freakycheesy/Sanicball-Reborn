@@ -8,6 +8,8 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Audio;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceProviders;
+using UnityEngine.SceneManagement;
 
 namespace Sanicball.Data
 {
@@ -38,7 +40,7 @@ namespace Sanicball.Data
         [SerializeField]
         private GameObject eSportsHat;
         [SerializeField]
-        private AssetReferenceT<AudioResource> eSportsMusic;
+        private AudioResource eSportsMusic;
         [SerializeField]
         private ESportMode eSportsPrefab;
 
@@ -51,15 +53,15 @@ namespace Sanicball.Data
         public static MatchSettings MatchSettings { get { return instance.matchSettings; } set { instance.matchSettings = value; } }
         public static List<RaceRecord> RaceRecords { get { return instance.raceRecords; } }
 
-        public static List<SanicPallet> CustomStagesPallets = new();
-        public static List<StageInfo> Stages = new();
-        public static List<PowerupLogic> Powerups = new();
-        public static List<CharacterInfo> Characters = new();
+        public static List<SanicPallet> CustomStagesPallets = new List<SanicPallet>();
+        public static List<StageInfo> Stages = new List<StageInfo>();
+        public static List<PowerupLogic> Powerups = new List<PowerupLogic>();
+        public static List<CharacterInfo> Characters = new List<CharacterInfo>();
         public static GameJoltInfo GameJoltInfo { get { return instance.gameJoltInfo; } }
         public static GameObject ChristmasHat { get { return instance.christmasHat; } }
         public static Material ESportsTrail { get { return instance.eSportsTrail; } }
         public static GameObject ESportsHat { get { return instance.eSportsHat; } }
-        public static AssetReferenceT<AudioResource> ESportsMusic { get { return instance.eSportsMusic; } }
+        public static AudioResource ESportsMusic { get { return instance.eSportsMusic; } }
         public static ESportMode ESportsPrefab { get { return instance.eSportsPrefab; } }
 
         public static bool ESportsFullyReady
@@ -104,38 +106,36 @@ namespace Sanicball.Data
             {
                 instance = this;
                 DontDestroyOnLoad(gameObject);
-                FindLevels();          
+                FindPallets();          
             }
             else
             {
                 Destroy(gameObject);
             }
         }
-        public static AsyncOperationHandle<IList<SanicPallet>> PalletHandle;
-        public static void FindLevels()
+        public static AsyncOperationHandle<IList<SanicPallet>> PalletHandle = new();
+        public static void FindPallets()
         {
-            PalletHandle = Addressables.LoadAssetsAsync<SanicPallet>("pallet", LoadLevelCallback);
+            PalletHandle = Addressables.LoadAssetsAsync<SanicPallet>("mod", LoadPalletCallback);
             PalletHandle.Completed += (_) => Debug.Log("Completed Loading Pallet!");
         }
 
-        public static void LoadLevelCallback(SanicPallet pallet)
+        public static void LoadPalletCallback(SanicPallet pallet)
         {
             CustomStagesPallets.Add(pallet);
-            foreach (var scene in pallet.Stages)
-            {
-                scene.scene.LoadAssetAsync<Object>();
-            }
             Stages.AddRange(pallet.Stages);
-            foreach (var song in pallet.Playlist)
-            {
-                song.resource.LoadAssetAsync<AudioResource>();
-            }
             MusicPlayer.Playlist.AddRange(pallet.Playlist);
             Characters.AddRange(pallet.Avatars);
-            Powerups.AddRange(Powerups);
+            Powerups.AddRange(pallet.Powerups);
+
             Debug.Log($"Loaded Pallet: ({pallet.Author}.{pallet.name})");
         }
 
+        public static void LoadLevel(SceneReference level, LoadSceneMode mode = LoadSceneMode.Single)
+        {
+            Addressables.LoadSceneAsync(level, mode);
+        }
+        
         private void OnEnable()
         {
             LoadAll();
