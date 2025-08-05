@@ -476,7 +476,7 @@ PlayerSettings:
   m_BuildTargetGroupHDRCubemapEncodingQuality:
   - serializedVersion: 2
     m_BuildTarget: Standalone
-    m_EncodingQuality: 2
+    m_EncodingQuality: 0
   - serializedVersion: 2
     m_BuildTarget: XboxOne
     m_EncodingQuality: 2
@@ -781,7 +781,7 @@ PlayerSettings:
   scriptingBackend:
     Android: 0
     Metro: 2
-    Standalone: 0
+    Standalone: 1
     WP8: 2
     WebGL: 1
     iOS: 0
@@ -893,7 +893,7 @@ PlayerSettings:
   hmiCpuConfiguration: 
   hmiLogStartupTiming: 0
   qnxGraphicConfPath: 
-  apiCompatibilityLevel: 3
+  apiCompatibilityLevel: 6
   captureStartupLogs: {}
   activeInputHandler: 0
   windowsGamepadBackendHint: 0

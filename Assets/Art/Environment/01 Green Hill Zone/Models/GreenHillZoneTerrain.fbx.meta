@@ -1,72 +1,160 @@
 fileFormatVersion: 2
 guid: 93140f5f9cf85fe4d9af69cebd79a200
-timeCreated: 1476291486
-licenseType: Free
 ModelImporter:
-  serializedVersion: 19
-  fileIDToRecycleName:
-    100000: BridgeCurve
-    100002: BridgePlanks
-    100004: BridgePlanks_Collider
-    100006: //RootNode
-    100008: MainIsland
-    100010: SideIsland
-    100012: SpiralIsland
-    100014: UTurnIsland
-    100016: Waterfall
-    400000: BridgeCurve
-    400002: BridgePlanks
-    400004: BridgePlanks_Collider
-    400006: //RootNode
-    400008: MainIsland
-    400010: SideIsland
-    400012: SpiralIsland
-    400014: UTurnIsland
-    400016: Waterfall
-    2300000: BridgeCurve
-    2300002: BridgePlanks
-    2300004: BridgePlanks_Collider
-    2300006: MainIsland
-    2300008: SideIsland
-    2300010: SpiralIsland
-    2300012: UTurnIsland
-    2300014: Waterfall
-    3300000: BridgeCurve
-    3300002: BridgePlanks
-    3300004: BridgePlanks_Collider
-    3300006: MainIsland
-    3300008: SideIsland
-    3300010: SpiralIsland
-    3300012: UTurnIsland
-    3300014: Waterfall
-    4300000: SpiralIsland
-    4300002: Waterfall
-    4300004: BridgeCurve
-    4300006: BridgePlanks_Collider
-    4300008: BridgePlanks
-    4300010: SideIsland
-    4300012: UTurnIsland
-    4300014: MainIsland
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: BridgeCurve
+  - first:
+      1: 100002
+    second: BridgePlanks
+  - first:
+      1: 100004
+    second: BridgePlanks_Collider
+  - first:
+      1: 100006
+    second: //RootNode
+  - first:
+      1: 100008
+    second: MainIsland
+  - first:
+      1: 100010
+    second: SideIsland
+  - first:
+      1: 100012
+    second: SpiralIsland
+  - first:
+      1: 100014
+    second: UTurnIsland
+  - first:
+      1: 100016
+    second: Waterfall
+  - first:
+      4: 400000
+    second: BridgeCurve
+  - first:
+      4: 400002
+    second: BridgePlanks
+  - first:
+      4: 400004
+    second: BridgePlanks_Collider
+  - first:
+      4: 400006
+    second: //RootNode
+  - first:
+      4: 400008
+    second: MainIsland
+  - first:
+      4: 400010
+    second: SideIsland
+  - first:
+      4: 400012
+    second: SpiralIsland
+  - first:
+      4: 400014
+    second: UTurnIsland
+  - first:
+      4: 400016
+    second: Waterfall
+  - first:
+      23: 2300000
+    second: BridgeCurve
+  - first:
+      23: 2300002
+    second: BridgePlanks
+  - first:
+      23: 2300004
+    second: BridgePlanks_Collider
+  - first:
+      23: 2300006
+    second: MainIsland
+  - first:
+      23: 2300008
+    second: SideIsland
+  - first:
+      23: 2300010
+    second: SpiralIsland
+  - first:
+      23: 2300012
+    second: UTurnIsland
+  - first:
+      23: 2300014
+    second: Waterfall
+  - first:
+      33: 3300000
+    second: BridgeCurve
+  - first:
+      33: 3300002
+    second: BridgePlanks
+  - first:
+      33: 3300004
+    second: BridgePlanks_Collider
+  - first:
+      33: 3300006
+    second: MainIsland
+  - first:
+      33: 3300008
+    second: SideIsland
+  - first:
+      33: 3300010
+    second: SpiralIsland
+  - first:
+      33: 3300012
+    second: UTurnIsland
+  - first:
+      33: 3300014
+    second: Waterfall
+  - first:
+      43: 4300000
+    second: SpiralIsland
+  - first:
+      43: 4300002
+    second: Waterfall
+  - first:
+      43: 4300004
+    second: BridgeCurve
+  - first:
+      43: 4300006
+    second: BridgePlanks_Collider
+  - first:
+      43: 4300008
+    second: BridgePlanks
+  - first:
+      43: 4300010
+    second: SideIsland
+  - first:
+      43: 4300012
+    second: UTurnIsland
+  - first:
+      43: 4300014
+    second: MainIsland
+  externalObjects: {}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
+    resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
     isReadable: 1
   meshes:
@@ -74,25 +162,49 @@ ModelImporter:
     globalScale: 100
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
     importBlendShapes: 1
-    swapUVChannels: 0
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
+    swapUVChannels: 1
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -102,11 +214,19 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 100
     rootMotionBoneName: 
     hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 0
   humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
