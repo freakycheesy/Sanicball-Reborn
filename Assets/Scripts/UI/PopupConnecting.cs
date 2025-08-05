@@ -9,6 +9,11 @@ namespace Sanicball.UI
         private Text titleField = null;
         [SerializeField]
         private Image spinner = null;
+        public static PopupConnecting Instance;
+        void Start()
+        {
+            Instance = this;
+        }
 
         public void ShowMessage(string text)
         {

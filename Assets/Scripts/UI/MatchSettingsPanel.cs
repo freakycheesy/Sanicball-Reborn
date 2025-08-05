@@ -41,7 +41,7 @@ namespace Sanicball.UI
 
         public void RevertSettings()
         {
-            var manager = FindObjectOfType<MatchManager>();
+            var manager = MatchManager.Instance;
             if (manager)
             {
                 tempSettings = manager.CurrentSettings;
@@ -51,7 +51,7 @@ namespace Sanicball.UI
 
         public void SaveSettings()
         {
-            var manager = FindObjectOfType<MatchManager>();
+            var manager = MatchManager.Instance;
             if (manager)
             {
                 manager.RequestSettingsChange(tempSettings);

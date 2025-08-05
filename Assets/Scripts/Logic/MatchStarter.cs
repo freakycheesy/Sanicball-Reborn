@@ -1,4 +1,5 @@
 ﻿using Lidgren.Network;
+using Sanicball.UI;
 using SanicballCore;
 using UnityEngine;
 
@@ -132,7 +133,7 @@ namespace Sanicball.Logic
 
             popupHandler.OpenPopup(connectingPopupPrefab);
 
-            activeConnectingPopup = FindObjectOfType<UI.PopupConnecting>();
+            activeConnectingPopup = PopupConnecting.Instance;
         }
 
         //Called when succesfully connected to a server
@@ -140,6 +141,11 @@ namespace Sanicball.Logic
         {
             MatchManager manager = Instantiate(matchManagerPrefab);
             manager.InitOnlineMatch(joiningClient, matchState);
+        }
+        public static MatchStarter Instance;
+        void Start()
+        {
+            Instance = this;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Sanicball.UI
 
         private void Start()
         {
-            panel = FindObjectOfType<ControlsPanel>();
+            panel = ControlsPanel.Instance;
             if (!panel)
             {
                 GetComponent<Popup>().Close();

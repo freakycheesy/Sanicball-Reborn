@@ -51,7 +51,7 @@ namespace Sanicball.UI
         //Called by buttons when switching slide
         public void TrySetSelectedGameObject(GameObject o)
         {
-            var eventSystem = FindObjectOfType<EventSystem>();
+            var eventSystem = EventSystem.current;
 
             if (eventSystem)
             {

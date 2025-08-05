@@ -123,11 +123,11 @@ namespace Sanicball.Data
             //Volume
             AudioListener.volume = soundVolume;
             //Mute
-            MusicPlayer music = GameObject.FindObjectOfType<MusicPlayer>();
+            MusicPlayer music = MusicPlayer.Instance;
             if (music)
                 music.GetComponent<AudioSource>().mute = !music;
             //Camera effects
-            foreach(var cam in GameObject.FindObjectsOfType<CameraEffects>())
+            foreach(var cam in Resources.FindObjectsOfTypeAll<CameraEffects>())
             {
                 cam.EnableEffects();
             }

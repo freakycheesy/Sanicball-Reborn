@@ -6,6 +6,7 @@ namespace Sanicball.Gameplay
     [RequireComponent(typeof(Camera))]
     public class LobbyCamera : MonoBehaviour
     {
+        public static LobbyCamera Instance;
         public float rotationSpeed;
 
         private Quaternion startRotation;
@@ -20,6 +21,7 @@ namespace Sanicball.Gameplay
 
         private void Start()
         {
+            Instance = this;
             startRotation = transform.rotation;
         }
 

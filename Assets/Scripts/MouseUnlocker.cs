@@ -4,12 +4,14 @@ namespace Sanicball
 {
     public class MouseUnlocker : MonoBehaviour
     {
+        public static MouseUnlocker Instance;
         private void Start()
         {
-            if (FindObjectsOfType<MouseUnlocker>().Length > 1)
+            if (Instance)
             {
                 Destroy(gameObject);
             }
+            Instance = this;
             DontDestroyOnLoad(gameObject);
         }
 

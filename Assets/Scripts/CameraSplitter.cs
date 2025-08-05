@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -9,15 +10,18 @@ namespace Sanicball
     {
         private Camera cam;
         private AudioListener listener;
-
+        public static List<CameraSplitter> splitters;
         public int SplitscreenIndex { get; set; }
-
+        void OnDestroy()
+        {
+            splitters.Remove(this);
+        }
         private void Start()
         {
             cam = GetComponent<Camera>();
             listener = GetComponent<AudioListener>();
-            var splitters = FindObjectsOfType<CameraSplitter>().ToList();
-
+            splitters.Add(this);
+            
             int count = splitters.Count;
             int index = SplitscreenIndex;
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using Sanicball.Logic;
 using SanicballCore;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -77,7 +78,7 @@ namespace Sanicball.Data
                 bool possible = false;
                 if (GameSettings.eSportsReady)
                 {
-                    Sanicball.Logic.MatchManager m = FindObjectOfType<Sanicball.Logic.MatchManager>();
+                    var m = MatchManager.Instance;
                     if (m)
                     {
                         var players = m.Players;

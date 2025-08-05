@@ -5,6 +5,7 @@ using Lidgren.Network;
 using Sanicball.Data;
 using Sanicball.Logic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 namespace Sanicball.UI
@@ -24,7 +25,7 @@ namespace Sanicball.UI
         private List<string> serverBrowserIPs = new List<string>();
 
         private NetClient discoveryClient;
-        private WWW serverBrowserRequester;
+        private UnityWebRequest serverBrowserRequester;
         private DateTime latestLocalRefreshTime;
         private DateTime latestBrowserRefreshTime;
 
@@ -35,7 +36,7 @@ namespace Sanicball.UI
             discoveryClient.DiscoverLocalPeers(25000);
             latestLocalRefreshTime = DateTime.Now;
 
-			serverBrowserRequester = new WWW(ActiveData.GameSettings.serverListURL);
+			serverBrowserRequester = new UnityWebRequest(ActiveData.GameSettings.serverListURL);
 
             serverCountField.text = "Refreshing servers, hang on...";
             errorField.enabled = false;
@@ -73,7 +74,7 @@ namespace Sanicball.UI
                 {
                     latestBrowserRefreshTime = DateTime.Now;
 
-                    string result = serverBrowserRequester.text;
+                    string result = serverBrowserRequester.downloadHandler.text;
                     string[] entries = result.Split(new string[] { "<br>" }, StringSplitOptions.RemoveEmptyEntries);
 
                     foreach (string entry in entries)

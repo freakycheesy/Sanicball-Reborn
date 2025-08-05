@@ -33,7 +33,7 @@ namespace Sanicball.Gameplay
         {
             ball = GetComponent<Ball>();
             //Find AI skill level from race manager
-            RaceManager raceManager = FindObjectOfType<RaceManager>();
+            RaceManager raceManager = RaceManager.Instance;
             if (raceManager)
             {
                 skillLevel = raceManager.Settings.AISkill;

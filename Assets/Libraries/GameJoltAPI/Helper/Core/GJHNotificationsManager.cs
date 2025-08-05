@@ -11,35 +11,41 @@ public class GJHNotificationsManager : MonoBehaviour
 	/// The <see cref="GJHNotificationsManager"/> instance.
 	/// </summary>
 	private static GJHNotificationsManager instance;
-	/// <summary>
-	/// Gets the <see cref="GJHNotificationsManager"/> instance.
-	/// </summary>
-	/// <value>
-	/// The <see cref="GJHNotificationsManager"/> instance.
-	/// </value>
-	public static GJHNotificationsManager Instance
+    /// <summary>
+    /// Gets the <see cref="GJHNotificationsManager"/> instance.
+    /// </summary>
+    /// <value>
+    /// The <see cref="GJHNotificationsManager"/> instance.
+    /// </value>
+
+    void Awake()
+    {
+		instance = this;
+    }
+	
+    public static GJHNotificationsManager Instance
 	{
 		get
 		{
 			if (instance == null)
 			{
-				GJAPIHelper gjapih = (GJAPIHelper) FindObjectOfType (typeof (GJAPIHelper));
-				
+				GJAPIHelper gjapih = null;
+
 				if (gjapih == null)
 				{
-					Debug.LogError ("An instance of GJAPIHelper is needed in the scene, but there is none. Can't initialise GJHNotificationsManager.");
+					Debug.LogError("An instance of GJAPIHelper is needed in the scene, but there is none. Can't initialise GJHNotificationsManager.");
 				}
 				else
 				{
 					instance = gjapih.gameObject.AddComponent<GJHNotificationsManager>();
-					
+
 					if (instance == null)
 					{
-						Debug.Log ("An error occured creating GJHNotificationsManager.");
+						Debug.Log("An error occured creating GJHNotificationsManager.");
 					}
 				}
 			}
- 
+
 			return instance;
 		}
 	}

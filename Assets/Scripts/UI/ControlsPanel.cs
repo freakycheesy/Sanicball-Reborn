@@ -25,7 +25,7 @@ namespace Sanicball.UI
         private Keybind keybindToChange;
 
         private KeybindCollection tempKeybinds = new KeybindCollection();
-
+        public static ControlsPanel Instance;
         public void Apply()
         {
             ActiveData.Keybinds.CopyValues(tempKeybinds);
@@ -79,6 +79,7 @@ namespace Sanicball.UI
 
         private void Start()
         {
+            Instance = this;
             RevertToCurrent();
         }
 

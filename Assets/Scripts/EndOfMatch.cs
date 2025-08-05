@@ -58,12 +58,12 @@ namespace Sanicball
                         p.Camera.Remove();
                 }
 
-                foreach (RaceUI ui in FindObjectsOfType<RaceUI>())
+                foreach (RaceUI ui in Resources.FindObjectsOfTypeAll<RaceUI>())
                 {
                     Destroy(ui.gameObject);
                 }
 
-                foreach (PlayerUI ui in FindObjectsOfType<PlayerUI>())
+                foreach (PlayerUI ui in Resources.FindObjectsOfTypeAll<PlayerUI>())
                 {
                     Destroy(ui.gameObject);
                 }

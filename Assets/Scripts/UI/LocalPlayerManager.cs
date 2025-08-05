@@ -24,7 +24,7 @@ namespace Sanicball.UI
 
         private void Start()
         {
-            manager = FindObjectOfType<MatchManager>();
+            manager = MatchManager.Instance;
 
             if (manager)
             {

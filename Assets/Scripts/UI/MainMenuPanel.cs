@@ -52,7 +52,7 @@ namespace Sanicball.UI
 
         private void Update()
         {
-            if ((Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton1)) && FindObjectsOfType<Popup>().Length <= 0)
+            if ((Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton1)) && Resources.FindObjectsOfTypeAll<Popup>().Length <= 0)
             {
                 if (activePanel != null)
                 {

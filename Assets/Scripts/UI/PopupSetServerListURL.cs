@@ -19,7 +19,7 @@ namespace Sanicball.UI
 
         private void Start()
         {
-            optionsPanel = FindObjectOfType<OptionsPanel>();
+            optionsPanel = OptionsPanel.Instance;
 
             if (!optionsPanel)
             {

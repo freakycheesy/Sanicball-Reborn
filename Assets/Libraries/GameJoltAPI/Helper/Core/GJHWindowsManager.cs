@@ -24,23 +24,23 @@ public class GJHWindowsManager : MonoBehaviour
 		{
 			if (instance == null)
 			{
-				GJAPIHelper gjapih = (GJAPIHelper) FindObjectOfType (typeof (GJAPIHelper));
-				
+				GJAPIHelper gjapih = null;
+
 				if (gjapih == null)
 				{
-					Debug.LogError ("An instance of GJAPIHelper is needed in the scene, but there is none. Can't initialise GJHWindowManager.");
+					Debug.LogError("An instance of GJAPIHelper is needed in the scene, but there is none. Can't initialise GJHWindowManager.");
 				}
 				else
 				{
 					instance = gjapih.gameObject.AddComponent<GJHWindowsManager>();
-					
+
 					if (instance == null)
 					{
-						Debug.Log ("An error occured creating GJHWindowManager.");
+						Debug.Log("An error occured creating GJHWindowManager.");
 					}
 				}
 			}
- 
+
 			return instance;
 		}
 	}
@@ -63,13 +63,14 @@ public class GJHWindowsManager : MonoBehaviour
 	/// The current window.
 	/// </summary>
 	int currentWindow = -1;
-	
+
 	/// <summary>
 	/// Init the GJHWindowsManager.
 	/// </summary>
-	void Awake ()
+	void Awake()
 	{
-		windows = new List<GJHWindow> ();
+		windows = new List<GJHWindow>();
+		instance = this;
 	}
 	
 	/// <summary>

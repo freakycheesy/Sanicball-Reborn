@@ -47,14 +47,14 @@ namespace Sanicball {
 		{
 			started = true;
 			screenOverlayEnabled = true;
-			foreach (CameraEffects e in FindObjectsOfType<CameraEffects>())
+			foreach (CameraEffects e in Resources.FindObjectsOfTypeAll<CameraEffects>())
 			{
 				cameras.Add(e.GetComponent<Camera>());
 				e.bloom.bloomIntensity = 2f;
 				e.bloom.bloomThreshold = 0.6f;
 				e.blur.velocityScale = 4;
 			}
-			music = FindObjectOfType<MusicPlayer>().GetComponent<AudioSource>();
+			music = MusicPlayer.Instance.GetComponent<AudioSource>();
 		}
 
 		//Groove

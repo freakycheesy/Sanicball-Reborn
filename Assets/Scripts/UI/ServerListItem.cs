@@ -34,7 +34,7 @@ namespace Sanicball.UI
 
         public void Join()
         {
-            MatchStarter starter = FindObjectOfType<MatchStarter>();
+            MatchStarter starter = MatchStarter.Instance;
             if (starter)
             {
                 starter.JoinOnlineGame(endpoint);

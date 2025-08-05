@@ -35,12 +35,7 @@ namespace Sanicball
             {
                 if (mInstance == null)
                 {
-                    mInstance = GameObject.FindObjectOfType(typeof(CameraFade)) as CameraFade;
-
-                    if (mInstance == null)
-                    {
-                        mInstance = new GameObject("CameraFade").AddComponent<CameraFade>();
-                    }
+                    mInstance = new GameObject("CameraFade").AddComponent<CameraFade>();
                 }
 
                 return mInstance;
@@ -178,11 +173,9 @@ namespace Sanicball
 
         private void Awake()
         {
-            if (mInstance == null)
-            {
-                mInstance = this as CameraFade;
+            if (mInstance) return;
+                mInstance = this;
                 instance.init();
-            }
         }
 
         // Draw the texture and perform the fade:

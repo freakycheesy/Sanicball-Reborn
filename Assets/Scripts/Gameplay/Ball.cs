@@ -224,7 +224,7 @@ namespace Sanicball.Gameplay
             if (type == BallType.LobbyPlayer)
             {
                 //Make the lobby camera follow this ball
-                var cam = FindObjectOfType<LobbyCamera>();
+                var cam = LobbyCamera.Instance;
                 if (cam)
                 {
                     cam.AddBall(this);

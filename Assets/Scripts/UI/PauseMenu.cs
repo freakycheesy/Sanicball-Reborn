@@ -22,9 +22,10 @@ namespace Sanicball.UI
         public static bool GamePaused { get { return GameObject.FindWithTag(pauseTag); } }
 
         public bool OnlineMode { get; set; }
-
+        public static PauseMenu Instance;
         private void Awake()
         {
+            Instance = this;
             if (Cursor.lockState == CursorLockMode.Locked)
             {
                 mouseWasLocked = true;

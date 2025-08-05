@@ -9,6 +9,7 @@ using SanicballCore;
 using SanicballCore.MatchMessages;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.SceneManagement;
 
 namespace Sanicball.Logic
 {
@@ -358,6 +359,7 @@ namespace Sanicball.Logic
                 return;
             }
             Instance = this;
+            SceneManager.sceneLoaded += (_, _)=> OnLevelHasLoaded();
             DontDestroyOnLoad(gameObject);
 
             //A messenger should be created by now! Time to create some message listeners
@@ -407,7 +409,7 @@ namespace Sanicball.Logic
                 }
                 else
                 {
-                    var menu = FindObjectOfType<UI.PauseMenu>();
+                    var menu = PauseMenu.Instance;
                     if (menu)
                         Destroy(menu.gameObject);
                 }
@@ -504,7 +506,7 @@ namespace Sanicball.Logic
         public static StageInfo CurrentStage;
 
         //Check if we were loading the lobby or the race
-        private void OnLevelWasLoaded(int level)
+        private void OnLevelHasLoaded()
         {
             if (loadingLobby)
             {

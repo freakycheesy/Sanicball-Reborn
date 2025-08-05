@@ -15,7 +15,7 @@ namespace Sanicball
     public class MusicPlayer : MonoBehaviour
     {
         //public GUISkin skin;
-
+        public static MusicPlayer Instance;
         public MusicPlayerCanvas playerCanvasPrefab;
         public bool playerCanvasLobbyOffset = false;
         private MusicPlayerCanvas playerCanvas;
@@ -63,6 +63,7 @@ namespace Sanicball
 
         private void Start()
         {
+            Instance = this;
             playerCanvas = Instantiate(playerCanvasPrefab);
             if (playerCanvasLobbyOffset) 
             {

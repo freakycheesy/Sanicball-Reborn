@@ -2,6 +2,12 @@ using Sanicball.Data;
 using UnityEngine;
 using UnityEngine.Audio;
 using Sanicball;
+using UnityEngine.AddressableAssets;
+using System.Collections.Generic;
+
+
+
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -18,6 +24,12 @@ public class CustomStagesEditor : Editor
             customStages.FixBarcode();
             AssetDatabase.SaveAssetIfDirty(customStages);
         }
+        if (GUILayout.Button("Add Song"))
+        {
+            EditorUtility.SetDirty(customStages);
+            customStages.AddSong(customStages.song);
+            AssetDatabase.SaveAssetIfDirty(customStages);
+        }
     }
 
 }
@@ -27,11 +39,11 @@ public class CustomStagesEditor : Editor
 public class CustomStages : ScriptableObject
 {
     public string Author;
-    public StageInfo[] Stages;
-    public Song[] Playlist;
+    public List<StageInfo> Stages;
+    public List<Song> Playlist;
     void OnValidate()
     {
-        if (string.IsNullOrEmpty(Author)) Author = Application.companyName;        
+        if (string.IsNullOrEmpty(Author)) Author = Application.companyName;
     }
     public void FixBarcode()
     {
@@ -43,6 +55,19 @@ public class CustomStages : ScriptableObject
         {
             song.BARCODE = $"{Author}.{name}.{song.name}";
         }
+    }
+#if UNITY_EDITOR
+    public AssetReferenceT<AudioResource> song;
+#endif
+
+    public void AddSong(AssetReferenceT<AudioResource> song)
+    {
+        Song newSong = new();
+        newSong.resource = song;
+        newSong.name = song.editorAsset.name;
+        newSong.BARCODE = $"{Author}.{name}.{newSong.name}";
+        if (!Playlist.Contains(newSong))
+            Playlist.Add(newSong);
     }
 }
 

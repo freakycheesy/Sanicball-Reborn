@@ -40,7 +40,7 @@ namespace Sanicball.UI
         public Text fast;
 
         private GameSettings tempSettings = new GameSettings();
-
+        public static OptionsPanel Instance;
         public void Apply()
         {
             ActiveData.GameSettings.CopyValues(tempSettings);
@@ -104,6 +104,7 @@ namespace Sanicball.UI
 
         private void Start()
         {
+            Instance = this;
             RevertToCurrent();
         }
 

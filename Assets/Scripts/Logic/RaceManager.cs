@@ -62,7 +62,7 @@ namespace Sanicball.Logic
 
         //Return players as read only collection (easier to query)
         public System.Collections.ObjectModel.ReadOnlyCollection<RacePlayer> Players { get { return new System.Collections.ObjectModel.ReadOnlyCollection<RacePlayer>(players); } }
-
+        public static RaceManager Instance;
         private RaceState CurrentState
         {
             get
@@ -128,7 +128,7 @@ namespace Sanicball.Logic
 
                     case RaceState.Racing:
                         raceTimerOn = true;
-                        var music = FindObjectOfType<MusicPlayer>();
+                        var music = MusicPlayer.Instance;
                         if (music)
                         {
                             music.Play();
@@ -319,6 +319,7 @@ namespace Sanicball.Logic
 
         private void Start()
         {
+            Instance = this;
             if (joinedWhileRaceInProgress)
             {
                 CurrentState = RaceState.Racing;

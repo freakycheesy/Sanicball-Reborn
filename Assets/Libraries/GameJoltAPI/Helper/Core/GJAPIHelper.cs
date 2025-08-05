@@ -1,11 +1,13 @@
 using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.Networking;
 
 /// <summary>
 /// Game Jolt API Helper main class. Inherit from <see cref="MonoBehaviour"/>
 /// </summary>
-public class GJAPIHelper : MonoBehaviour {
+public class GJAPIHelper : MonoBehaviour
+{
 
 	#region Singleton Pattern
 	/// <summary>
@@ -24,33 +26,33 @@ public class GJAPIHelper : MonoBehaviour {
 		{
 			if (instance == null)
 			{
-				GJAPI gjapi = (GJAPI) FindObjectOfType (typeof (GJAPI));
-				
+				GJAPI gjapi = null;
+
 				if (gjapi == null)
 				{
-					Debug.LogError ("An instance of GJAPI is needed in the scene, but there is none. Can't initialise GJAPIHelper.");
+					Debug.LogError("An instance of GJAPI is needed in the scene, but there is none. Can't initialise GJAPIHelper.");
 				}
 				else
 				{
 					instance = gjapi.gameObject.AddComponent<GJAPIHelper>();
-					
+
 					if (instance == null)
 					{
-						Debug.Log ("An error occured creating GJAPIHelper.");
+						Debug.Log("An error occured creating GJAPIHelper.");
 					}
 				}
 			}
- 
+
 			return instance;
 		}
 	}
-	
+
 	/// <summary>
 	/// Releases unmanaged resources and performs other cleanup operations before the application quit.
 	/// </summary>
-	void OnDestroy ()
+	void OnDestroy()
 	{
-		StopAllCoroutines ();
+		StopAllCoroutines();
 		skin = null;
 		users = null;
 		scores = null;
@@ -58,7 +60,7 @@ public class GJAPIHelper : MonoBehaviour {
 		instance = null;
 	}
 	#endregion Singleton Pattern
-	
+
 	/// <summary>
 	/// The <see cref="GUISkin"/>.
 	/// </summary>
@@ -73,15 +75,16 @@ public class GJAPIHelper : MonoBehaviour {
 	{
 		get
 		{
-			if (Instance.skin == null) {
-				Instance.skin = (GUISkin) Resources.Load ("GJSkin", typeof (GUISkin)) ?? GUI.skin;
+			if (Instance.skin == null)
+			{
+				Instance.skin = (GUISkin)Resources.Load("GJSkin", typeof(GUISkin)) ?? GUI.skin;
 			}
-			
+
 			return Instance.skin;
 		}
 		set { Instance.skin = value; }
 	}
-	
+
 	/// <summary>
 	/// The users helpers.
 	/// </summary>
@@ -98,13 +101,13 @@ public class GJAPIHelper : MonoBehaviour {
 		{
 			if (Instance.users == null)
 			{
-				Instance.users = new GJHUsersMethods ();
+				Instance.users = new GJHUsersMethods();
 			}
-			
+
 			return Instance.users;
 		}
 	}
-	
+
 	/// <summary>
 	/// The scores helpers.
 	/// </summary>
@@ -121,13 +124,13 @@ public class GJAPIHelper : MonoBehaviour {
 		{
 			if (Instance.scores == null)
 			{
-				Instance.scores = new GJHScoresMethods ();
+				Instance.scores = new GJHScoresMethods();
 			}
-			
+
 			return Instance.scores;
 		}
 	}
-	
+
 	/// <summary>
 	/// The trophies helpers.
 	/// </summary>
@@ -144,13 +147,13 @@ public class GJAPIHelper : MonoBehaviour {
 		{
 			if (Instance.trophies == null)
 			{
-				Instance.trophies = new GJHTrophiesMethods ();
+				Instance.trophies = new GJHTrophiesMethods();
 			}
-			
+
 			return Instance.trophies;
 		}
 	}
-	
+
 	/// <summary>
 	/// Downloads the image.
 	/// </summary>
@@ -160,11 +163,11 @@ public class GJAPIHelper : MonoBehaviour {
 	/// <param name='OnComplete'>
 	/// The callback.
 	/// </param>
-	public static void DownloadImage (string url, Action<Texture2D> OnComplete)
+	public static void DownloadImage(string url, Action<Texture2D> OnComplete)
 	{
-		Instance.StartCoroutine (Instance.DownloadImageCoroutine (url, OnComplete));
+		Instance.StartCoroutine(Instance.DownloadImageCoroutine(url, OnComplete));
 	}
-	
+
 	/// <summary>
 	/// Downloads the image coroutine.
 	/// </summary>
@@ -174,35 +177,40 @@ public class GJAPIHelper : MonoBehaviour {
 	/// <param name='OnComplete'>
 	/// The callback.
 	/// </param>
-	IEnumerator DownloadImageCoroutine (string url, Action<Texture2D> OnComplete)
+	IEnumerator DownloadImageCoroutine(string url, Action<Texture2D> OnComplete)
 	{
-		if (!string.IsNullOrEmpty (url))
+		if (!string.IsNullOrEmpty(url))
 		{
 			Texture2D tex;
-			WWW www = new WWW (url);
+			UnityWebRequest www = new UnityWebRequest(url);
 			yield return www;
-			
+
 			if (www.error == null)
 			{
-				tex = new Texture2D (1, 1, TextureFormat.RGB24, false);
-				tex.LoadImage (www.bytes);
+				tex = new Texture2D(1, 1, TextureFormat.RGB24, false);
+				tex.LoadImage(BitConverter.GetBytes(www.downloadedBytes));
 				tex.wrapMode = TextureWrapMode.Clamp;
 			}
 			else
 			{
-				Debug.Log ("GJAPIHelper: Error downloading image:\n" + www.error);
+				Debug.Log("GJAPIHelper: Error downloading image:\n" + www.error);
 				tex = null;
 			}
-			
+
 			if (OnComplete != null)
 			{
-				OnComplete (tex);
+				OnComplete(tex);
 			}
 		}
 	}
-	
-	public void OnGetUserFromWeb (string response)
+
+	public void OnGetUserFromWeb(string response)
 	{
-		users.ReadGetFromWebResponse (response);
+		users.ReadGetFromWebResponse(response);
 	}
+
+    void Start()
+    {
+		instance = this;
+    }
 }
