@@ -488,7 +488,7 @@ namespace Sanicball.Logic
 
         private void GoToStage()
         {
-            var targetStage = ActiveData.GetStage(currentSettings.StageId);
+            CurrentStage = ActiveData.GetStage(currentSettings.StageId);
 
             loadingStage = true;
             loadingLobby = false;
@@ -498,8 +498,10 @@ namespace Sanicball.Logic
                 p.ReadyToRace = false;
             }
 
-            Addressables.LoadSceneAsync(targetStage.scene);
+            Addressables.LoadSceneAsync(CurrentStage.scene);
         }
+
+        public static StageInfo CurrentStage;
 
         //Check if we were loading the lobby or the race
         private void OnLevelWasLoaded(int level)

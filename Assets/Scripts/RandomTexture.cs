@@ -6,7 +6,7 @@ namespace Sanicball
     {
         public Texture[] textures;
         private int current;
-
+        private new Renderer renderer;
         public int GetCurrentTexture()
         {
             return current;
@@ -14,19 +14,21 @@ namespace Sanicball
 
         public void SetTexture(int i)
         {
-            GetComponent<Renderer>().material.mainTexture = textures[i];
+            var texture = textures[i];
+            renderer.material.mainTexture = texture;
             current = i;
         }
 
         private void Start()
         {
+            renderer = GetComponent<Renderer>();
             SwitchTexture();
         }
 
         private void SwitchTexture()
         {
             int m = Random.Range(0, textures.Length);
-            GetComponent<Renderer>().material.mainTexture = textures[m];
+            renderer.material.mainTexture = textures[m];
             current = m;
         }
     }

@@ -136,8 +136,7 @@ namespace Sanicball.UI
             if (TargetPlayer.LapRecordsEnabled)
             {
 				CharacterTier tier = ActiveData.Characters[targetPlayer.Character].tier;
-                string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-                string stage = ActiveData.Stages.Where(a => a.scene.Asset.name == sceneName).First().BARCODE;
+                string stage = MatchManager.CurrentStage.BARCODE;
 
                 float time = (float)e.CurrentLapTime.TotalSeconds;
 

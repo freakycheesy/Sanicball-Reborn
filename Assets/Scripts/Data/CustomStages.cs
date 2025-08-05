@@ -9,7 +9,12 @@ public class CustomStagesEditor : Editor
     {
         base.OnInspectorGUI();
         var customStages = (CustomStages)target;
-        if (GUILayout.Button("Fix Barcodes in Stages")) customStages.FixStagesBarcode();
+        if (GUILayout.Button("Fix Barcodes in Stages"))
+        {
+            EditorUtility.SetDirty(customStages);
+            customStages.FixStagesBarcode();
+            AssetDatabase.SaveAssetIfDirty(customStages);
+        }
     }
 
 }
@@ -18,13 +23,17 @@ public class CustomStagesEditor : Editor
 [CreateAssetMenu(fileName = "CustomStages", menuName = "Sanicball/CustomStages")]
 public class CustomStages : ScriptableObject
 {
-    public string Author = Application.companyName;
+    public string Author;
     public StageInfo[] Stages;
+    void OnValidate()
+    {
+        if (string.IsNullOrEmpty(Author)) Author = Application.companyName;        
+    }
     public void FixStagesBarcode()
     {
         foreach (var stage in Stages)
         {
-            stage.BARCODE = $"{Author}.{stage.name}";
+            stage.BARCODE = $"{Author}.{name}.{stage.name}";
         }
     }
 }
