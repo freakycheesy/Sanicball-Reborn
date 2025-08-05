@@ -9,7 +9,6 @@ namespace Sanicball.UI {
 
 		public Text characterList;
 		public Text trackList;
-		public MusicPlayer musicPlayerPrefab;
 
 		void Start () {
 			var characterText = new List<string> ();
@@ -20,7 +19,7 @@ namespace Sanicball.UI {
 			characterList.text = string.Join ("\n", characterText.ToArray ());
 
 			var tracksText = new List<string> ();
-			var tracks = musicPlayerPrefab.playlist;
+			var tracks = MusicPlayer.Playlist;
 			foreach (Song s in tracks) 
 			{
 				tracksText.Add ("<b>" + s.name + "</b>");

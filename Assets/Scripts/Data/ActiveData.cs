@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using SanicballCore;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Audio;
 
 namespace Sanicball.Data
 {
@@ -40,7 +41,7 @@ namespace Sanicball.Data
         [SerializeField]
         private GameObject eSportsHat;
         [SerializeField]
-        private AudioClip eSportsMusic;
+        private AssetReferenceT<AudioResource> eSportsMusic;
         [SerializeField]
         private ESportMode eSportsPrefab;
 
@@ -66,7 +67,7 @@ namespace Sanicball.Data
         public static GameObject ChristmasHat { get { return instance.christmasHat; } }
         public static Material ESportsTrail { get { return instance.eSportsTrail; } }
         public static GameObject ESportsHat { get { return instance.eSportsHat; } }
-        public static AudioClip ESportsMusic { get { return instance.eSportsMusic; } }
+        public static AssetReferenceT<AudioResource> ESportsMusic { get { return instance.eSportsMusic; } }
         public static ESportMode ESportsPrefab { get { return instance.eSportsPrefab; } }
 
         public static bool ESportsFullyReady
@@ -131,6 +132,11 @@ namespace Sanicball.Data
                 scene.scene.LoadAssetAsync<Object>();
             }
             instance.customStagesPallets.Add(stages);
+            foreach (var song in stages.Playlist)
+            {
+                song.resource.LoadAssetAsync<AudioResource>();
+            }
+            MusicPlayer.Playlist.AddRange(stages.Playlist);
         }
 
         private void OnEnable()

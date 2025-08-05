@@ -45,57 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   raceRecords: []
-  stages:
-  - name: Green Hill Zone
-    id: 0
-    scene:
-      m_AssetGUID: dd3bbb09ce1af034192ad01d199b5a98
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_SubObjectGUID: 
-      m_EditorAssetChanged: 0
-    picture: {fileID: 21300000, guid: dc57cdcc46adee64d900215deab711b3, type: 3}
-    overviewPrefab: {fileID: 120352, guid: b92fe95a3f8ff594cafa50f76cc55858, type: 3}
-  - name: Flame Core
-    id: 1
-    scene:
-      m_AssetGUID: 8912b8b165639fe4285eff0f6d6d3b66
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_SubObjectGUID: 
-      m_EditorAssetChanged: 0
-    picture: {fileID: 21300000, guid: 9bcec5996a6fdb245ba294c8d86c550d, type: 3}
-    overviewPrefab: {fileID: 106172, guid: 776929cd993de29429473a9a6bcc039b, type: 3}
-  - name: Ice Mountain
-    id: 2
-    scene:
-      m_AssetGUID: b2b8ab8885b2c404985feb6cf44156e0
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_SubObjectGUID: 
-      m_EditorAssetChanged: 0
-    picture: {fileID: 21300000, guid: d40157bf96b0396468a82dbfcacc592e, type: 3}
-    overviewPrefab: {fileID: 192978, guid: 7ff5f6fb8ee4cf446994c3b6ee13052e, type: 3}
-  - name: Dusty Desert
-    id: 3
-    scene:
-      m_AssetGUID: a786b0209e96abe4c8fd49cc4d26f4ac
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_SubObjectGUID: 
-      m_EditorAssetChanged: 1
-    picture: {fileID: 21300000, guid: aa4ed67424b96f7428b3787be36fb735, type: 3}
-    overviewPrefab: {fileID: 152692, guid: 58a107525dc8c9842b4a718ba470c3d3, type: 3}
-  - name: Rainbow Road
-    id: 4
-    scene:
-      m_AssetGUID: c6ff669b6a5dbd44bba8bdd7dbef35ff
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_SubObjectGUID: 
-      m_EditorAssetChanged: 1
-    picture: {fileID: 21300000, guid: af8ac845d97f57e45a78119b192cca54, type: 3}
-    overviewPrefab: {fileID: 181008, guid: cfb95fbdd5d7c3b40965abafdb30631c, type: 3}
+  customStagesPallets: []
   characters:
   - name: Sanic
     artBy: Deviantart user franz888
@@ -377,5 +327,10 @@ MonoBehaviour:
   christmasHat: {fileID: 132204, guid: 59d3895ecfc783e4289b0c51098a0429, type: 3}
   eSportsTrail: {fileID: 2100000, guid: 535ce71ad14791d40b6cbe98a2276283, type: 2}
   eSportsHat: {fileID: 132204, guid: 8db695c5167175b4f8c02e1d1f7e5b99, type: 3}
-  eSportsMusic: {fileID: 8300000, guid: 44aeddca0c186224090a76d97139eaa4, type: 3}
+  eSportsMusic:
+    m_AssetGUID: 44aeddca0c186224090a76d97139eaa4
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
   eSportsPrefab: {fileID: 11400000, guid: f55190f64bbb0c349bcd0f128756a753, type: 3}

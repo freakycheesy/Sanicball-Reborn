@@ -64,3 +64,68 @@ MonoBehaviour:
       m_EditorAssetChanged: 1
     picture: {fileID: 21300000, guid: af8ac845d97f57e45a78119b192cca54, type: 3}
     overviewPrefab: {fileID: 181008, guid: cfb95fbdd5d7c3b40965abafdb30631c, type: 3}
+  Playlist:
+  - BARCODE: BK-TN.Main.Chariots Of Fire
+    name: Chariots Of Fire
+    resource:
+      m_AssetGUID: 8efd343ca38873e45b0ec1557b18daa2
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - BARCODE: BK-TN.Main.Bungee Ride
+    name: Bungee Ride
+    resource:
+      m_AssetGUID: 44aeddca0c186224090a76d97139eaa4
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - BARCODE: BK-TN.Main.dread
+    name: dread
+    resource:
+      m_AssetGUID: 4b762afc59ab67f46a8a8b2b5517bd27
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - BARCODE: BK-TN.Main.Ogresong
+    name: Ogresong
+    resource:
+      m_AssetGUID: 6750ff96a85e2ca43826fc5bff41c982
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - BARCODE: BK-TN.Main.Eargasm
+    name: Eargasm
+    resource:
+      m_AssetGUID: b18271ab4d4f23748ab35d0788a5b273
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - BARCODE: BK-TN.Main.Green Hill Zone
+    name: Green Hill Zone
+    resource:
+      m_AssetGUID: 65bc1dc0818c22b4e8857068055157b3
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - BARCODE: 'BK-TN.Main.SUNGYOO - All I Need [NCS]'
+    name: 'SUNGYOO - All I Need [NCS]'
+    resource:
+      m_AssetGUID: c956c621e09144bf8805aeee14accdc2
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+  - BARCODE: BK-TN.Main.Lost Identites - Moments
+    name: Lost Identites - Moments
+    resource:
+      m_AssetGUID: f2e8dc6161fc541c99ad23ec12eb1d92
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0

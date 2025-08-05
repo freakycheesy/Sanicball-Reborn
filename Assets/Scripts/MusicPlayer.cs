@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Sanicball.UI;
 using Sanicball.Logic;
+using UnityEngine.Audio;
+using UnityEngine.AddressableAssets;
 
 namespace Sanicball
 {
@@ -21,7 +23,7 @@ namespace Sanicball
         public bool startPlaying = false;
         public bool fadeIn = false;
 
-        public Song[] playlist;
+        public static List<Song> Playlist = new();
         public AudioSource fastSource;
 
         [System.NonSerialized]
@@ -41,7 +43,8 @@ namespace Sanicball
 
         public void Play()
         {
-            Play(playlist[currentSongID].name);
+            Song song = Playlist[currentSongID];
+            Play($"{song.name} ({song.BARCODE})");
         }
 
         public void Play(string credits)
@@ -74,18 +77,17 @@ namespace Sanicball
             if (ActiveData.ESportsFullyReady)
             {
                 if (!MatchManager.Instance.InLobby) {
-                    List<Song> p = playlist.ToList();
+                    List<Song> p = Playlist.ToList();
                     Song s = new Song();
                     s.name = "Skrollex - Bungee Ride";
-                    s.clip = ActiveData.ESportsMusic;
+                    s.resource = ActiveData.ESportsMusic;
                     p.Insert(0,s);
-                    playlist = p.ToArray();
+                    Playlist = p;
                 }
             }
-            
 
-            aSource.clip = playlist[0].clip;
             currentSongID = 0;
+            aSource.resource = Playlist[currentSongID].resource.Asset as AudioResource;
             isPlaying = aSource.isPlaying;
             if (startPlaying && ActiveData.GameSettings.music)
             {
@@ -110,7 +112,7 @@ namespace Sanicball
             //If it's not playing but supposed to play, change song
             if ((!aSource.isPlaying || GameInput.IsChangingSong()) && isPlaying)
             {
-                if (currentSongID < playlist.Length - 1)
+                if (currentSongID < Playlist.Count - 1)
                 {
                     currentSongID++;
                 }
@@ -118,7 +120,7 @@ namespace Sanicball
                 {
                     currentSongID = 0;
                 }
-                aSource.clip = playlist[currentSongID].clip;
+                aSource.resource = Playlist[currentSongID].resource.Asset as AudioResource;
                 slidePosition = slidePositionMax;
                 Play();
             }
@@ -150,13 +152,12 @@ namespace Sanicball
 
         private void ShuffleSongs()
         {
-            //Shuffle playlist using Fisher-Yates algorithm
-            for (int i = playlist.Length; i > 1; i--)
+            for (int i = Playlist.Count; i > 1; i--)
             {
                 int j = Random.Range(0, i);
-                Song tmp = playlist[j];
-                playlist[j] = playlist[i - 1];
-                playlist[i - 1] = tmp;
+                Song tmp = Playlist[j];
+                Playlist[j] = Playlist[i - 1];
+                Playlist[i - 1] = tmp;
             }
         }
     }
@@ -164,7 +165,8 @@ namespace Sanicball
     [System.Serializable]
     public class Song
     {
+        public string BARCODE;
         public string name;
-        public AudioClip clip;
+        public AssetReferenceT<AudioResource> resource;
     }
 }
