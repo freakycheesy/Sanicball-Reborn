@@ -11,7 +11,7 @@ namespace Sanicball.Logic
 
         protected Ball SpawnBall(Vector3 position, Quaternion rotation, BallType ballType, ControlType ctrlType, int character, string nickname)
         {
-            var ball = Instantiate(ballPrefab, position, rotation);
+            var ball = (Ball)Instantiate(ballPrefab, position, rotation);
             ball.Init(ballType, ctrlType, character, nickname);
 
             return ball;

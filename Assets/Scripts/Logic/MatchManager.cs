@@ -52,6 +52,7 @@ namespace Sanicball.Logic
 
         //List of all clients in the match. Only serves a purpose in online play.
         //In local play, this list will always only contain the local client.
+        [SerializeField]
         private List<MatchClient> clients = new List<MatchClient>();
 
         //Holds the guid of the local client, to check if messages are directed at it.
@@ -122,7 +123,7 @@ namespace Sanicball.Logic
 
         public bool AutoStartTimerOn { get { return autoStartTimerOn; } }
         public float AutoStartTimer { get { return autoStartTimer; } }
-        public bool InLobby {get{return inLobby;}}
+        public bool InLobby { get { return inLobby; } }
 
         #endregion Properties
 
@@ -361,7 +362,7 @@ namespace Sanicball.Logic
                 return;
             }
             Instance = this;
-            SceneManager.sceneLoaded += (_, _)=> OnLevelHasLoaded();
+            SceneManager.sceneLoaded += (_, _) => OnLevelHasLoaded();
             DontDestroyOnLoad(gameObject);
 
             //A messenger should be created by now! Time to create some message listeners

@@ -44,7 +44,7 @@ namespace Sanicball.Logic
             dir += (Vector3.back * 2f) * row;
 
             RaycastHit hit;
-            if (Physics.Raycast(transform.TransformPoint(dir + Vector3.up * 100), Vector3.down, out hit, 200, ballSpawningMask))
+            if (Physics.Raycast(transform.TransformPoint(dir + Vector3.up * 20), Vector3.down, out hit, 2000, ballSpawningMask))
             {
                 dir = transform.InverseTransformPoint(hit.point);
             }

@@ -41,7 +41,7 @@ namespace SanicballCore
         [Newtonsoft.Json.JsonProperty]
         private string aiCharacters;
 
-        public string BARCODE { get; set; }
+        public int StageId { get; set; }
         public int Laps { get; set; }
         public bool PowerupsEnabled{get; set; }
         public int AICount { get; set; }

@@ -59,7 +59,7 @@ namespace Sanicball.UI
 
             if(popupHandler != null){
                 popupHandler.OpenPopup(connectingPopupPrefab);
-                PopupConnecting.Instance?.ShowMessage("Creating Server...");
+                PopupConnecting.ShowMessage("Creating Server...");
             }
 
             var serverConnector = Instantiate(serverConnectorPrefab);

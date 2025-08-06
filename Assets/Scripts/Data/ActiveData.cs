@@ -102,11 +102,35 @@ namespace Sanicball.Data
         {
             CustomStagesPallets.Add(pallet);
             Stages.AddRange(pallet.Stages);
+            for (int i = 0; i < Stages.Count; i++) Stages[i].id = i;
             MusicPlayer.Playlist.AddRange(pallet.Playlist);
             Characters.AddRange(pallet.Avatars);
             Powerups.AddRange(pallet.Powerups);
 
             Debug.Log($"Loaded Pallet: ({pallet.Author}.{pallet.name})");
+        }
+        public static bool TryGetStageByBarcode(string barcode, out StageInfo stage)
+        {
+            stage = GetStageByBarcode(barcode);
+            return stage != null;
+        }
+        public static StageInfo GetRandomStage()
+        {
+            return Stages[Random.Range(0, Stages.Count - 1)];
+        }
+        public static int GetStageByIndex(StageInfo stage)
+        {
+            return Stages.IndexOf(stage);
+        }
+        public static StageInfo GetStageByBarcode(string barcode)
+        {
+            barcode = barcode.ToLower();
+            var selectedStage = Stages[0];
+            foreach (var stage in Stages)
+            {
+                if (stage.BARCODE.ToLower().Contains(barcode)) selectedStage = stage;
+            }
+            return selectedStage;
         }
 
         public static void LoadLevel(SceneReference level, LoadSceneMode mode = LoadSceneMode.Single)

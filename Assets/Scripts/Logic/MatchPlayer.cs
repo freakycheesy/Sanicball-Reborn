@@ -5,6 +5,7 @@ using System.Linq;
 using SanicballCore;
 using SanicballCore.MatchMessages;
 using UnityEngine;
+using Sanicball.Data;
 
 namespace Sanicball.Logic
 {
@@ -40,6 +41,7 @@ namespace Sanicball.Logic
         public Gameplay.Ball BallObject { get; set; }
         public bool ReadyToRace { get; set; }
 
+
         public void ProcessMovement(double timestamp, PlayerMovement movement)
         {
             if (timestamp > latestMovementTimestamp)
@@ -55,5 +57,21 @@ namespace Sanicball.Logic
                 latestMovementTimestamp = timestamp;
             }
         }
+		
+		public static MatchPlayer GetByBall(Gameplay.Ball referenceBall) {
+			object[] gameobjects = Resources.FindObjectsOfTypeAll(typeof(GameObject));
+			foreach (object obj in gameobjects) {
+				//Debug.Log("Testing if Object "+((GameObject) obj).name+" has MatchPlayer.");
+				MatchPlayer player = ((GameObject) obj).GetComponent<MatchPlayer>();
+				if(player != null) {
+					//Debug.Log("Testing MatchPlayer with the referenceBall");
+					if(player.BallObject == referenceBall){
+						//Debug.Log("MatchPlayer matching referenceBall found. returning value");
+						return player;
+					}
+				}
+			}
+			return null;
+		}
     }
 }

@@ -16,10 +16,16 @@ namespace Sanicball.Logic
         [SerializeField]
         private UI.PopupHandler popupHandler = null;
 
-        private UI.PopupConnecting activeConnectingPopup => PopupConnecting.Instance;
+        private UI.PopupConnecting activeConnectingPopup;
 
         //NetClient for when joining online matches
         private NetClient joiningClient;
+        public static MatchStarter Instance;
+        void Start()
+        {
+            Instance = this;
+            activeConnectingPopup = PopupConnecting.Instance;
+        }
 
         private void Update()
         {
@@ -50,11 +56,11 @@ namespace Sanicball.Logic
                             {
                                 case NetConnectionStatus.Connected:
                                     Debug.Log("Connected! Now waiting for match state");
-                                    activeConnectingPopup.ShowMessage("Receiving match state...");
+                                    PopupConnecting.ShowMessage("Receiving match state...");
                                     break;
 
                                 case NetConnectionStatus.Disconnected:
-                                    activeConnectingPopup.ShowMessage(msg.ReadString());
+                                    PopupConnecting.ShowMessage(msg.ReadString());
                                     break;
 
                                 default:
@@ -75,7 +81,7 @@ namespace Sanicball.Logic
                                 }
                                 catch (System.Exception ex)
                                 {
-                                    activeConnectingPopup.ShowMessage("Failed to read match message - cannot join server!");
+                                    PopupConnecting.ShowMessage("Failed to read match message - cannot join server!");
                                     Debug.LogError("Could not read match state, error: " + ex.Message);
                                 }
 
@@ -132,6 +138,8 @@ namespace Sanicball.Logic
             joiningClient.Connect(endpoint, approval);
 
             popupHandler.OpenPopup(connectingPopupPrefab);
+
+            activeConnectingPopup = PopupConnecting.Instance;
         }
 
         //Called when succesfully connected to a server
@@ -139,11 +147,6 @@ namespace Sanicball.Logic
         {
             MatchManager manager = Instantiate(matchManagerPrefab);
             manager.InitOnlineMatch(joiningClient, matchState);
-        }
-        public static MatchStarter Instance;
-        void Start()
-        {
-            Instance = this;
         }
     }
 }
