@@ -107,6 +107,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   offset: {x: 0, y: 0.5, z: 0}
+  flip: 0
+  manual: 0
   speed: 60
   speedLimit: 200
 --- !u!82 &8291738

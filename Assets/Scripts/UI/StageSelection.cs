@@ -29,7 +29,7 @@ namespace Sanicball.UI
             //Add all stages to list
             for (int i = 0; i < ActiveData.CustomStagesPallets.Count; i++)
             {
-                StageInfo s = ActiveData.GetStage(i);
+                StageInfo s = ActiveData.Stages[i];
                 StageImage simg = Instantiate(stageImagePrefab);
                 simg.transform.SetParent(stageList, false);
                 simg.GetComponent<Image>().sprite = s.picture;

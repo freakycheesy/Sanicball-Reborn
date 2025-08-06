@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Sanicball.Logic;
 using Sanicball.Powerups;
 using SanicballCore;
+using SanicballCore.Server;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Audio;
@@ -40,7 +41,7 @@ namespace Sanicball.Data
         [SerializeField]
         private GameObject eSportsHat;
         [SerializeField]
-        private AudioResource eSportsMusic;
+        private Song eSportsMusic;
         [SerializeField]
         private ESportMode eSportsPrefab;
 
@@ -61,37 +62,14 @@ namespace Sanicball.Data
         public static GameObject ChristmasHat { get { return instance.christmasHat; } }
         public static Material ESportsTrail { get { return instance.eSportsTrail; } }
         public static GameObject ESportsHat { get { return instance.eSportsHat; } }
-        public static AudioResource ESportsMusic { get { return instance.eSportsMusic; } }
+        public static Song ESportsMusic { get { return instance.eSportsMusic; } }
         public static ESportMode ESportsPrefab { get { return instance.eSportsPrefab; } }
 
         public static bool ESportsFullyReady
         {
             get
             {
-                bool possible = false;
-                if (GameSettings.eSportsReady)
-                {
-                    var m = MatchManager.Instance;
-                    if (m)
-                    {
-                        var players = m.Players;
-                        foreach (var p in players)
-                        {
-                            if (p.CtrlType != SanicballCore.ControlType.None)
-                            {
-                                if (p.CharacterId == 13)
-                                {
-                                    possible = true;
-                                }
-                                else
-                                {
-                                    return false;
-                                }
-                            }
-                        }
-                    }
-                }
-                return possible;
+                return GameSettings.eSportsReady;
             }
         }
 
@@ -106,7 +84,7 @@ namespace Sanicball.Data
             {
                 instance = this;
                 DontDestroyOnLoad(gameObject);
-                FindPallets();          
+                FindPallets();
             }
             else
             {
@@ -215,14 +193,5 @@ namespace Sanicball.Data
             Debug.Log(filename + " saved successfully.");
         }
         #endregion Saving and loading
-
-        public static StageInfo GetStage(int index)
-        {
-            foreach (var stage in Stages)
-            {
-                if (stage == Stages[index]) return stage;
-            }
-            return null;
-        }
     }
 }

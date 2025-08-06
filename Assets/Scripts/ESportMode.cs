@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Rendering;
 
 namespace Sanicball {
 	public class ESportMode : MonoBehaviour
@@ -47,13 +48,7 @@ namespace Sanicball {
 		{
 			started = true;
 			screenOverlayEnabled = true;
-			foreach (CameraEffects e in Resources.FindObjectsOfTypeAll<CameraEffects>())
-			{
-				cameras.Add(e.GetComponent<Camera>());
-				e.bloom.bloomIntensity = 2f;
-				e.bloom.bloomThreshold = 0.6f;
-				e.blur.velocityScale = 4;
-			}
+			FindAnyObjectByType<Volume>().enabled = false;
 			music = MusicPlayer.Instance.GetComponent<AudioSource>();
 		}
 

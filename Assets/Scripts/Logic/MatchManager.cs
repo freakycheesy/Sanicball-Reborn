@@ -9,6 +9,7 @@ using SanicballCore;
 using SanicballCore.MatchMessages;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 
@@ -491,7 +492,7 @@ namespace Sanicball.Logic
 
         private void GoToStage()
         {
-            CurrentStage = ActiveData.GetStage(currentSettings.StageId);
+            CurrentStage = ActiveData.Stages[currentSettings.StageId];
 
             loadingStage = true;
             loadingLobby = false;
@@ -518,6 +519,10 @@ namespace Sanicball.Logic
             {
                 InitRace();
                 loadingStage = false;
+            }
+            foreach (var camera in Resources.FindObjectsOfTypeAll<UniversalAdditionalCameraData>())
+            {
+                camera.renderPostProcessing = true;
             }
         }
 

@@ -168,7 +168,7 @@ namespace Sanicball.UI
 
         private void UpdateUiFields()
         {
-            stage.text = ActiveData.GetStage(tempSettings.StageId).BARCODE;
+            stage.text = ActiveData.Stages[tempSettings.StageId].BARCODE;
             laps.text = tempSettings.Laps.ToString();
             aiCount.text = tempSettings.AICount == 0 ? "None" : tempSettings.AICount.ToString();
             aiSkill.text = tempSettings.AISkill.ToString();

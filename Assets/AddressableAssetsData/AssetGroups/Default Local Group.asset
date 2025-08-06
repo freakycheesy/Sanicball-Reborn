@@ -21,20 +21,20 @@ MonoBehaviour:
     m_SerializedLabels:
     - mod
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f9199882fd1722468a4ee0d4a73288f
+    m_Address: Default
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 36c4ea7b89ce35447886010c537d7a99
     m_Address: Art
     m_ReadOnly: 0
     m_SerializedLabels:
     - default
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ad64b90dd304bac4b839f464e633441f
-    m_Address: Prefabs
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - default
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ff27eb4e06c871e4c9cbfcfa778a5c3d
-    m_Address: Scenes
+  - m_GUID: 755d0a34fdb294c4f95f172361af102d
+    m_Address: Shaders
     m_ReadOnly: 0
     m_SerializedLabels:
     - default

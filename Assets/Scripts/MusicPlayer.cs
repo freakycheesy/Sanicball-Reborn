@@ -78,10 +78,9 @@ namespace Sanicball
             if (ActiveData.ESportsFullyReady)
             {
                 if (!MatchManager.Instance.InLobby) {
-                    List<Song> p = Playlist.ToList();
-                    Song s = new Song();
-                    s.name = "Skrollex - Bungee Ride";
-                    s.resource = ActiveData.ESportsMusic;
+                    List<Song> p = new();
+                    Song s = ActiveData.ESportsMusic;
+                    p.Add(s);
                     p.Insert(0,s);
                     Playlist = p;
                 }

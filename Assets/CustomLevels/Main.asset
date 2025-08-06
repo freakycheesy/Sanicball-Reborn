@@ -68,8 +68,8 @@ MonoBehaviour:
   - BARCODE: BK-TN.Main.Chariots Of Fire
     name: Chariots Of Fire
     resource: {fileID: 8300000, guid: 8efd343ca38873e45b0ec1557b18daa2, type: 3}
-  - BARCODE: BK-TN.Main.Bungee Ride
-    name: Bungee Ride
+  - BARCODE: BK-TN.Main.Bangarang
+    name: Bangarang
     resource: {fileID: 8300000, guid: 44aeddca0c186224090a76d97139eaa4, type: 3}
   - BARCODE: BK-TN.Main.dread
     name: dread

@@ -7,6 +7,7 @@ namespace Sanicball.UI
         public CanvasGroup groupDisabledOnPopup;
         public Transform targetParent;
         private Popup activePopup;
+        public static PopupHandler Instance;
 
         public void OpenPopup(Popup popupPrefab)
         {
@@ -35,6 +36,7 @@ namespace Sanicball.UI
 
         private void Start()
         {
+            Instance = this;
         }
 
         private void Update()

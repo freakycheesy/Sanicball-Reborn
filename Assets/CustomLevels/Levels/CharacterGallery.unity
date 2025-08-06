@@ -331,7 +331,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 8b93e1e51502d7d4f8158b9abef14ad8, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 8b93e1e51502d7d4f8158b9abef14ad8, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0
@@ -700,6 +700,18 @@ MonoBehaviour:
     roll: {fileID: 1799837390}
     speedNoise: {fileID: 2029665903}
     brake: {fileID: 1610418203}
+  characterStats:
+    rollSpeed: 100
+    airSpeed: 15
+    jumpHeight: 14
+    grip: 0
+  canMove: 1
+  input: {fileID: 0}
+  grounded: 0
+  groundedTimer: 0
+  upResetTimer: 0
+  smoke: {fileID: 0}
+  speedFire: {fileID: 0}
 --- !u!23 &143103860
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1146,7 +1158,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: f0af43db82807c241a23c2d5c731412a, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: f0af43db82807c241a23c2d5c731412a, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5
@@ -1496,7 +1508,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 40c2a8ff80fe23d44bc7c4dc597bc2b7, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 40c2a8ff80fe23d44bc7c4dc597bc2b7, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0
@@ -1811,7 +1823,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 40c2a8ff80fe23d44bc7c4dc597bc2b7, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 40c2a8ff80fe23d44bc7c4dc597bc2b7, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0
@@ -2138,6 +2150,18 @@ MonoBehaviour:
     roll: {fileID: 1290978008}
     speedNoise: {fileID: 0}
     brake: {fileID: 396459816}
+  characterStats:
+    rollSpeed: 100
+    airSpeed: 15
+    jumpHeight: 14
+    grip: 0
+  canMove: 1
+  input: {fileID: 0}
+  grounded: 0
+  groundedTimer: 0
+  upResetTimer: 0
+  smoke: {fileID: 0}
+  speedFire: {fileID: 0}
 --- !u!23 &396459824
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2326,57 +2350,41 @@ MonoBehaviour:
   m_GameObject: {fileID: 401587458}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 948f4100a11a5c24981795d21301da5c, type: 3}
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  volumeTrigger: {fileID: 401587463}
-  volumeLayer:
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 32768
-  stopNaNPropagation: 1
-  finalBlitToCameraTarget: 0
-  antialiasingMode: 0
-  temporalAntialiasing:
-    jitterSpread: 0.75
-    sharpness: 0.25
-    stationaryBlending: 0.95
-    motionBlending: 0.85
-  subpixelMorphologicalAntialiasing:
-    quality: 2
-  fastApproximateAntialiasing:
-    fastMode: 0
-    keepAlpha: 0
-  fog:
-    enabled: 1
-    excludeSkybox: 1
-  debugLayer:
-    lightMeter:
-      width: 512
-      height: 256
-      showCurves: 1
-    histogram:
-      width: 512
-      height: 256
-      channel: 3
-    waveform:
-      exposure: 0.12
-      height: 256
-    vectorscope:
-      size: 256
-      exposure: 0.12
-    overlaySettings:
-      linearDepth: 0
-      motionColorIntensity: 4
-      motionGridSize: 64
-      colorBlindnessType: 0
-      colorBlindnessStrength: 1
-  m_Resources: {fileID: 11400000, guid: d82512f9c8e5d4a4d938b575d47f88d4, type: 2}
-  m_ShowToolkit: 0
-  m_ShowCustomSorter: 0
-  breakBeforeColorGrading: 0
-  m_BeforeTransparentBundles: []
-  m_BeforeStackBundles: []
-  m_AfterStackBundles: []
+  m_VolumeTrigger: {fileID: 401587463}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 1
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 1
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &413924441
 GameObject:
   m_ObjectHideFlags: 0
@@ -2796,7 +2804,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 40c2a8ff80fe23d44bc7c4dc597bc2b7, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 40c2a8ff80fe23d44bc7c4dc597bc2b7, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0
@@ -3033,7 +3041,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: f0af43db82807c241a23c2d5c731412a, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: f0af43db82807c241a23c2d5c731412a, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5
@@ -3229,7 +3237,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: f0af43db82807c241a23c2d5c731412a, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: f0af43db82807c241a23c2d5c731412a, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5
@@ -3906,7 +3914,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 40c2a8ff80fe23d44bc7c4dc597bc2b7, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 40c2a8ff80fe23d44bc7c4dc597bc2b7, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0
@@ -4606,7 +4614,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 8b93e1e51502d7d4f8158b9abef14ad8, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 8b93e1e51502d7d4f8158b9abef14ad8, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0
@@ -4738,7 +4746,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: f0af43db82807c241a23c2d5c731412a, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: f0af43db82807c241a23c2d5c731412a, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5
@@ -5015,7 +5023,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 40c2a8ff80fe23d44bc7c4dc597bc2b7, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 40c2a8ff80fe23d44bc7c4dc597bc2b7, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0
@@ -5375,6 +5383,18 @@ MonoBehaviour:
     roll: {fileID: 80471164}
     speedNoise: {fileID: 0}
     brake: {fileID: 592045644}
+  characterStats:
+    rollSpeed: 100
+    airSpeed: 15
+    jumpHeight: 14
+    grip: 0
+  canMove: 1
+  input: {fileID: 0}
+  grounded: 0
+  groundedTimer: 0
+  upResetTimer: 0
+  smoke: {fileID: 0}
+  speedFire: {fileID: 0}
 --- !u!23 &1662905283
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5494,7 +5514,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: f0af43db82807c241a23c2d5c731412a, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: f0af43db82807c241a23c2d5c731412a, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5
@@ -5784,7 +5804,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 8b93e1e51502d7d4f8158b9abef14ad8, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 8b93e1e51502d7d4f8158b9abef14ad8, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0
@@ -6013,7 +6033,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 8131e635251a08c4dac9d7484568e666, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 8131e635251a08c4dac9d7484568e666, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0

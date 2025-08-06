@@ -126,11 +126,6 @@ namespace Sanicball.Data
             MusicPlayer music = MusicPlayer.Instance;
             if (music)
                 music.GetComponent<AudioSource>().mute = !music;
-            //Camera effects
-            foreach(var cam in Resources.FindObjectsOfTypeAll<CameraEffects>())
-            {
-                cam.EnableEffects();
-            }
         }
     }
 

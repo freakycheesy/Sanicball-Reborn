@@ -16,7 +16,7 @@ namespace Sanicball.Logic
         [SerializeField]
         private UI.PopupHandler popupHandler = null;
 
-        private UI.PopupConnecting activeConnectingPopup;
+        private UI.PopupConnecting activeConnectingPopup => PopupConnecting.Instance;
 
         //NetClient for when joining online matches
         private NetClient joiningClient;
@@ -132,8 +132,6 @@ namespace Sanicball.Logic
             joiningClient.Connect(endpoint, approval);
 
             popupHandler.OpenPopup(connectingPopupPrefab);
-
-            activeConnectingPopup = PopupConnecting.Instance;
         }
 
         //Called when succesfully connected to a server
