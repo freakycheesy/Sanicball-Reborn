@@ -11,6 +11,7 @@ using System.Threading;
 //using System.Threading.Tasks;
 using Lidgren.Network;
 using Newtonsoft.Json;
+using Sanicball.Data;
 using SanicballCore;
 using SanicballCore.MatchMessages;
 
@@ -56,41 +57,18 @@ namespace SanicballCore.Server
 		private const string DEFAULT_SERVER_LIST_URL = "https://sanicball.bdgr.zone/servers";
         private const int TICKRATE = 20;
         private const int STAGE_COUNT = 17; //Hardcoded stage count for now.. can't receive the actual count since it's part of a Unity prefab.
-        private readonly CharacterTier[] characterTiers = new[] { //Hardcoded character tiers, same reason
-            CharacterTier.Normal,       //Sanic
-            CharacterTier.Normal,       //Knackles
-            CharacterTier.Normal,       //Taels
-            CharacterTier.Normal,       //Ame
-            CharacterTier.Normal,       //Shedew
-            CharacterTier.Normal,       //Roge
-            CharacterTier.Normal,       //Asspio
-            CharacterTier.Odd,          //Big
-            CharacterTier.Odd,          //Aggmen
-            CharacterTier.Odd,          //Chermy
-            CharacterTier.Normal,       //Sulver
-            CharacterTier.Normal,       //Bloze
-            CharacterTier.Normal,       //Vactor
-            CharacterTier.Hyperspeed,   //Super Sanic
-            CharacterTier.Odd,          //Metal Sanic
-            CharacterTier.Normal,       //Mayro
-            CharacterTier.Odd,          //Ogre
-            CharacterTier.Hyperspeed,   //Stiveh
-            CharacterTier.Normal,       //Pecmehn
-            CharacterTier.Odd,          //Doritos
-            CharacterTier.Normal,       //Pootis Mann
-            CharacterTier.Odd,          //Wahndews
-            CharacterTier.Hyperspeed,   //Hyper Sanic
-            CharacterTier.Normal,       //Real Sanic
-            CharacterTier.Hyperspeed,   //Real Super Sanic
-            CharacterTier.Normal,       //Uganda Knackles
-            CharacterTier.Special,      //Kerbi
-            CharacterTier.Normal,       //Mett
-            CharacterTier.Normal,       //Walugui
-            CharacterTier.Odd,          //Warrior Sanic
-            CharacterTier.Normal,       //Khum Khum
-            CharacterTier.Odd,          //Beeg Chungus
+        private static CharacterTier[] characterTiers
+        {
+            get
+            {
+                List<CharacterTier> dumped = new();
+                foreach (var info in ActiveData.Characters) {
+                    dumped.Add(info.tier);
+                }
+                return dumped.ToArray();
+            }
+        }
 
-        };
 
         public event EventHandler<LogArgs> OnLog;
 
@@ -318,29 +296,21 @@ namespace SanicballCore.Server
                 }
                 else if(cmd.Content is string)
                 {
-                    if(Enum.IsDefined(typeof(Tracks), cmd.Content))
+                    if(ActiveData.TryGetStageByBarcode(cmd.Content, out StageInfo track))
                     {
-                        int track = (int)Enum.Parse(typeof(Tracks), cmd.Content);
-                        matchSettings.StageId = track;
+                        matchSettings.StageId = track.id;
                         SaveMatchSettings();
                         SendToAll(new SettingsChangedMessage(matchSettings));
-                        Log("Stage set to " + cmd.Content + " (" + track + ")");
+                        Log("Stage set to " + cmd.Content + " (" + track.BARCODE + ")");
                     }else if(matchSettings.Aliases.TryGetValue(cmd.Content, out aliasInt)){
                         matchSettings.StageId = aliasInt;
                         SaveMatchSettings();
                         SendToAll(new SettingsChangedMessage(matchSettings));
-                        Log("Stage set to " + cmd.Content + " (" + aliasInt + " / " + ((Tracks)aliasInt).ToString() + ")");
-                    }else{
-                        string bestMatch="";
-                        double maxScore=0;
-                        for(int i=0;i<=Enum.GetNames(typeof(Tracks)).Length;i++){
-                            string name = Enum.GetName(typeof(Tracks), i);
-                            double score = Utils.Similarity(cmd.Content, name);
-                            if(score > maxScore){
-                                bestMatch = name;
-                                maxScore = score;
-                            }
-                        }
+                        Log("Stage set to " + cmd.Content + " (" + aliasInt + " / " + (ActiveData.Stages[aliasInt].BARCODE).ToString() + ")");
+                    }else
+                    {
+                        string bestMatch = "";
+                        bestMatch = GetBestMatch(cmd, bestMatch);
                         Log("Stage " + cmd.Content + " doesn't exist, maybe you were looking for " + bestMatch);
                     }
                 }
@@ -370,10 +340,9 @@ namespace SanicballCore.Server
                 }
                 else if(cmd.Content is string)
                 {
-                    if(Enum.IsDefined(typeof(Tracks), stage))
+                    if(ActiveData.TryGetStageByBarcode(cmd.Content, out StageInfo track))
                     {
-                        int track = (int)Enum.Parse(typeof(Tracks), stage);
-                        matchSettings.Aliases.Add(alias, track);
+                        matchSettings.Aliases.Add(alias, track.id);
                         SaveMatchSettings();
                         Log("Aliased " + stage + " with " + alias);
                     }else if(matchSettings.Aliases.TryGetValue(stage, out stageAlias)){
@@ -381,16 +350,8 @@ namespace SanicballCore.Server
                         SaveMatchSettings();
                         Log("Aliased " + stage + " with " + alias);
                     }else{
-                        string bestMatch="";
-                        double maxScore=0;
-                        for(int i=0;i<=Enum.GetNames(typeof(Tracks)).Length;i++){
-                            string name = Enum.GetName(typeof(Tracks), i);
-                            double score = Utils.Similarity(stage, name);
-                            if(score > maxScore){
-                                bestMatch = name;
-                                maxScore = score;
-                            }
-                        }
+                        string bestMatch = "";
+                        bestMatch = GetBestMatch(cmd, bestMatch);
                         Log("Stage " + stage + " doesn't exist, were you looking for " + bestMatch);
                     }
                 }
@@ -431,15 +392,15 @@ namespace SanicballCore.Server
             cmd =>
             {
                 foreach(string name in matchSettings.Aliases.Keys){
-                    Log(name + " -> " + matchSettings.Aliases[name] + " / " + Enum.GetName(typeof(Tracks), matchSettings.Aliases[name]));
+                    Log(name + " -> " + matchSettings.Aliases[name]);
                 }
             });
             AddCommandHandler("lsstages",
             "Lists all stages.",	
             cmd =>
             {
-                foreach(string name in Enum.GetNames(typeof(Tracks))){
-                    Log(name + " -> " + (int)Enum.Parse(typeof(Tracks), name));
+                foreach(var name in ActiveData.Stages){
+                    Log(name + " -> " + name.id);
                 }
             });
             AddCommandHandler("setLaps",
@@ -727,6 +688,24 @@ namespace SanicballCore.Server
                 #endregion Server config wizard
             }
         }
+
+        private static string GetBestMatch(Command cmd, string bestMatch)
+        {
+            double maxScore = 0;
+            for (int i = 0; i <= ActiveData.Stages.Count; i++)
+            {
+                string name = ActiveData.Stages[i].BARCODE;
+                double score = Utils.Similarity(cmd.Content, name);
+                if (score > maxScore)
+                {
+                    bestMatch = name;
+                    maxScore = score;
+                }
+            }
+
+            return bestMatch;
+        }
+
 
         public void Start(){
             Start(25000, 8, "A Sanicball Server", "", "", false, DEFAULT_SERVER_LIST_URL);
