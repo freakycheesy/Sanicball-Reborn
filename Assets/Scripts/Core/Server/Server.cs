@@ -11,7 +11,6 @@ using System.Threading;
 //using System.Threading.Tasks;
 using Lidgren.Network;
 using Newtonsoft.Json;
-using Sanicball.Data;
 using SanicballCore;
 using SanicballCore.MatchMessages;
 
@@ -319,9 +318,9 @@ namespace SanicballCore.Server
                 }
                 else if(cmd.Content is string)
                 {
-                    if(ActiveData.TryGetStageByBarcode(cmd.Content, out StageInfo stage))
+                    if(Enum.IsDefined(typeof(Tracks), cmd.Content))
                     {
-                        int track = ActiveData.Stages.IndexOf(stage);
+                        int track = (int)Enum.Parse(typeof(Tracks), cmd.Content);
                         matchSettings.StageId = track;
                         SaveMatchSettings();
                         SendToAll(new SettingsChangedMessage(matchSettings));
@@ -330,12 +329,12 @@ namespace SanicballCore.Server
                         matchSettings.StageId = aliasInt;
                         SaveMatchSettings();
                         SendToAll(new SettingsChangedMessage(matchSettings));
-                        Log("Stage set to " + cmd.Content + " (" + stage.BARCODE + ")");
+                        Log("Stage set to " + cmd.Content + " (" + aliasInt + " / " + ((Tracks)aliasInt).ToString() + ")");
                     }else{
                         string bestMatch="";
                         double maxScore=0;
-                        for(int i=0;i<=ActiveData.Stages.Count;i++){
-                            string name = ActiveData.Stages[i].name;
+                        for(int i=0;i<=Enum.GetNames(typeof(Tracks)).Length;i++){
+                            string name = Enum.GetName(typeof(Tracks), i);
                             double score = Utils.Similarity(cmd.Content, name);
                             if(score > maxScore){
                                 bestMatch = name;
@@ -371,9 +370,9 @@ namespace SanicballCore.Server
                 }
                 else if(cmd.Content is string)
                 {
-                    if(ActiveData.TryGetStageByBarcode(stage, out StageInfo stage1))
+                    if(Enum.IsDefined(typeof(Tracks), stage))
                     {
-                        int track = ActiveData.Stages.IndexOf(stage1);
+                        int track = (int)Enum.Parse(typeof(Tracks), stage);
                         matchSettings.Aliases.Add(alias, track);
                         SaveMatchSettings();
                         Log("Aliased " + stage + " with " + alias);
@@ -384,12 +383,10 @@ namespace SanicballCore.Server
                     }else{
                         string bestMatch="";
                         double maxScore=0;
-                        for (int i = 0; i <= ActiveData.Stages.Count; i++)
-                        {
-                            string name = ActiveData.Stages[i].name;
-                            double score = Utils.Similarity(cmd.Content, name);
-                            if (score > maxScore)
-                            {
+                        for(int i=0;i<=Enum.GetNames(typeof(Tracks)).Length;i++){
+                            string name = Enum.GetName(typeof(Tracks), i);
+                            double score = Utils.Similarity(stage, name);
+                            if(score > maxScore){
                                 bestMatch = name;
                                 maxScore = score;
                             }
@@ -434,13 +431,16 @@ namespace SanicballCore.Server
             cmd =>
             {
                 foreach(string name in matchSettings.Aliases.Keys){
+                    Log(name + " -> " + matchSettings.Aliases[name] + " / " + Enum.GetName(typeof(Tracks), matchSettings.Aliases[name]));
                 }
             });
             AddCommandHandler("lsstages",
             "Lists all stages.",	
             cmd =>
             {
-
+                foreach(string name in Enum.GetNames(typeof(Tracks))){
+                    Log(name + " -> " + (int)Enum.Parse(typeof(Tracks), name));
+                }
             });
             AddCommandHandler("setLaps",
             "Sets the number of laps per race. Laps are pretty long so 2 or 3 is recommended.",
