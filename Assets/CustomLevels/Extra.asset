@@ -14,14 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Author: freakycheesy
   Stages:
-  - BARCODE: freakycheesy.Extra.melon racer
+  - id: 0
+    BARCODE: freakycheesy.Extra.melon racer
     name: melon racer
     scene:
-      m_AssetGUID: 
+      m_AssetGUID: dd3bbb09ce1af034192ad01d199b5a98
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
-      m_EditorAssetChanged: 0
+      m_EditorAssetChanged: 1
     picture: {fileID: 21300000, guid: f54471598afdcd14e979c1d54bd3d919, type: 3}
     overviewPrefab: {fileID: 100000, guid: 8a9af802b68c0924ab39e04b12b90b03, type: 3}
   Playlist: []
@@ -44,9 +45,4 @@ MonoBehaviour:
     tier: 1
     hidden: 0
   Powerups: []
-  song:
-    m_AssetGUID: 
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_SubObjectGUID: 
-    m_EditorAssetChanged: 0
+  song: {fileID: 0}
