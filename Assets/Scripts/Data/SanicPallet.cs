@@ -36,10 +36,10 @@ public class CustomStagesEditor : Editor
 public class SanicPallet : ScriptableObject
 {
     public string Author;
-    public List<StageInfo> Stages;
-    public List<Song> Playlist;
-    public List<Sanicball.Data.CharacterInfo> Avatars;
-    public List<PowerupLogic> Powerups;
+    public List<StageInfo> Stages = new();
+    public List<Song> Playlist = new();
+    public List<Sanicball.Data.CharacterInfo> Avatars = new();
+    public List<PowerupLogic> Powerups = new();
     void OnValidate()
     {
         if (string.IsNullOrEmpty(Author)) Author = Application.companyName;

@@ -156,14 +156,14 @@ namespace Sanicball.UI
                     checkpointTimeDiffField.color = faster ? Color.blue : Color.red;
                     checkpointTimeDiffField.GetComponent<ToggleCanvasGroup>().ShowTemporarily(2f);
 
-                    if (e.IndexOfPreviousCheckpoint == StageReferences.Active.checkpoints.Length - 1 && faster)
+                    if (e.IndexOfPreviousCheckpoint == StageReferences.Active.checkpoints.Count - 1 && faster)
                     {
                         checkpointTimeDiffField.text = "New lap record!";
                     }
                 }
                 else
                 {
-                    if (e.IndexOfPreviousCheckpoint == StageReferences.Active.checkpoints.Length - 1)
+                    if (e.IndexOfPreviousCheckpoint == StageReferences.Active.checkpoints.Count - 1)
                     {
                         checkpointTimeDiffField.text = "Lap record set!";
                         checkpointTimeDiffField.color = Color.blue;

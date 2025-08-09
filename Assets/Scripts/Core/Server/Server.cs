@@ -553,24 +553,6 @@ namespace SanicballCore.Server
                     Log("Usage: admin [playerName]");
                 }
             });
-            AddCommandHandler("setPowerup",
-            "toggles powerups on or off",
-            cmd =>
-            {
-                int inputInt;
-                if (int.TryParse(cmd.Content, out inputInt) && inputInt <= 1 && inputInt >= 0)
-                {
-
-                    matchSettings.PowerupsEnabled = inputInt == 1 ? true : false;
-                    SaveMatchSettings();
-                    SendToAll(new SettingsChangedMessage(matchSettings));
-                    Log("Powerups set to " + matchSettings.PowerupsEnabled);
-                }
-                else
-                {
-                    Log("Usage: setPowerup [1/0]");
-                }
-            });
 
             #endregion Command handlers
 

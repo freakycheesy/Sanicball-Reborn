@@ -43,7 +43,6 @@ namespace SanicballCore
 
         public int StageId { get; set; }
         public int Laps { get; set; }
-        public bool PowerupsEnabled{get; set; }
         public int AICount { get; set; }
         public AISkillLevel AISkill { get; set; }
         public Dictionary<string, int> Aliases { get; set; }
@@ -67,7 +66,7 @@ namespace SanicballCore
             {
                 StageId = 0,
                 Laps = 2,
-                AICount = 0,
+                AICount = 4,
                 AISkill = AISkillLevel.Average,
                 aiCharacters = "1,2,3,4,5,6,7,8,9,10,11,12",
 

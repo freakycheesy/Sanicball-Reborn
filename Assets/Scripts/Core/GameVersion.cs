@@ -9,9 +9,9 @@
         public const bool IS_TESTING = false;
 
         //As a string, for displaying on the UI
-        public const string AS_STRING = "alpha v0.8.5";
+        public const string AS_STRING = "uh";
 
         //Something stupid, usually unique for every version
-        public const string TAGLINE = "Better than Supra Mayro Kratt";
+        public const string TAGLINE = "Better than brairot";
     }
 }

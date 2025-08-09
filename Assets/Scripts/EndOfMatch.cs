@@ -22,7 +22,7 @@ namespace Sanicball
 
         private Scoreboard activeScoreboard;
         private bool hasActivatedOnce = false;
-
+        public static EndOfMatch Instance;
         private List<RacePlayer> movedPlayers = new List<RacePlayer>();
 
         public void Activate(RaceManager manager)
@@ -94,6 +94,10 @@ namespace Sanicball
                     movedPlayers.Add(playerToMove);
                 }
             }
+        }
+        void Awake()
+        {
+            Instance = this;
         }
     }
 }

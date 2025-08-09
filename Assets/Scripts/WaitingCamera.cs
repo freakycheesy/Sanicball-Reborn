@@ -17,7 +17,7 @@ namespace Sanicball
         // Use this for initialization
         private void Start()
         {
-            orientations = StageReferences.Active.waitingCameraOrientations;
+            orientations = StageReferences.Active.waitingCameraOrientations.ToArray();
 
             AlignWithCurrentOrientation();
 

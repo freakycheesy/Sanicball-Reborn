@@ -121,7 +121,7 @@ namespace Sanicball.Logic
                 ballCamera.SetDirection(sr.checkpoints[0].transform.rotation);
             };
 
-            checkpointTimes = new float[StageReferences.Active.checkpoints.Length];
+            checkpointTimes = new float[StageReferences.Active.checkpoints.Count];
 
             SetNextCheckpoint();
         }
@@ -159,7 +159,7 @@ namespace Sanicball.Logic
                 return Lap;
             }
 
-            float progPerCheckpoint = 1f / sr.checkpoints.Length;
+            float progPerCheckpoint = 1f / sr.checkpoints.Count;
 
             Vector3 nextPos = nextCheckpoint.transform.position;
             float ballToNext = Vector3.Distance(ball.transform.position, nextPos);
@@ -219,7 +219,7 @@ namespace Sanicball.Logic
             if (NextCheckpointPassed != null)
                 NextCheckpointPassed(this, new NextCheckpointPassArgs(currentCheckpointIndex, TimeSpan.FromSeconds(lapTime)));
 
-            currentCheckpointIndex = (currentCheckpointIndex + 1) % sr.checkpoints.Length;
+            currentCheckpointIndex = (currentCheckpointIndex + 1) % sr.checkpoints.Count;
             currentCheckpointPos = nextCheckpoint.transform.position;
 
             if (currentCheckpointIndex == 0)
@@ -251,7 +251,7 @@ namespace Sanicball.Logic
 
                 //Reset lap time
                 this.lapTime = 0 + (this.lapTime - lapTime);
-                checkpointTimes = new float[StageReferences.Active.checkpoints.Length];
+                checkpointTimes = new float[StageReferences.Active.checkpoints.Count];
             }
 
             SetNextCheckpoint();
@@ -298,7 +298,7 @@ namespace Sanicball.Logic
             {
                 nextCheckpoint = null;
             }
-            else if (currentCheckpointIndex == sr.checkpoints.Length - 1)
+            else if (currentCheckpointIndex == sr.checkpoints.Count - 1)
             {
                 nextCheckpoint = sr.checkpoints[0];
             }

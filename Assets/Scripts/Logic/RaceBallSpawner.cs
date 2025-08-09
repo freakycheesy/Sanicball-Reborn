@@ -50,7 +50,11 @@ namespace Sanicball.Logic
             }
             return transform.TransformPoint(dir) + Vector3.up * offsetY;
         }
-
+        public static RaceBallSpawner Instance;
+        void Awake()
+        {
+            Instance = this;
+        }
         private void Start()
         {
             //Disable the arrow gizmo

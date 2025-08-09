@@ -316,10 +316,12 @@ namespace Sanicball.Logic
         }
 
         #region Unity event functions
-
-        private void Start()
+        private void Awake()
         {
             Instance = this;
+        }
+        private void Start()
+        {
             if (joinedWhileRaceInProgress)
             {
                 CurrentState = RaceState.Racing;

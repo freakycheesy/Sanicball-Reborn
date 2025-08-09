@@ -63,7 +63,7 @@ namespace Sanicball.Logic
         private List<MatchPlayer> players = new List<MatchPlayer>();
 
         //These settings will be used when starting a race
-        private MatchSettings currentSettings;
+        private MatchSettings currentSettings = new();
 
         //Lobby countdown timer stuff
         private bool lobbyTimerOn = false;
