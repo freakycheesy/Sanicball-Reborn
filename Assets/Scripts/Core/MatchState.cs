@@ -90,17 +90,17 @@ namespace SanicballCore
                 players.Add(new MatchPlayerState(clientGuid, ctrlType, readyToRace, characterId));
             }
             //Match settings
-            MatchSettings settings = new MatchSettings()
+            MatchSettings settings = MatchSettings.CreateDefault();
             {
-                StageId = message.ReadInt32(),
-                Laps = message.ReadInt32(),
-                AICount = message.ReadInt32(),
-                AISkill = (AISkillLevel)message.ReadInt32(),
-                AutoStartTime = message.ReadInt32(),
-                AutoStartMinPlayers = message.ReadInt32(),
-                AutoReturnTime = message.ReadInt32(),
-                VoteRatio = message.ReadFloat(),
-                StageRotationMode = (StageRotationMode)message.ReadInt32()
+                settings.StageId = message.ReadInt32();
+                settings.Laps = message.ReadInt32();
+                settings.AICount = message.ReadInt32();
+                settings.AISkill = (AISkillLevel)message.ReadInt32();
+                settings.AutoStartTime = message.ReadInt32();
+                settings.AutoStartMinPlayers = message.ReadInt32();
+                settings.AutoReturnTime = message.ReadInt32();
+                settings.VoteRatio = message.ReadFloat();
+                settings.StageRotationMode = (StageRotationMode)message.ReadInt32();
             };
             bool inRace = message.ReadBoolean();
             float curAutoStartTime = message.ReadFloat();

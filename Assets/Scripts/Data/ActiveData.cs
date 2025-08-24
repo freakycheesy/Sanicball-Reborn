@@ -21,7 +21,7 @@ namespace Sanicball.Data
         public List<RaceRecord> raceRecords = new List<RaceRecord>();
 
         //Pseudo-singleton pattern - this field accesses the current instance.
-        private static ActiveData instance;
+        private static ActiveData Instance;
 
         //This data is saved to a json file
         private GameSettings gameSettings = new GameSettings();
@@ -48,21 +48,21 @@ namespace Sanicball.Data
 
         #region Properties
 
-        public static GameSettings GameSettings { get { return instance.gameSettings; } }
-        public static KeybindCollection Keybinds { get { return instance.keybinds; } }
+        public static GameSettings GameSettings { get { return Instance.gameSettings; } }
+        public static KeybindCollection Keybinds { get { return Instance.keybinds; } }
         public static MatchSettings MatchSettings = MatchSettings.CreateDefault();
-        public static List<RaceRecord> RaceRecords { get { return instance.raceRecords; } }
+        public static List<RaceRecord> RaceRecords { get { return Instance.raceRecords; } }
 
         public static List<SanicPallet> CustomStagesPallets = new List<SanicPallet>();
         public static List<StageInfo> Stages = new List<StageInfo>();
         public static List<PowerupLogic> Powerups = new List<PowerupLogic>();
         public static List<CharacterInfo> Characters = new List<CharacterInfo>();
-        public static GameJoltInfo GameJoltInfo { get { return instance.gameJoltInfo; } }
-        public static GameObject ChristmasHat { get { return instance.christmasHat; } }
-        public static Material ESportsTrail { get { return instance.eSportsTrail; } }
-        public static GameObject ESportsHat { get { return instance.eSportsHat; } }
-        public static Song ESportsMusic { get { return instance.eSportsMusic; } }
-        public static ESportMode ESportsPrefab { get { return instance.eSportsPrefab; } }
+        public static GameJoltInfo GameJoltInfo { get { return Instance.gameJoltInfo; } }
+        public static GameObject ChristmasHat { get { return Instance.christmasHat; } }
+        public static Material ESportsTrail { get { return Instance.eSportsTrail; } }
+        public static GameObject ESportsHat { get { return Instance.eSportsHat; } }
+        public static Song ESportsMusic { get { return Instance.eSportsMusic; } }
+        public static ESportMode ESportsPrefab { get { return Instance.eSportsPrefab; } }
 
         public static bool ESportsFullyReady
         {
@@ -79,9 +79,9 @@ namespace Sanicball.Data
         //Make sure there is never more than one GameData object
         private void Awake()
         {
-            if (instance == null)
+            if (Instance == null)
             {
-                instance = this;
+                Instance = this;
                 DontDestroyOnLoad(gameObject);
                 FindPallets();
             }
@@ -94,7 +94,7 @@ namespace Sanicball.Data
         public static void FindPallets()
         {
             PalletHandle = Addressables.LoadAssetsAsync<SanicPallet>("mod", LoadPalletCallback);
-            PalletHandle.Completed += (_) => Debug.Log("Completed Loading Pallet!");
+            PalletHandle.Completed += (_) => { MatchSettings = MatchSettings.CreateDefault(); Debug.Log("Completed Loading Pallet!"); };
         }
 
         public static void LoadPalletCallback(SanicPallet pallet)
@@ -105,7 +105,7 @@ namespace Sanicball.Data
             MusicPlayer.Playlist.AddRange(pallet.Playlist);
             Characters.AddRange(pallet.Avatars);
             Powerups.AddRange(pallet.Powerups);
-
+            
             Debug.Log($"Loaded Pallet: ({pallet.Author}.{pallet.name})");
         }
         public static bool TryGetStageByBarcode(string barcode, out StageInfo stage)

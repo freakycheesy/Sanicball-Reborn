@@ -92,7 +92,7 @@ namespace SanicballCore.Server
         private Guid adminGuid;
         private string adminName = "";
         private string ownerName = "";
-        private bool isLocalServer;
+        public bool isLocalServer;
         private string listURLForLocalServer = "";
         private Stopwatch localServerStopTimeoutTimer = new Stopwatch();
         private const float LOCAL_SERVER_NO_CLIENT_TIMEOUT = 20;
@@ -120,12 +120,12 @@ namespace SanicballCore.Server
         #endregion Timers
 
         public bool Running { get { return running; } }
-
+        public static Server ServerInstance;
         public Server(CommandQueue commandQueue, bool local)
         {
             this.commandQueue = commandQueue;
             this.isLocalServer = local;
-
+            ServerInstance = this;
             #region Command handlers
 
             AddCommandHandler("help",

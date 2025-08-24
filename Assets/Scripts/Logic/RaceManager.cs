@@ -230,7 +230,7 @@ namespace Sanicball.Logic
                         nextBallPosition,
                         BallType.AI,
                         ControlType.None,
-                        settings.GetAICharacter(i),
+                        i,
                         "AI #" + i
                         );
                     aiBall.CanMove = false;

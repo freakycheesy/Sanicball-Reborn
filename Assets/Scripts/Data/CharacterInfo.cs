@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using SanicballCore;
+using Newtonsoft.Json;
 
 namespace Sanicball.Data
 {

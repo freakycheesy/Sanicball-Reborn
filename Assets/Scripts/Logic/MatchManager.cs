@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Newtonsoft.Json;
 using Sanicball.Data;
 using Sanicball.UI;
 using SanicballCore;
@@ -63,7 +64,7 @@ namespace Sanicball.Logic
         private List<MatchPlayer> players = new List<MatchPlayer>();
 
         //These settings will be used when starting a race
-        private MatchSettings currentSettings = new();
+        [SerializeField] private MatchSettings currentSettings = MatchSettings.CreateDefault();
 
         //Lobby countdown timer stuff
         private bool lobbyTimerOn = false;
@@ -128,7 +129,8 @@ namespace Sanicball.Logic
         #endregion Properties
 
         #region State changing methods
-
+        [TextArea(1, 50)]
+        public string matchSettingJson;
         public void RequestSettingsChange(MatchSettings newSettings)
         {
             messenger.SendMessage(new SettingsChangedMessage(newSettings));
@@ -166,8 +168,7 @@ namespace Sanicball.Logic
         private void SettingsChangedCallback(SettingsChangedMessage msg, float travelTime)
         {
             currentSettings = msg.NewMatchSettings;
-            if (MatchSettingsChanged != null)
-                MatchSettingsChanged(this, EventArgs.Empty);
+            MatchSettingsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void ClientJoinedCallback(ClientJoinedMessage msg, float travelTime)
@@ -353,8 +354,7 @@ namespace Sanicball.Logic
         }
 
         #endregion Match initializing
-
-        private void Start()
+        void Awake()
         {
             if (Instance && Instance != this)
             {
@@ -362,6 +362,10 @@ namespace Sanicball.Logic
                 return;
             }
             Instance = this;
+        }
+        private void Start()
+        {
+            if (Instance != this) return;
             SceneManager.sceneLoaded += (_, _) => OnLevelHasLoaded();
             DontDestroyOnLoad(gameObject);
 
@@ -401,7 +405,7 @@ namespace Sanicball.Logic
         private void Update()
         {
             messenger.UpdateListeners();
-
+            matchSettingJson = JsonConvert.SerializeObject(currentSettings);
             //Pausing/unpausing
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7))
             {

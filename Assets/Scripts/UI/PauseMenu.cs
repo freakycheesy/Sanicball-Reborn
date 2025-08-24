@@ -1,4 +1,5 @@
 ﻿using Sanicball.Logic;
+using SanicballCore.Server;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
@@ -47,7 +48,7 @@ namespace Sanicball.UI
             {
                 contextSensitiveButtonLabel.text = "Change match settings";
                 contextSensitiveButton.onClick.AddListener(MatchSettings);
-                if (OnlineMode)
+                if (OnlineMode && Server.ServerInstance == null)
                 {
                     contextSensitiveButton.interactable = false;
                 }

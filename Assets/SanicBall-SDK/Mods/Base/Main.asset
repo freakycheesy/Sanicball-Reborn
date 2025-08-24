@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Author: BK-TN
   Stages:
-  - BARCODE: BK-TN.Main.Green Hill Zone
+  - id: 0
+    BARCODE: BK-TN.Main.Green Hill Zone
     name: Green Hill Zone
     scene:
       m_AssetGUID: dd3bbb09ce1af034192ad01d199b5a98
@@ -24,7 +25,8 @@ MonoBehaviour:
       m_EditorAssetChanged: 0
     picture: {fileID: 21300000, guid: dc57cdcc46adee64d900215deab711b3, type: 3}
     overviewPrefab: {fileID: 120352, guid: b92fe95a3f8ff594cafa50f76cc55858, type: 3}
-  - BARCODE: BK-TN.Main.Flame Core
+  - id: 1
+    BARCODE: BK-TN.Main.Flame Core
     name: Flame Core
     scene:
       m_AssetGUID: 8912b8b165639fe4285eff0f6d6d3b66
@@ -34,7 +36,8 @@ MonoBehaviour:
       m_EditorAssetChanged: 0
     picture: {fileID: 21300000, guid: 9bcec5996a6fdb245ba294c8d86c550d, type: 3}
     overviewPrefab: {fileID: 106172, guid: 776929cd993de29429473a9a6bcc039b, type: 3}
-  - BARCODE: BK-TN.Main.Ice Mountain
+  - id: 2
+    BARCODE: BK-TN.Main.Ice Mountain
     name: Ice Mountain
     scene:
       m_AssetGUID: b2b8ab8885b2c404985feb6cf44156e0
@@ -44,7 +47,8 @@ MonoBehaviour:
       m_EditorAssetChanged: 0
     picture: {fileID: 21300000, guid: d40157bf96b0396468a82dbfcacc592e, type: 3}
     overviewPrefab: {fileID: 192978, guid: 7ff5f6fb8ee4cf446994c3b6ee13052e, type: 3}
-  - BARCODE: BK-TN.Main.Dusty Desert
+  - id: 3
+    BARCODE: BK-TN.Main.Dusty Desert
     name: Dusty Desert
     scene:
       m_AssetGUID: a786b0209e96abe4c8fd49cc4d26f4ac
@@ -54,7 +58,8 @@ MonoBehaviour:
       m_EditorAssetChanged: 0
     picture: {fileID: 21300000, guid: aa4ed67424b96f7428b3787be36fb735, type: 3}
     overviewPrefab: {fileID: 152692, guid: 58a107525dc8c9842b4a718ba470c3d3, type: 3}
-  - BARCODE: BK-TN.Main.Rainbow Road
+  - id: 4
+    BARCODE: BK-TN.Main.Rainbow Road
     name: Rainbow Road
     scene:
       m_AssetGUID: c6ff669b6a5dbd44bba8bdd7dbef35ff

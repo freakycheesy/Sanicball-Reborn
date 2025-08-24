@@ -98,6 +98,12 @@ namespace Sanicball.UI
             UpdateUiFields();
         }
 
+        public void TogglePowerups()
+        {
+            tempSettings.PowerupsEnabled = !tempSettings.PowerupsEnabled;
+            UpdateUiFields();
+        }
+
         public void IncrementAICount()
         {
             if (tempSettings.AICount < 12)
@@ -168,7 +174,7 @@ namespace Sanicball.UI
 
         private void UpdateUiFields()
         {
-            stage.text = ActiveData.Stages[tempSettings.StageId].BARCODE;
+            stage.text = ActiveData.Stages[tempSettings.StageId].name;
             laps.text = tempSettings.Laps.ToString();
             aiCount.text = tempSettings.AICount == 0 ? "None" : tempSettings.AICount.ToString();
             aiSkill.text = tempSettings.AISkill.ToString();

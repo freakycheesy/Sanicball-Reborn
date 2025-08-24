@@ -314,6 +314,7 @@ namespace Sanicball.Gameplay
             //Rolling sounds
             if (grounded)
             {
+                if(!rb) if (!TryGetComponent(out rb)) return;
                 float rollSpd = Mathf.Clamp(rb.angularVelocity.magnitude / 230, 0, 16);
                 float vel = (-128f + rb.linearVelocity.magnitude) / 256; //Start at 128 fph, end at 256
 
