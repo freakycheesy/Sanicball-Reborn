@@ -4,6 +4,8 @@ using UnityEngine;
 using Sanicball.UI;
 using Sanicball.Logic;
 using System.Net.Sockets;
+using FishNet.Managing;
+using FishNet.Transporting;
 
 public class LocalServerConnect : MonoBehaviour {
 	
@@ -14,20 +16,12 @@ public class LocalServerConnect : MonoBehaviour {
 		popupHandler = PopupHandler.Instance;
 	}
 
-	public void Connect(string ip, int port){
-		while(!Ping("127.0.0.1",port)){
-			if (Input.GetKeyDown(KeyCode.Escape))
-			{
-				popupHandler.CloseActivePopup();
-				break;
-			}
-		}
-
-		MatchStarter matchStarter = MatchStarter.Instance;
-		matchStarter.JoinOnlineGame("127.0.0.1", port);
-		Destroy(gameObject);
+	public void Connect(string serverIp){
+		Transport transport = NetworkManager.Instances[0].TransportManager.GetTransport(0);
+		transport.SetClientAddress(serverIp);
+		transport.StartConnection(false);
 	}
-	
+
 	private bool Ping(string ip, int port){
 		try{
 			using(var client = new UdpClient()){

@@ -11,5 +11,6 @@
         Joystick2 = 2,
         Joystick3 = 3,
         Joystick4 = 4,
+        Mobile = 5
     }
 }

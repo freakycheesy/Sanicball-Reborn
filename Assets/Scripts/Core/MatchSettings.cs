@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
-using Sanicball.Data;
-using UnityEngine;
-using UnityEngine.TextCore.Text;
-using CharacterInfo = Sanicball.Data.CharacterInfo;
 
 namespace SanicballCore
 {
@@ -41,6 +35,7 @@ namespace SanicballCore
         Random,  // 33% chance for normal, odd, hyper
         WeightedRandom // Most chance for normal, small chance for odd, smaller chance for hyper
     }
+
     public struct MatchSettings
     {
         [Newtonsoft.Json.JsonProperty]
@@ -48,7 +43,7 @@ namespace SanicballCore
 
         public int StageId { get; set; }
         public int Laps { get; set; }
-        public bool PowerupsEnabled { get; set; }
+        public bool PowerupsEnabled{get; set; }
         public int AICount { get; set; }
         public AISkillLevel AISkill { get; set; }
         public Dictionary<string, int> Aliases { get; set; }
@@ -58,7 +53,7 @@ namespace SanicballCore
         public int AutoReturnTime { get; set; }
         public float VoteRatio { get; set; }
         public StageRotationMode StageRotationMode { get; set; }
-        public AllowedTiers AllowedTiers { get; set; }
+		public AllowedTiers AllowedTiers { get; set; }
         public TierRotationMode TierRotationMode { get; set; }
         public int DisqualificationTime { get; set; }
 
@@ -74,14 +69,14 @@ namespace SanicballCore
                 Laps = 2,
                 AICount = 0,
                 AISkill = AISkillLevel.Average,
-                aiCharacters = "1,2,3,4,5,6,7,8",
+                aiCharacters = "1,2,3,4,5,6,7,8,9,10,11,12",
 
                 AutoStartTime = 60,
                 AutoStartMinPlayers = 2,
                 AutoReturnTime = 15,
                 VoteRatio = 1f,
                 StageRotationMode = StageRotationMode.None,
-                AllowedTiers = AllowedTiers.All,
+				AllowedTiers = AllowedTiers.All,
                 TierRotationMode = TierRotationMode.None,
                 DisqualificationTime = 120,
                 Aliases = new Dictionary<string, int>()
