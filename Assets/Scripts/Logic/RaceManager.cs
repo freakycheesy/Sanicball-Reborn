@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FishNet.Managing;
+using FishNet.Transporting;
 using Sanicball.Data;
 using Sanicball.Gameplay;
 using Sanicball.UI;
@@ -154,9 +156,9 @@ namespace Sanicball.Logic
             this.matchManager = matchManager;
             this.messenger = messenger;
 
-            messenger.CreateListener<StartRaceMessage>(StartRaceCallback);
-            messenger.CreateListener<ClientLeftMessage>(ClientLeftCallback);
-            messenger.CreateListener<DoneRacingMessage>(DoneRacingCallback);
+            messenger.RegisterBroadcast<StartRaceMessage>(StartRaceCallback);
+            messenger.RegisterBroadcast<ClientLeftMessage>(ClientLeftCallback);
+            messenger.RegisterBroadcast<DoneRacingMessage>(DoneRacingCallback);
 
             if (raceIsInProgress)
             {
@@ -166,13 +168,13 @@ namespace Sanicball.Logic
             }
         }
 
-        private void StartRaceCallback(StartRaceMessage msg, float travelTime)
+        private void StartRaceCallback(StartRaceMessage msg, Channel channel)
         {
-            countdownOffset = travelTime;
+            countdownOffset = NetworkManager.Instances[0].TimeManager.RoundTripTime;
             CurrentState = RaceState.Countdown;
         }
 
-        private void ClientLeftCallback(ClientLeftMessage msg, float travelTime)
+        private void ClientLeftCallback(ClientLeftMessage msg, Channel channel)
         {
             //Find and remove all RacePlayers associated with players from this client
             //TODO: Find some way to still have the player in the race, although disabled - so that players leaving while finished don't just disappear
@@ -292,7 +294,7 @@ namespace Sanicball.Logic
             }
         }
 
-        private void DoneRacingCallback(DoneRacingMessage msg, float travelTime)
+        private void DoneRacingCallback(DoneRacingMessage msg, Channel channel)
         {
             RacePlayer rp = players.FirstOrDefault(a => a.AssociatedMatchPlayer != null
             && a.AssociatedMatchPlayer.ClientGuid == msg.ClientGuid

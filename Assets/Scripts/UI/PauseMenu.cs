@@ -1,5 +1,5 @@
-﻿using Sanicball.Logic;
-using SanicballCore.Server;
+﻿using FishNet.Managing;
+using Sanicball.Logic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
@@ -48,7 +48,7 @@ namespace Sanicball.UI
             {
                 contextSensitiveButtonLabel.text = "Change match settings";
                 contextSensitiveButton.onClick.AddListener(MatchSettings);
-                if (OnlineMode && Server.ServerInstance == null)
+                if (OnlineMode && !NetworkManager.Instances[0].IsServerStarted)
                 {
                     contextSensitiveButton.interactable = false;
                 }

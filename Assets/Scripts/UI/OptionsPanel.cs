@@ -8,7 +8,6 @@ namespace Sanicball.UI
     {
 		[Header("Online")]
         public Text nickname;
-		public Text serverListURL;
         public Text gameJoltAccount;
 
         [Header("Display")]
@@ -67,7 +66,6 @@ namespace Sanicball.UI
             if (!gameObject.activeInHierarchy) return;
 
             nickname.text = tempSettings.nickname;
-			serverListURL.text = tempSettings.serverListURL;
             gameJoltAccount.text = (!string.IsNullOrEmpty(tempSettings.gameJoltToken)) ? "Linked as " + tempSettings.gameJoltUsername : "Not linked";
 
             if (Screen.resolutions.Length > 0)
@@ -116,11 +114,6 @@ namespace Sanicball.UI
             UpdateFields();
         }
 
-		public void SetServerListURL(string url)
-		{
-			tempSettings.serverListURL = url;
-			UpdateFields ();
-		}
 
         public void SetGameJoltInfo(string username, string token)
         {
@@ -134,12 +127,6 @@ namespace Sanicball.UI
         {
             return tempSettings.nickname;
         }
-
-		public string GetServerListURL()
-		{
-			return tempSettings.serverListURL;
-		}
-
         public string GetGameJoltUsername()
         {
             return tempSettings.gameJoltUsername;

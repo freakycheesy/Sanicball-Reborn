@@ -2,12 +2,13 @@
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using GameKit.Dependencies.Utilities.Types;
 
 namespace Sanicball.UI
 {
     public class Intro : MonoBehaviour
     {
-        public AssetReference MenuScene;
+        [Scene] public string MenuScene;
 
         public Image[] images;
         public float imgTime = 0.2f;
@@ -81,7 +82,7 @@ namespace Sanicball.UI
 
         private void GoToMenu()
         {
-            Addressables.LoadSceneAsync(MenuScene, LoadSceneMode.Single);
+            SceneManager.LoadSceneAsync(MenuScene, LoadSceneMode.Single);
             isHoldingImage = true;
         }
     }

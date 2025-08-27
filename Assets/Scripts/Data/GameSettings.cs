@@ -7,7 +7,6 @@ namespace Sanicball.Data
     {
         [Header("Online")]
         public string nickname = "";
-		public string serverListURL = "https://sanicball.bdgr.zone/servers/";
 
         public string gameJoltUsername;
         public string gameJoltToken;
@@ -49,7 +48,6 @@ namespace Sanicball.Data
         public void CopyValues(GameSettings original)
         {
             nickname = original.nickname;
-			serverListURL = original.serverListURL;
             gameJoltUsername = original.gameJoltUsername;
             gameJoltToken = original.gameJoltToken;
 

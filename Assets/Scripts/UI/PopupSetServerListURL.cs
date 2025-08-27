@@ -13,7 +13,6 @@ namespace Sanicball.UI
         public void Validate()
         {
 			string u = url.text.Trim();
-			optionsPanel.SetServerListURL(u);
             GetComponent<Popup>().Close();
         }
 
@@ -26,8 +25,6 @@ namespace Sanicball.UI
                 Destroy(gameObject);
                 return;
             }
-
-			url.text = optionsPanel.GetServerListURL() ?? "";
         }
     }
 }

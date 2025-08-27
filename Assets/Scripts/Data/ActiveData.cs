@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
+using FishNet.Managing;
+using FishNet.Managing.Scened;
 using Newtonsoft.Json;
 using Sanicball.Logic;
 using Sanicball.Powerups;
@@ -133,7 +135,11 @@ namespace Sanicball.Data
 
         public static void LoadLevel(SceneReference level, LoadSceneMode mode = LoadSceneMode.Single)
         {
-            Addressables.LoadSceneAsync(level, mode);
+            SceneLoadData data = new SceneLoadData(level.RuntimeKey.ToString());
+            data.Options.Addressables = true;
+            data.ReplaceScenes = ReplaceOption.OnlineOnly;
+            NetworkManager.Instances[0].SceneManager.LoadGlobalScenes(data);
+            //Addressables.LoadSceneAsync(level, mode);
         }
         
         private void OnEnable()

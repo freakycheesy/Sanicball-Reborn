@@ -20,8 +20,8 @@ namespace Sanicball.UI
         {
             portOutput.text = "";
 
-            int port;
-            if (int.TryParse(portInput.text, out port))
+            ushort port;
+            if (ushort.TryParse(portInput.text, out port))
             {
                 if (port >= LOWEST_PORT_NUM && port <= HIGHEST_PORT_NUM)
                 {

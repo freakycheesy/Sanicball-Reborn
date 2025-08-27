@@ -9,11 +9,11 @@ using FishNet.Transporting;
 
 public class LocalServerStarter : MonoBehaviour
 {
-
-	private void StartServer(string serverIp)
+	public void StartServer(string serverIp, ushort port = 7778)
 	{
 		Transport transport = NetworkManager.Instances[0].TransportManager.GetTransport(0);
 		transport.SetServerBindAddress(serverIp, IPAddressType.IPv4);
+		transport.SetPort(port);
 		transport.StartConnection(true);
 	}
 }

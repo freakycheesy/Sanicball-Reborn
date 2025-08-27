@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using FishNet.Managing;
+using FishNet.Transporting;
 using Sanicball.Data;
 using Sanicball.Gameplay;
 using SanicballCore;
@@ -103,8 +105,8 @@ namespace Sanicball.Logic
 
             this.matchMessenger = matchMessenger;
             this.associatedMatchPlayer = associatedMatchPlayer;
-            matchMessenger.CreateListener<CheckpointPassedMessage>(CheckpointPassedHandler);
-            matchMessenger.CreateListener<RaceTimeoutMessage>(RaceTimeoutHandler);
+            matchMessenger.RegisterBroadcast<CheckpointPassedMessage>(CheckpointPassedHandler);
+            matchMessenger.RegisterBroadcast<RaceTimeoutMessage>(RaceTimeoutHandler);
 
             lap = 1;
 
@@ -194,7 +196,7 @@ namespace Sanicball.Logic
             }
         }
 
-        private void CheckpointPassedHandler(CheckpointPassedMessage msg, float travelTime)
+        private void CheckpointPassedHandler(CheckpointPassedMessage msg, Channel channel)
         {
             if (associatedMatchPlayer != null && msg.ClientGuid == associatedMatchPlayer.ClientGuid && msg.CtrlType == associatedMatchPlayer.CtrlType)
             {
@@ -203,11 +205,11 @@ namespace Sanicball.Logic
             }
         }
 
-        private void RaceTimeoutHandler(RaceTimeoutMessage msg, float travelTime)
+        private void RaceTimeoutHandler(RaceTimeoutMessage msg, Channel channel)
         {
             if (associatedMatchPlayer != null && msg.ClientGuid == associatedMatchPlayer.ClientGuid && msg.CtrlType == associatedMatchPlayer.CtrlType)
             {
-                timeout = msg.Time - travelTime;
+                timeout = msg.Time - NetworkManager.Instances[0].TimeManager.RoundTripTime;
             }
         }
 

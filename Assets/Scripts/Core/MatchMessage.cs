@@ -1,8 +1,6 @@
-﻿namespace SanicballCore
-{
-    public delegate void MatchMessageHandler<T>(T message, float travelTime) where T : MatchMessage;
+﻿using FishNet.Broadcast;
 
-    public abstract class MatchMessage
-    {
-    }
+namespace SanicballCore
+{
+    public delegate void MatchMessageHandler<T>(T message, float travelTime);
 }

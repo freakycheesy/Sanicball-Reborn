@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections;
-using Lidgren.Network;
+using FishNet.Broadcast;
 using SanicballCore;
 using UnityEngine;
 
 namespace Sanicball.Logic
 {
-    public class PlayerMovement
-
+    public struct PlayerMovement : IBroadcast
     {
         public Guid ClientGuid { get; private set; }
         public ControlType CtrlType { get; private set; }
@@ -39,30 +38,6 @@ namespace Sanicball.Logic
                 rigidbody.linearVelocity,
                 rigidbody.angularVelocity,
                 player.BallObject.DirectionVector
-                );
-        }
-
-        public void WriteToMessage(NetBuffer msg)
-        {
-            msg.Write(ClientGuid);
-            msg.Write((byte)CtrlType);
-            msg.Write(Position);
-            msg.Write(Rotation);
-            msg.Write(Velocity);
-            msg.Write(AngularVelocity);
-            msg.Write(DirectionVector);
-        }
-
-        public static PlayerMovement ReadFromMessage(NetBuffer msg)
-        {
-            return new PlayerMovement(
-                msg.ReadGuid(),
-                (ControlType)msg.ReadByte(),
-                msg.ReadVector3(),
-                msg.ReadQuaternion(),
-                msg.ReadVector3(),
-                msg.ReadVector3(),
-                msg.ReadVector3()
                 );
         }
     }

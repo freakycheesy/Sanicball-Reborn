@@ -1,4 +1,7 @@
-﻿using Lidgren.Network;
+﻿using FishNet.Authenticating;
+using FishNet.Connection;
+using FishNet.Managing;
+using FishNet.Managing.Client;
 using Sanicball.UI;
 using SanicballCore;
 using UnityEngine;
@@ -19,7 +22,7 @@ namespace Sanicball.Logic
         private UI.PopupConnecting activeConnectingPopup;
 
         //NetClient for when joining online matches
-        private NetClient joiningClient;
+        private ClientManager joiningClient => NetworkManager.Instances[0].ClientManager;
         public static MatchStarter Instance;
         void Start()
         {
@@ -29,86 +32,10 @@ namespace Sanicball.Logic
 
         private void Update()
         {
-            if (joiningClient != null)
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                NetIncomingMessage msg;
-                while ((msg = joiningClient.ReadMessage()) != null)
-                {
-                    switch (msg.MessageType)
-                    {
-                        case NetIncomingMessageType.DebugMessage:
-                        case NetIncomingMessageType.VerboseDebugMessage:
-                            Debug.Log(msg.ReadString());
-                            break;
-
-                        case NetIncomingMessageType.WarningMessage:
-                            Debug.LogWarning(msg.ReadString());
-                            break;
-
-                        case NetIncomingMessageType.ErrorMessage:
-                            Debug.LogError(msg.ReadString());
-                            break;
-
-                        case NetIncomingMessageType.StatusChanged:
-                            NetConnectionStatus status = (NetConnectionStatus)msg.ReadByte();
-
-                            switch (status)
-                            {
-                                case NetConnectionStatus.Connected:
-                                    Debug.Log("Connected! Now waiting for match state");
-                                    PopupConnecting.ShowMessage("Receiving match state...");
-                                    break;
-
-                                case NetConnectionStatus.Disconnected:
-                                    PopupConnecting.ShowMessage(msg.ReadString());
-                                    break;
-
-                                default:
-                                    string statusMsg = msg.ReadString();
-                                    Debug.Log("Status change received: " + status + " - Message: " + statusMsg);
-                                    break;
-                            }
-                            break;
-
-                        case NetIncomingMessageType.Data:
-                            byte type = msg.ReadByte();
-                            if (type == MessageType.InitMessage)
-                            {
-                                try
-                                {
-                                    MatchState matchInfo = MatchState.ReadFromMessage(msg);
-                                    BeginOnlineGame(matchInfo);
-                                }
-                                catch (System.Exception ex)
-                                {
-                                    PopupConnecting.ShowMessage("Failed to read match message - cannot join server!");
-                                    Debug.LogError("Could not read match state, error: " + ex.Message);
-                                }
-
-                                /*string matchStateStr = "";
-                                try
-                                {
-                                    matchStateStr = msg.ReadString();
-                                    MatchState matchInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<MatchState>(matchStateStr);
-                                    BeginOnlineGame(matchInfo);
-                                }
-                                catch (Newtonsoft.Json.JsonException ex)
-                                {
-                                    activeConnectingPopup.ShowMessage("Failed to read match state - cannot join server!");
-                                    joiningClient.Disconnect("Failed to read match state");
-                                    Debug.LogError("Could not read match state, error: " + ex.Message);
-                                    Debug.LogError("Full message: " + matchStateStr);
-                                }*/
-                            }
-                            break;
-                    }
-                }
-                if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    popupHandler.CloseActivePopup();
-                    joiningClient.Disconnect("Cancelled");
-                    joiningClient = null;
-                }
+                popupHandler.CloseActivePopup();
+                joiningClient.Connection.Disconnect(true);
             }
         }
 
@@ -118,24 +45,17 @@ namespace Sanicball.Logic
             manager.InitLocalMatch();
         }
 
-        public void JoinOnlineGame(string ip = "127.0.0.1", int port = 25000)
+        public void JoinOnlineGame(string ip = "127.0.0.1", ushort port = 25000)
         {
-            JoinOnlineGame(new System.Net.IPEndPoint(System.Net.IPAddress.Parse(ip), port));
+            JoinOnlineGame(new(ip, port));
         }
 
-        public void JoinOnlineGame(System.Net.IPEndPoint endpoint)
+        public void JoinOnlineGame(ZaLobbyInfo lobbyInfo)
         {
-            NetPeerConfiguration conf = new NetPeerConfiguration(APP_ID);
-            joiningClient = new NetClient(conf);
-            joiningClient.Start();
-
-            //Create approval message
-            NetOutgoingMessage approval = joiningClient.CreateMessage();
-
             ClientInfo info = new ClientInfo(GameVersion.AS_FLOAT, GameVersion.IS_TESTING);
-            approval.Write(Newtonsoft.Json.JsonConvert.SerializeObject(info));
-
-            joiningClient.Connect(endpoint, approval);
+            NetworkManager.Instances[0].TransportManager.Transport.SetClientAddress(lobbyInfo.IP);
+            NetworkManager.Instances[0].TransportManager.Transport.SetPort(lobbyInfo.Port);
+            joiningClient.StartConnection();
 
             popupHandler.OpenPopup(connectingPopupPrefab);
 
@@ -146,7 +66,7 @@ namespace Sanicball.Logic
         private void BeginOnlineGame(MatchState matchState)
         {
             MatchManager manager = Instantiate(matchManagerPrefab);
-            manager.InitOnlineMatch(joiningClient, matchState);
+            manager.InitOnlineMatch(matchState);
         }
     }
 }

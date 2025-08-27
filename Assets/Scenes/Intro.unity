@@ -510,12 +510,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fe48636a277ddf4991a955565023fc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MenuScene:
-    m_AssetGUID: 451586f28ff22a946b895ef0d457d0d9
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_SubObjectGUID: 
-    m_EditorAssetChanged: 0
+  MenuScene: Assets/Scenes/Default/Menu.unity
   images:
   - {fileID: 932845008}
   - {fileID: 651264229}

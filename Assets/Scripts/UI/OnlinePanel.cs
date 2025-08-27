@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using Lidgren.Network;
+using FishNet.Managing;
+using FishNet.Transporting;
 using Sanicball.Data;
 using Sanicball.Logic;
+using SanicballCore;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -24,7 +26,7 @@ namespace Sanicball.UI
         //Stores server browser IPs, so they can be differentiated from LAN servers
         private List<string> serverBrowserIPs = new List<string>();
 
-        private NetClient discoveryClient;
+        private FishNet.Discovery.NetworkDiscovery discoveryClient;
         private UnityWebRequest serverBrowserRequester;
         private DateTime latestLocalRefreshTime;
         private DateTime latestBrowserRefreshTime;
@@ -32,11 +34,9 @@ namespace Sanicball.UI
         public void RefreshServers()
         {
             serverBrowserIPs.Clear();
+            discoveryClient.SearchForServers();
 
-            discoveryClient.DiscoverLocalPeers(25000);
-            latestLocalRefreshTime = DateTime.Now;
-
-			serverBrowserRequester = new UnityWebRequest(ActiveData.GameSettings.serverListURL);
+			//serverBrowserRequester = new UnityWebRequest(ActiveData.GameSettings.serverListURL);
 
             serverCountField.text = "Refreshing servers, hang on...";
             errorField.enabled = false;
@@ -52,11 +52,56 @@ namespace Sanicball.UI
         private void Awake()
         {
             errorField.enabled = false;
+            discoveryClient = FindAnyObjectByType<FishNet.Discovery.NetworkDiscovery>();
+            discoveryClient.SearchForServers();
 
-            NetPeerConfiguration config = new NetPeerConfiguration(OnlineMatchMessenger.APP_ID);
-            config.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
-            discoveryClient = new NetClient(config);
-            discoveryClient.Start();
+            discoveryClient.ServerFoundCallback += (msg) =>
+            {
+                ZaLobbyInfo lobbyInfo = new ZaLobbyInfo();
+                try
+                {
+                    lobbyInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<ZaLobbyInfo>(msg.ToString());
+                }
+                catch (Newtonsoft.Json.JsonException ex)
+                {
+                    Debug.LogError("Failed to deserialize info for a server: " + ex.Message);
+                }
+
+                //double timeDiff = (DateTime.UtcNow - info.Timestamp).TotalMilliseconds;
+                bool isLocal = !serverBrowserIPs.Contains(msg.Address.ToString());
+
+                DateTime timeToCompareTo = isLocal ? latestLocalRefreshTime : latestBrowserRefreshTime;
+                double timeDiff = (DateTime.Now - timeToCompareTo).TotalMilliseconds;
+
+                var server = Instantiate(serverListItemPrefab);
+                server.transform.SetParent(targetServerListContainer, false);
+                server.Init(lobbyInfo, msg, (int)timeDiff, isLocal);
+                servers.Add(server);
+                RefreshNavigation();
+
+                serverCountField.text = servers.Count + (servers.Count == 1 ? " server" : " servers");
+            }; //Hack to make sure the callback is not null
+
+            NetworkManager.Instances[0].ServerManager.OnServerConnectionState += StopDiscovery;
+
+            NetworkManager.Instances[0].ClientManager.OnClientConnectionState += StopDiscovery;
+        }
+
+        void OnDestroy()
+        {
+            NetworkManager.Instances[0].ServerManager.OnServerConnectionState -= StopDiscovery;
+
+            NetworkManager.Instances[0].ClientManager.OnClientConnectionState -= StopDiscovery;
+        }
+
+        private void StopDiscovery(ServerConnectionStateArgs state)
+        {
+            discoveryClient.StopSearchingOrAdvertising();
+        }
+
+        private void StopDiscovery(ClientConnectionStateArgs state)
+        {
+            discoveryClient.StopSearchingOrAdvertising();
         }
 
         private void Update()
@@ -72,74 +117,15 @@ namespace Sanicball.UI
             {
                 if (string.IsNullOrEmpty(serverBrowserRequester.error))
                 {
-                    latestBrowserRefreshTime = DateTime.Now;
-
-                    string result = serverBrowserRequester.downloadHandler.text;
-                    string[] entries = result.Split(new string[] { "<br>" }, StringSplitOptions.RemoveEmptyEntries);
-
-                    foreach (string entry in entries)
-                    {
-                        int seperationPoint = entry.LastIndexOf(':');
-                        string ip = entry.Substring(0, seperationPoint);
-                        string port = entry.Substring(seperationPoint + 1, entry.Length - (seperationPoint + 1));
-
-                        int portInt;
-                        if (int.TryParse(port, out portInt))
-                        {
-                            System.Threading.Thread discoverThread = new System.Threading.Thread(() => { discoveryClient.DiscoverKnownPeer(ip, portInt); });
-                            discoverThread.Start();
-                            serverBrowserIPs.Add(ip);
-                        }
-                    }
-					serverCountField.text = "0 servers";
+                    serverCountField.text = "0 servers";
                 }
                 else
                 {
                     Debug.LogError("Failed to receive servers - " + serverBrowserRequester.error);
-					serverCountField.text = "Cannot access server list URL!";
+                    serverCountField.text = "Cannot access server list URL!";
                 }
 
                 serverBrowserRequester = null;
-            }
-
-            //Check for messages on the discovery client
-            NetIncomingMessage msg;
-            while ((msg = discoveryClient.ReadMessage()) != null)
-            {
-                switch (msg.MessageType)
-                {
-                    case NetIncomingMessageType.DiscoveryResponse:
-                        ServerInfo info;
-                        try
-                        {
-                            info = Newtonsoft.Json.JsonConvert.DeserializeObject<ServerInfo>(msg.ReadString());
-                        }
-                        catch (Newtonsoft.Json.JsonException ex)
-                        {
-                            Debug.LogError("Failed to deserialize info for a server: " + ex.Message);
-                            continue;
-                        }
-
-                        //double timeDiff = (DateTime.UtcNow - info.Timestamp).TotalMilliseconds;
-                        bool isLocal = !serverBrowserIPs.Contains(msg.SenderEndPoint.Address.ToString());
-
-                        DateTime timeToCompareTo = isLocal ? latestLocalRefreshTime : latestBrowserRefreshTime;
-                        double timeDiff = (DateTime.Now - timeToCompareTo).TotalMilliseconds;
-
-                        var server = Instantiate(serverListItemPrefab);
-                        server.transform.SetParent(targetServerListContainer, false);
-                        server.Init(info, msg.SenderEndPoint, (int)timeDiff, isLocal);
-                        servers.Add(server);
-                        RefreshNavigation();
-
-                        serverCountField.text = servers.Count + (servers.Count == 1 ? " server" : " servers");
-
-                        break;
-
-                    default:
-                        Debug.Log("Server discovery client received an unhandled NetMessage (" + msg.MessageType + ")");
-                        break;
-                }
             }
         }
 

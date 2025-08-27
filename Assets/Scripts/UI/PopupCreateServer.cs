@@ -2,10 +2,11 @@
 using Sanicball.Data;
 using UnityEngine;
 using UnityEngine.UI;
-using SanicballCore.Server;
 using System;
 using System.Threading;
 using System.Collections;
+using FishNet.Transporting;
+using FishNet.Managing;
 
 namespace Sanicball.UI
 {
@@ -23,10 +24,6 @@ namespace Sanicball.UI
         private Text portOutput;
         [SerializeField]
         private UI.Popup connectingPopupPrefab = null;
-        [SerializeField]
-        private GameObject serverStarterPrefab = null;
-        [SerializeField]
-        private GameObject serverConnectorPrefab = null;
         [SerializeField]
         private UI.PopupHandler popupHandler = null;
         
@@ -52,18 +49,15 @@ namespace Sanicball.UI
                 portOutput.text = "Port must be at most 49151.";
                 yield break;
             }
-            
-            var serverStarter = Instantiate(serverStarterPrefab);
-            DontDestroyOnLoad(serverStarter);
-            serverStarter.GetComponent<LocalServerStarter>().InitServer(port, maxPlayers, nameInput.text, isPublicInput.isOn, ActiveData.GameSettings.serverListURL);
+            NetworkManager.Instances[0].ServerManager.StartConnection((ushort)port);
+            NetworkManager.Instances[0].ClientManager.StartConnection();
 
-            if(popupHandler != null){
+
+            if (popupHandler != null)
+            {
                 popupHandler.OpenPopup(connectingPopupPrefab);
                 PopupConnecting.ShowMessage("Creating Server...");
             }
-
-            var serverConnector = Instantiate(serverConnectorPrefab);
-            serverConnector.GetComponent<LocalServerConnect>().Connect("127.0.0.1", port);
         }
     }
 }
