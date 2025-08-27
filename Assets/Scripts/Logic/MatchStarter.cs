@@ -53,8 +53,7 @@ namespace Sanicball.Logic
         public void JoinOnlineGame(ZaLobbyInfo lobbyInfo)
         {
             ClientInfo info = new ClientInfo(GameVersion.AS_FLOAT, GameVersion.IS_TESTING);
-            NetworkManager.Instances[0].TransportManager.Transport.SetClientAddress(lobbyInfo.IP);
-            NetworkManager.Instances[0].TransportManager.Transport.SetPort(lobbyInfo.Port);
+            MatchManager.JoinLobby(lobbyInfo.IP, lobbyInfo.Port);
             joiningClient.StartConnection();
 
             popupHandler.OpenPopup(connectingPopupPrefab);

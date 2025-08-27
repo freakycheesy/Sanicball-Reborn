@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using FishNet.Managing;
+using FishNet.Managing.Scened;
 using FishNet.Transporting;
+using FishNet.Transporting.Bayou;
+using FishNet.Transporting.Multipass;
 using GameKit.Dependencies.Utilities.Types;
 using Newtonsoft.Json;
 using Sanicball.Data;
@@ -299,7 +302,24 @@ namespace Sanicball.Logic
 
         public void InitLocalMatch()
         {
-            InitOnlineMatch(null);
+            currentSettings = ActiveData.MatchSettings;
+            CreateLobby(7778);
+            messenger = new OnlineMatchMessenger(NetworkManager.Instances[0].ClientManager);
+
+            showSettingsOnLobbyLoad = true;
+            GoToLobby();
+        }
+
+        public static void CreateLobby(ushort port = 7778)
+        {
+            NetworkManager.Instances[0].ServerManager.StartConnection(port);
+            NetworkManager.Instances[0].ClientManager.StartConnection();
+        }
+
+        public static void JoinLobby(string ip, ushort port = 7778)
+        {
+            NetworkManager.Instances[0].TransportManager.Transport.SetClientAddress(ip);
+            NetworkManager.Instances[0].TransportManager.Transport.SetPort(port);
         }
 
         public void InitOnlineMatch(MatchState matchState)
@@ -370,7 +390,7 @@ namespace Sanicball.Logic
         private void Start()
         {
             if (Instance != this) return;
-            SceneManager.sceneLoaded += (_, _) => OnLevelHasLoaded();
+            UnityEngine.SceneManagement.SceneManager.sceneLoaded += (_, _) => OnLevelHasLoaded();
             DontDestroyOnLoad(gameObject);
             //A messenger should be created by now! Time to create some message listeners
             messenger.RegisterBroadcast<SettingsChangedMessage>(SettingsChangedCallback);
@@ -495,7 +515,10 @@ namespace Sanicball.Logic
 
             loadingStage = false;
             loadingLobby = true;
-            SceneManager.LoadSceneAsync(lobbyScene);
+            SceneLoadData data = new SceneLoadData(lobbyScene);
+            data.Options.Addressables = false;
+            data.ReplaceScenes = ReplaceOption.OnlineOnly;
+            NetworkManager.Instances[0].SceneManager.LoadGlobalScenes(data);
         }
 
         private void GoToStage()
@@ -569,7 +592,7 @@ namespace Sanicball.Logic
 
         private IEnumerator QuitMatchInternal(string reason)
         {
-            SceneManager.LoadSceneAsync(menuScene);
+            UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(menuScene);
 
             if (reason != null)
             {

@@ -49,9 +49,7 @@ namespace Sanicball.UI
                 portOutput.text = "Port must be at most 49151.";
                 yield break;
             }
-            NetworkManager.Instances[0].ServerManager.StartConnection((ushort)port);
-            NetworkManager.Instances[0].ClientManager.StartConnection();
-
+            MatchManager.CreateLobby((ushort)port);
 
             if (popupHandler != null)
             {
