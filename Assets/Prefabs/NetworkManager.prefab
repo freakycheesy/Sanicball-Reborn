@@ -56,8 +56,7 @@ GameObject:
   - component: {fileID: 6818551846960294037}
   - component: {fileID: 1872482782516259268}
   - component: {fileID: 2877945410175181361}
-  - component: {fileID: 5667744237273001090}
-  - component: {fileID: 2644734760683575858}
+  - component: {fileID: 7639104677302858940}
   - component: {fileID: 7258229147785463773}
   - component: {fileID: 3487722202694244541}
   - component: {fileID: 367162059254109569}
@@ -118,7 +117,7 @@ MonoBehaviour:
   _updateHostVisibility: 1
   _maximumTimedObserversDuration: 10
   _defaultConditions: []
---- !u!114 &5667744237273001090
+--- !u!114 &7639104677302858940
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,34 +126,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 9130736802413147131}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdee964473d743b1bc62fd8f82ca78f2, type: 3}
+  m_Script: {fileID: 11500000, guid: 6f48f002b825cbd45a19bd96d90f9edb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  secret: secret
-  port: 25000
-  searchTimeout: 0
-  automatic: 0
---- !u!114 &2644734760683575858
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9130736802413147131}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 362dfd7e6009fb44c90beec3df0ad853, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _useWss: 0
-  _sslConfiguration:
-    Enabled: 0
-    CertificatePath: 
-    CertificatePassword: 
-    SslProtocol: 0
-  _mtu: 1023
+  _stopSocketsOnThread: 1
+  _dontRoute: 0
+  _reuseAddress: 1
+  _unreliableMtu: 1023
+  _ipv4BindAddress: 
+  _enableIpv6: 1
+  _ipv6BindAddress: 
   _port: 7770
-  _maximumClients: 2000
+  _maximumClients: 4095
   _clientAddress: localhost
 --- !u!114 &7258229147785463773
 MonoBehaviour:
@@ -175,7 +158,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9130736802413147131}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 57ce8bbb58966cb45a7140f32da5327a, type: 3}
   m_Name: 

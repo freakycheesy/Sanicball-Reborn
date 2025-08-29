@@ -1,12 +1,13 @@
 ﻿using FishNet.Broadcast;
+using FishNet.Connection;
 
 namespace SanicballCore.MatchMessages
 {
     public struct ClientLeftMessage : IBroadcast
     {
-        public System.Guid ClientGuid { get; private set; }
+        public NetworkConnection ClientGuid { get; private set; }
 
-        public ClientLeftMessage(System.Guid clientGuid)
+        public ClientLeftMessage(NetworkConnection clientGuid)
         {
             ClientGuid = clientGuid;
         }

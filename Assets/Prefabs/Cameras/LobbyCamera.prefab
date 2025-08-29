@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 410998}
   - component: {fileID: 2089726}
   - component: {fileID: 12498890}
-  - component: {fileID: 8118712}
   - component: {fileID: 11464558}
   - component: {fileID: -1646099546377327815}
+  - component: {fileID: 8040392026941076621}
   m_Layer: 0
   m_Name: LobbyCamera
   m_TagString: MainCamera
@@ -95,14 +95,6 @@ Behaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 139758}
   m_Enabled: 1
---- !u!81 &8118712
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 139758}
-  m_Enabled: 1
 --- !u!114 &11464558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,3 +152,11 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!81 &8040392026941076621
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139758}
+  m_Enabled: 1

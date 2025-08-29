@@ -1,14 +1,15 @@
 ﻿using FishNet.Broadcast;
+using FishNet.Connection;
 
 namespace SanicballCore.MatchMessages
 {
     public struct CheckpointPassedMessage : IBroadcast
     {
-        public System.Guid ClientGuid { get; private set; }
+        public NetworkConnection ClientGuid { get; private set; }
         public ControlType CtrlType { get; private set; }
         public float LapTime { get; private set; }
 
-        public CheckpointPassedMessage(System.Guid clientGuid, ControlType ctrlType, float lapTime)
+        public CheckpointPassedMessage(NetworkConnection clientGuid, ControlType ctrlType, float lapTime)
         {
             ClientGuid = clientGuid;
             CtrlType = ctrlType;

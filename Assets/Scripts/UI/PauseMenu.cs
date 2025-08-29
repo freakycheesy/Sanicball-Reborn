@@ -1,4 +1,5 @@
-﻿using FishNet.Managing;
+﻿using FishNet;
+using FishNet.Managing;
 using Sanicball.Logic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -44,11 +45,11 @@ namespace Sanicball.UI
                 AudioListener.pause = true;
             }
 
-            if (SceneManager.GetActiveScene().name == "Lobby")
+            if (SceneManager.GetSceneAt(1).name == "Lobby")
             {
                 contextSensitiveButtonLabel.text = "Change match settings";
                 contextSensitiveButton.onClick.AddListener(MatchSettings);
-                if (OnlineMode && !NetworkManager.Instances[0].IsServerStarted)
+                if (OnlineMode && !InstanceFinder.IsServerStarted)
                 {
                     contextSensitiveButton.interactable = false;
                 }

@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using FishNet;
 using FishNet.Authenticating;
+using FishNet.Connection;
 using FishNet.Managing;
 using FishNet.Managing.Client;
 using FishNet.Managing.Scened;
@@ -66,7 +67,7 @@ namespace Sanicball.Logic
         private List<MatchClient> clients = new List<MatchClient>();
 
         //Holds the guid of the local client, to check if messages are directed at it.
-        private Guid myGuid;
+        private NetworkConnection myGuid;
 
         //List of all players - players are seperate from clients because each client can have
         //up to 4 players playing in splitscreen.
@@ -122,7 +123,7 @@ namespace Sanicball.Logic
         /// </summary>
         public MatchSettings CurrentSettings { get { return currentSettings; } }
 
-        public Guid LocalClientGuid { get { return myGuid; } }
+        public NetworkConnection LocalClientGuid { get { return myGuid; } }
 
         public bool AutoStartTimerOn { get { return autoStartTimerOn; } }
         public float AutoStartTimer { get { return autoStartTimer; } }
@@ -299,14 +300,21 @@ namespace Sanicball.Logic
         {
             Instance.currentSettings = ActiveData.MatchSettings;
             InstanceFinder.ServerManager.StartConnection(25000);
-            InstanceFinder.ClientManager.StartConnection();
-            Instance.showSettingsOnLobbyLoad = true;
-            Instance.GoToLobby();
+            InstanceFinder.ServerManager.OnServerConnectionState += (state) =>
+            {
+                if (state.ConnectionState.IsStartedOrStarting())
+                {
+                    InstanceFinder.ClientManager.StartConnection();
+                    Instance.showSettingsOnLobbyLoad = true;
+                    Instance.GoToLobby();
+                }
+            };
         }
 
         public void JoinLobby(string ip)
         {
             InstanceFinder.TransportManager.Transport.SetClientAddress(ip);
+            InstanceFinder.ClientManager.StartConnection();
         }
 
         public void InitOnlineMatch(MatchState matchState)
@@ -395,10 +403,9 @@ namespace Sanicball.Logic
             messenger.RegisterBroadcast<LoadLobbyMessage>(LoadLobbyCallback);
             messenger.RegisterBroadcast<AutoStartTimerMessage>(AutoStartTimerCallback);
 
-            //Create this client
-            myGuid = Guid.NewGuid();
             messenger.OnAuthenticated += () =>
             {
+                myGuid = InstanceFinder.ClientManager.Connection;
                 SendClientJoinedMessage(messenger);
             };
         }
@@ -517,7 +524,7 @@ namespace Sanicball.Logic
             loadingLobby = true;
             SceneLoadData data = new SceneLoadData(lobbyScene);
             data.Options.Addressables = false;
-            data.ReplaceScenes = ReplaceOption.OnlineOnly;
+            data.ReplaceScenes = ReplaceOption.All;
             InstanceFinder.SceneManager.LoadGlobalScenes(data);
         }
 
