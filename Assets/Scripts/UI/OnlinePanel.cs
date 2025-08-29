@@ -35,7 +35,7 @@ namespace Sanicball.UI
         public void RefreshServers()
         {
             serverBrowserIPs.Clear();
-            discoveryClient.SearchForServers();
+            discoveryClient?.SearchForServers();
 
 			//serverBrowserRequester = new UnityWebRequest(ActiveData.GameSettings.serverListURL);
 
