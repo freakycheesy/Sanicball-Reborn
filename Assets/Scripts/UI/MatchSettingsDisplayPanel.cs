@@ -38,10 +38,10 @@ namespace Sanicball.UI
         private void Manager_MatchSettingsChanged(object sender, System.EventArgs e)
         {
             MatchSettings s = manager.CurrentSettings;
-
-            targetStageCamPos = new Vector3(s.StageId * 50, stageLayoutCamera.transform.position.y, stageLayoutCamera.transform.position.z);
-            stageName.text = ActiveData.Stages[s.StageId].name;
-            stageImage.sprite = ActiveData.Stages[s.StageId].picture;
+            var stageId = ActiveData.GetIndexFromStage(ActiveData.GetStageByBarcode(s.StageBarcode));
+            targetStageCamPos = new Vector3(stageId * 50, stageLayoutCamera.transform.position.y, stageLayoutCamera.transform.position.z);
+            stageName.text = ActiveData.Stages[stageId].name;
+            stageImage.sprite = ActiveData.Stages[stageId].picture;
             lapCount.text = s.Laps + (s.Laps == 1 ? " lap" : " laps");
             aiOpponents.text = "";
             /*foreach (var i in s.aiCharacters)

@@ -84,17 +84,21 @@ namespace Sanicball.UI
 
         public void IncrementStage()
         {
-            if (tempSettings.StageId < ActiveData.Stages.Count - 1) tempSettings.StageId++;
+            var StageId = ActiveData.GetIndexFromStage(ActiveData.GetStageByBarcode(tempSettings.StageBarcode));
+            if (StageId < ActiveData.Stages.Count - 1) StageId++;
             else
-                tempSettings.StageId = 0;
+                StageId = 0;
+            tempSettings.StageBarcode = ActiveData.Stages[StageId].BARCODE;
             UpdateUiFields();
         }
 
         public void DecrementStage()
         {
-            if (tempSettings.StageId > 0) tempSettings.StageId--;
+            var StageId = ActiveData.GetIndexFromStage(ActiveData.GetStageByBarcode(tempSettings.StageBarcode));
+            if (StageId > 0) StageId--;
             else
-                tempSettings.StageId = ActiveData.Stages.Count - 1;
+                StageId = ActiveData.Stages.Count - 1;
+            tempSettings.StageBarcode = ActiveData.Stages[StageId].BARCODE;
             UpdateUiFields();
         }
 
@@ -174,7 +178,7 @@ namespace Sanicball.UI
 
         private void UpdateUiFields()
         {
-            stage.text = ActiveData.Stages[tempSettings.StageId].name;
+            stage.text = tempSettings.StageBarcode;
             laps.text = tempSettings.Laps.ToString();
             aiCount.text = tempSettings.AICount == 0 ? "None" : tempSettings.AICount.ToString();
             aiSkill.text = tempSettings.AISkill.ToString();

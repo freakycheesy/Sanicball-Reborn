@@ -13,7 +13,12 @@ namespace Sanicball.Gameplay
         private float speedLimit = 200f;
 
         private float rampoffset;
-        
+        public Renderer speedRampRenderer;
+
+        void Start()
+        {
+            speedRampRenderer = GetComponentInChildren<Renderer>();
+        }
         private void Update()
         {
             //Animate the panel on the boost pad
@@ -22,7 +27,7 @@ namespace Sanicball.Gameplay
             {
                 rampoffset += 1f;
             }
-            GetComponent<Renderer>().materials[1].SetTextureOffset("_MainTex", new Vector2(0f, rampoffset));
+            speedRampRenderer.materials[1].SetTextureOffset("_MainTex", new Vector2(0f, rampoffset));
         }
 
         private void OnTriggerEnter(Collider other)

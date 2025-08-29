@@ -29,7 +29,6 @@ namespace Sanicball.UI
             playerCountText.text = info.Players + "/" + info.MaxPlayers;
             pingText.text = pingMs + "ms";
             info.IP = endpoint.Address.ToString();
-            info.Port = (ushort)endpoint.Port;
         }
 
         public void Join()
@@ -37,7 +36,7 @@ namespace Sanicball.UI
             MatchStarter starter = MatchStarter.Instance;
             if (starter)
             {
-                starter.JoinOnlineGame(info.IP, info.Port);
+                starter.JoinOnlineGame(info.IP);
             }
             else
             {

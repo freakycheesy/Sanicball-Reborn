@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using FishNet;
 using FishNet.Managing;
 using FishNet.Transporting;
 using Sanicball.Data;
@@ -82,16 +83,16 @@ namespace Sanicball.UI
                 serverCountField.text = servers.Count + (servers.Count == 1 ? " server" : " servers");
             }; //Hack to make sure the callback is not null
 
-            NetworkManager.Instances[0].ServerManager.OnServerConnectionState += StopDiscovery;
+            InstanceFinder.ServerManager.OnServerConnectionState += StopDiscovery;
 
-            NetworkManager.Instances[0].ClientManager.OnClientConnectionState += StopDiscovery;
+            InstanceFinder.ClientManager.OnClientConnectionState += StopDiscovery;
         }
 
         void OnDestroy()
         {
-            NetworkManager.Instances[0].ServerManager.OnServerConnectionState -= StopDiscovery;
+            InstanceFinder.ServerManager.OnServerConnectionState -= StopDiscovery;
 
-            NetworkManager.Instances[0].ClientManager.OnClientConnectionState -= StopDiscovery;
+            InstanceFinder.ClientManager.OnClientConnectionState -= StopDiscovery;
         }
 
         private void StopDiscovery(ServerConnectionStateArgs state)

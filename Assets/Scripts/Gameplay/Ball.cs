@@ -1,4 +1,7 @@
 using System;
+using FishNet.CodeGenerating;
+using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using Sanicball.Data;
 using SanicballCore;
 using UnityEngine;
@@ -72,25 +75,25 @@ namespace Sanicball.Gameplay
     }
 
     [RequireComponent(typeof(Rigidbody))]
-    public class Ball : MonoBehaviour
+    public class Ball : NetworkBehaviour
     {
         //These are set using Init() when balls are instantiated
         //But you can set them from the editor to quickly test out a track
         [Header("Initial stats")]
-        [SerializeField]
-        private BallType type;
-        [SerializeField]
-        private ControlType ctrlType;
-        [SerializeField]
-        private int characterId;
-        [SerializeField]
-        private string nickname;
+        [SerializeField, AllowMutableSyncType]
+        private SyncVar<BallType> type;
+        [SerializeField, AllowMutableSyncType]
+        private SyncVar<ControlType> ctrlType;
+        [SerializeField, AllowMutableSyncType]
+        private SyncVar<int> characterId;
+        [SerializeField, AllowMutableSyncType]
+        private SyncVar<string> nickname;
         [SerializeField]
         private GameObject hatPrefab;
 
-        public BallType Type { get { return type; } }
-        public ControlType CtrlType { get { return ctrlType; } }
-        public int CharacterId { get { return characterId; } }
+        public BallType Type { get { return type.Value; } }
+        public ControlType CtrlType { get { return ctrlType.Value; } }
+        public int CharacterId { get { return characterId.Value; } }
 
         [Header("Subcategories")]
         [SerializeField]
@@ -113,7 +116,7 @@ namespace Sanicball.Gameplay
         public Vector3 DirectionVector { get; set; }
         public Vector3 Up { get; set; }
         public bool Brake { get; set; }
-        public string Nickname { get { return nickname; } }
+        public string Nickname { get { return nickname.Value; } }
 
         //Component caches
         private Rigidbody rb;
@@ -124,6 +127,7 @@ namespace Sanicball.Gameplay
         public event System.EventHandler RespawnRequested;
         public event System.EventHandler<CameraCreationArgs> CameraCreated;
 
+        [ServerRpc]
         public void Jump()
         {
             if (grounded && CanMove)
@@ -136,7 +140,8 @@ namespace Sanicball.Gameplay
                 grounded = false;
             }
         }
-
+        
+        [ServerRpc]
         public void RequestRespawn()
         {
             if (RespawnRequested != null)
@@ -145,10 +150,16 @@ namespace Sanicball.Gameplay
 
         public void Init(BallType type, ControlType ctrlType, int characterId, string nickname)
         {
-            this.type = type;
-            this.ctrlType = ctrlType;
-            this.characterId = characterId;
-            this.nickname = nickname;
+            this.type.Value = type;
+            this.ctrlType.Value = ctrlType;
+            this.characterId.Value = characterId;
+            this.nickname.Value = nickname;
+        }
+
+        [ServerRpc]
+        public void UpdateInput(Vector3 direction, bool brake)
+        {
+            
         }
 
         private void Start()
@@ -199,29 +210,29 @@ namespace Sanicball.Gameplay
             }
 
             //Create objects and components based on ball type
-            if (type == BallType.Player)
+            if (type.Value == BallType.Player)
             {
-                if (ctrlType != ControlType.None)
+                if (ctrlType.Value != ControlType.None)
                 {
                     IBallCamera camera;
                     //Create camera
                     if (ActiveData.GameSettings.useOldControls)
                     {
                         camera = Instantiate(prefabs.OldCamera);
-                        ((PivotCamera)camera).UseMouse = ctrlType == ControlType.Keyboard;
+                        ((PivotCamera)camera).UseMouse = ctrlType.Value == ControlType.Keyboard;
                     }
                     else
                     {
                         camera = Instantiate(prefabs.Camera);
                     }
                     camera.Target = rb;
-                    camera.CtrlType = ctrlType;
+                    camera.CtrlType = ctrlType.Value;
 
                     if (CameraCreated != null)
                         CameraCreated(this, new CameraCreationArgs(camera));
                 }
             }
-            if (type == BallType.LobbyPlayer)
+            if (Type == BallType.LobbyPlayer)
             {
                 //Make the lobby camera follow this ball
                 var cam = LobbyCamera.Instance;
@@ -230,29 +241,31 @@ namespace Sanicball.Gameplay
                     cam.AddBall(this);
                 }
             }
-            if ((type == BallType.Player || type == BallType.LobbyPlayer) && ctrlType != ControlType.None)
+            if ((Type == BallType.Player || Type == BallType.LobbyPlayer) && CtrlType != ControlType.None)
             {
                 //Create input component
                 input = gameObject.AddComponent<BallControlInput>();
             }
-            if (type == BallType.AI)
+            if (Type == BallType.AI)
             {
                 //Create AI component
                 gameObject.AddComponent<BallControlAI>();
             }
         }
-
+        public Renderer Renderer;
+        public TrailRenderer TrailRenderer;
         private void SetCharacter(Data.CharacterInfo c)
         {
-            GetComponent<Renderer>().material = c.material;
-            GetComponent<TrailRenderer>().material = c.trail;
-            if (c.name == "Super Sanic" && ActiveData.GameSettings.eSportsReady) {
-                GetComponent<TrailRenderer>().material = ActiveData.ESportsTrail;
+            Renderer.material = c.material;
+            TrailRenderer.material = c.trail;
+            if (c.name == "Super Sanic" && ActiveData.GameSettings.eSportsReady)
+            {
+                TrailRenderer.material = ActiveData.ESportsTrail;
             }
             transform.localScale = new Vector3(c.ballSize, c.ballSize, c.ballSize);
             if (c.alternativeMesh != null)
             {
-                GetComponent<MeshFilter>().mesh = c.alternativeMesh;
+                Renderer.GetComponent<MeshFilter>().mesh = c.alternativeMesh;
             }
             //set collision mesh too
             if (c.collisionMesh != null)

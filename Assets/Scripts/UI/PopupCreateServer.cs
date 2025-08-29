@@ -39,8 +39,8 @@ namespace Sanicball.UI
         {
             int maxPlayers;
             int.TryParse(maxPlayersInput.text, out maxPlayers);
-            int port;
-            int.TryParse(portInput.text, out port);
+            ushort port;
+            ushort.TryParse(portInput.text, out port);
             portOutput.text = "";
             if(port < 1024) {
                 portOutput.text = "Port must be at least 1024.";
@@ -49,7 +49,7 @@ namespace Sanicball.UI
                 portOutput.text = "Port must be at most 49151.";
                 yield break;
             }
-            MatchManager.CreateLobby((ushort)port);
+            MatchManager.Instance.CreateLobby();
 
             if (popupHandler != null)
             {

@@ -13,7 +13,7 @@ namespace Sanicball.Logic
         {
             var ball = (Ball)Instantiate(ballPrefab, position, rotation);
             ball.Init(ballType, ctrlType, character, nickname);
-
+            
             return ball;
         }
     }

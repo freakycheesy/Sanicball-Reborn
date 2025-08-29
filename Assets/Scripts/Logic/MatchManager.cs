@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using FishNet;
+using FishNet.Authenticating;
 using FishNet.Managing;
+using FishNet.Managing.Client;
 using FishNet.Managing.Scened;
 using FishNet.Transporting;
 using FishNet.Transporting.Bayou;
@@ -96,7 +99,6 @@ namespace Sanicball.Logic
 
         //Match messenger used to send and receive state changes.
         //This will be either a LocalMatchMessenger or OnlineMatchMessenger, but each are used the same way.
-        private MatchMessenger messenger;
 
         private UI.Chat activeChat;
 
@@ -105,12 +107,6 @@ namespace Sanicball.Logic
         private const int NET_UPDATES_PER_SECOND = 40;
 
         #region Properties
-
-        /// <summary>
-        /// True if playing online. Used for enabling online-only behaviour, like the client list and the chat
-        /// </summary>
-        public bool OnlineMode { get { return messenger is OnlineMatchMessenger; } }
-
         /// <summary>
         /// Contains all clients connected to the game. In offline matches this will always only contain one client.
         /// </summary>
@@ -139,38 +135,32 @@ namespace Sanicball.Logic
         public string matchSettingJson;
         public void RequestSettingsChange(MatchSettings newSettings)
         {
-            messenger.SendMessage(new SettingsChangedMessage(newSettings));
+            InstanceFinder.ServerManager.Broadcast(new SettingsChangedMessage(newSettings));
         }
 
         public void RequestPlayerJoin(ControlType ctrlType, int initialCharacter)
         {
-            if (!NetworkManager.Instances[0].ClientManager.Connection.IsActive)
-            {
-                Debug.LogError("Cannot join match when not active!");
-                NetworkManager.Instances[0].ClientManager.StartConnection();
-                return;
-            }
-            messenger.SendMessage(new PlayerJoinedMessage(myGuid, ctrlType, initialCharacter));
+            InstanceFinder.ClientManager.Broadcast(new PlayerJoinedMessage(myGuid, ctrlType, initialCharacter));
         }
 
         public void RequestPlayerLeave(ControlType ctrlType)
         {
-            messenger.SendMessage(new PlayerLeftMessage(myGuid, ctrlType));
+            InstanceFinder.ClientManager.Broadcast(new PlayerLeftMessage(myGuid, ctrlType));
         }
 
         public void RequestCharacterChange(ControlType ctrlType, int newCharacter)
         {
-            messenger.SendMessage(new CharacterChangedMessage(myGuid, ctrlType, newCharacter));
+            InstanceFinder.ClientManager.Broadcast(new CharacterChangedMessage(myGuid, ctrlType, newCharacter));
         }
 
         public void RequestReadyChange(ControlType ctrlType, bool ready)
         {
-            messenger.SendMessage(new ChangedReadyMessage(myGuid, ctrlType, ready));
+            InstanceFinder.ClientManager.Broadcast(new ChangedReadyMessage(myGuid, ctrlType, ready));
         }
 
         public void RequestLoadLobby()
         {
-            messenger.SendMessage(new LoadLobbyMessage());
+            InstanceFinder.ClientManager.Broadcast(new LoadLobbyMessage());
         }
 
         #endregion State changing methods
@@ -261,7 +251,7 @@ namespace Sanicball.Logic
                 var allReady = players.TrueForAll(a => a.ReadyToRace);
                 if (allReady && !lobbyTimerOn)
                 {
-                    StartLobbyTimer(NetworkManager.Instances[0].TimeManager.RoundTripTime);
+                    StartLobbyTimer(InstanceFinder.TimeManager.RoundTripTime);
                 }
                 if (!allReady && lobbyTimerOn)
                 {
@@ -293,7 +283,7 @@ namespace Sanicball.Logic
         private void AutoStartTimerCallback(AutoStartTimerMessage msg, Channel channel)
         {
             autoStartTimerOn = msg.Enabled;
-            autoStartTimer = currentSettings.AutoStartTime - NetworkManager.Instances[0].TimeManager.RoundTripTime;
+            autoStartTimer = currentSettings.AutoStartTime - InstanceFinder.TimeManager.RoundTripTime;
         }
 
         #endregion Match message callbacks
@@ -302,24 +292,21 @@ namespace Sanicball.Logic
 
         public void InitLocalMatch()
         {
-            currentSettings = ActiveData.MatchSettings;
-            CreateLobby(7778);
-            messenger = new OnlineMatchMessenger(NetworkManager.Instances[0].ClientManager);
-
-            showSettingsOnLobbyLoad = true;
-            GoToLobby();
+            CreateLobby();   
         }
 
-        public static void CreateLobby(ushort port = 7778)
+        public void CreateLobby()
         {
-            NetworkManager.Instances[0].ServerManager.StartConnection(port);
-            NetworkManager.Instances[0].ClientManager.StartConnection();
+            Instance.currentSettings = ActiveData.MatchSettings;
+            InstanceFinder.ServerManager.StartConnection(25000);
+            InstanceFinder.ClientManager.StartConnection();
+            Instance.showSettingsOnLobbyLoad = true;
+            Instance.GoToLobby();
         }
 
-        public static void JoinLobby(string ip, ushort port = 7778)
+        public void JoinLobby(string ip)
         {
-            NetworkManager.Instances[0].TransportManager.Transport.SetClientAddress(ip);
-            NetworkManager.Instances[0].TransportManager.Transport.SetPort(port);
+            InstanceFinder.TransportManager.Transport.SetClientAddress(ip);
         }
 
         public void InitOnlineMatch(MatchState matchState)
@@ -352,13 +339,14 @@ namespace Sanicball.Logic
             autoStartTimer = matchState.CurAutoStartTime;
 
             //Create messenger
-            OnlineMatchMessenger messenger = new OnlineMatchMessenger(NetworkManager.Instances[0].ClientManager);
-            this.messenger = messenger;
-            messenger.Disconnected += (sender, e) =>
+            InstanceFinder.ClientManager.OnClientConnectionState += (state) =>
             {
-                QuitMatch(e.Reason);
+                if (state.ConnectionState.IsStoppedOrStopping())
+                {
+                    QuitMatch("Client disconnected.");
+                }
             };
-            messenger.OnPlayerMovement += OnlinePlayerMovement;
+            //messenger.OnPlayerMovement += OnlinePlayerMovement;
 
             //Create chat
             activeChat = Instantiate(chatPrefab);
@@ -380,7 +368,7 @@ namespace Sanicball.Logic
         #endregion Match initializing
         void Awake()
         {
-            if (Instance && Instance != this)
+            if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
                 return;
@@ -390,9 +378,11 @@ namespace Sanicball.Logic
         private void Start()
         {
             if (Instance != this) return;
+            Instance = this;
             UnityEngine.SceneManagement.SceneManager.sceneLoaded += (_, _) => OnLevelHasLoaded();
             DontDestroyOnLoad(gameObject);
             //A messenger should be created by now! Time to create some message listeners
+            var messenger = InstanceFinder.ClientManager;
             messenger.RegisterBroadcast<SettingsChangedMessage>(SettingsChangedCallback);
             messenger.RegisterBroadcast<ClientJoinedMessage>(ClientJoinedCallback);
             messenger.RegisterBroadcast<ClientLeftMessage>(ClientLeftCallback);
@@ -407,27 +397,37 @@ namespace Sanicball.Logic
 
             //Create this client
             myGuid = Guid.NewGuid();
-            messenger.SendMessage(new ClientJoinedMessage(myGuid, ActiveData.GameSettings.nickname));
+            messenger.OnAuthenticated += () =>
+            {
+                SendClientJoinedMessage(messenger);
+            };
+        }
+
+        void SendClientJoinedMessage(ClientManager messenger)
+        {
+            ClientJoinedMessage message = new ClientJoinedMessage(myGuid, ActiveData.GameSettings.nickname);
+            messenger.Broadcast(message);
         }
 
         private void LocalChatMessageSent(object sender, UI.ChatMessageArgs args)
         {
             MatchClient myClient = clients.FirstOrDefault(a => a.Guid == myGuid);
-            messenger.SendMessage(new ChatMessage(myClient.Name, ChatMessageType.User, args.Text));
+            InstanceFinder.ClientManager.Broadcast(new ChatMessage(myClient.Name, ChatMessageType.User, args.Text));
         }
-
-        private void OnlinePlayerMovement(object sender, PlayerMovementArgs e)
-        {
-            MatchPlayer player = players.FirstOrDefault(a => a.ClientGuid == e.Movement.ClientGuid && a.CtrlType == e.Movement.CtrlType);
-            if (player != null && player.BallObject != null)
-            {
-                player.ProcessMovement(e.Timestamp, e.Movement);
-            }
-        }
-
+        /*
+                private void OnlinePlayerMovement(object sender, PlayerMovementArgs e)
+                {
+                    MatchPlayer player = players.FirstOrDefault(a => a.ClientGuid == e.Movement.ClientGuid && a.CtrlType == e.Movement.CtrlType);
+                    if (player != null && player.BallObject != null)
+                    {
+                        player.ProcessMovement(e.Timestamp, e.Movement);
+                    }
+                }
+        */
+        public bool OnlineMode => true;
         private void Update()
         {
-            messenger.UpdateListeners();
+            var messenger = InstanceFinder.ClientManager;
             matchSettingJson = JsonConvert.SerializeObject(currentSettings);
             //Pausing/unpausing
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7))
@@ -435,7 +435,6 @@ namespace Sanicball.Logic
                 if (!UI.PauseMenu.GamePaused)
                 {
                     UI.PauseMenu menu = Instantiate(pauseMenuPrefab);
-                    menu.OnlineMode = OnlineMode;
                 }
                 else
                 {
@@ -453,7 +452,7 @@ namespace Sanicball.Logic
                 //LoadRaceMessages don't need to be sent in online mode - the server will ignore it anyway.
                 if (lobbyTimer <= 0 && !OnlineMode)
                 {
-                    messenger.SendMessage(new LoadRaceMessage());
+                    messenger.Broadcast(new LoadRaceMessage());
                 }
             }
 
@@ -471,6 +470,7 @@ namespace Sanicball.Logic
                     netUpdateTimer = 1f / NET_UPDATES_PER_SECOND;
 
                     //Send local player positions to other clients
+                    /*
                     foreach (MatchPlayer player in players)
                     {
                         if (player.ClientGuid == myGuid && player.BallObject)
@@ -478,13 +478,13 @@ namespace Sanicball.Logic
                             ((OnlineMatchMessenger)messenger).SendPlayerMovement(player);
                         }
                     }
+                    */
                 }
             }
         }
 
         public void OnDestroy()
         {
-            messenger.Close();
             if (activeChat)
                 Destroy(activeChat.gameObject);
         }
@@ -518,12 +518,12 @@ namespace Sanicball.Logic
             SceneLoadData data = new SceneLoadData(lobbyScene);
             data.Options.Addressables = false;
             data.ReplaceScenes = ReplaceOption.OnlineOnly;
-            NetworkManager.Instances[0].SceneManager.LoadGlobalScenes(data);
+            InstanceFinder.SceneManager.LoadGlobalScenes(data);
         }
 
         private void GoToStage()
         {
-            CurrentStage = ActiveData.Stages[currentSettings.StageId];
+            CurrentStage = ActiveData.GetStageByBarcode(currentSettings.StageBarcode);
 
             loadingStage = true;
             loadingLobby = false;
@@ -581,7 +581,7 @@ namespace Sanicball.Logic
             inLobby = false;
 
             var raceManager = Instantiate(raceManagerPrefab);
-            raceManager.Init(currentSettings, this, messenger, joiningRaceInProgress);
+            raceManager.Init(currentSettings, this, joiningRaceInProgress);
             joiningRaceInProgress = false;
         }
 

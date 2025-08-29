@@ -47,6 +47,8 @@ namespace Sanicball.Gameplay
             //BRAKE FAST
             ball.Brake = GameInput.IsBraking(ball.CtrlType);
 
+            ball.UpdateInput(ball.DirectionVector, ball.Brake);
+            
             //JUMP FAST
             if (GameInput.IsJumping(ball.CtrlType))
             {

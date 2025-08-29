@@ -16,11 +16,8 @@ public class LocalServerConnect : MonoBehaviour {
 		popupHandler = PopupHandler.Instance;
 	}
 
-	public void Connect(string serverIp, ushort port = 7778){
-		Transport transport = NetworkManager.Instances[0].TransportManager.GetTransport(0);
-		transport.SetClientAddress(serverIp);
-		transport.SetPort(port);
-		transport.StartConnection(false);
+	public void Connect(string serverIp, ushort port = 25000){
+		MatchManager.Instance.JoinLobby(serverIp);
 	}
 
 	private bool Ping(string ip, int port){

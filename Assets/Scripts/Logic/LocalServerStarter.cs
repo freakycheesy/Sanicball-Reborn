@@ -6,14 +6,12 @@ using System.Threading;
 using FishNet.Managing;
 using FishNet.Managing.Server;
 using FishNet.Transporting;
+using Sanicball.Logic;
 
 public class LocalServerStarter : MonoBehaviour
 {
-	public void StartServer(string serverIp, ushort port = 7778)
+	public void StartServer()
 	{
-		Transport transport = NetworkManager.Instances[0].TransportManager.GetTransport(0);
-		transport.SetServerBindAddress(serverIp, IPAddressType.IPv4);
-		transport.SetPort(port);
-		transport.StartConnection(true);
+		MatchManager.Instance.CreateLobby();
 	}
 }

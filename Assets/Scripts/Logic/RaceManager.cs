@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FishNet;
 using FishNet.Managing;
 using FishNet.Transporting;
 using Sanicball.Data;
@@ -43,7 +44,6 @@ namespace Sanicball.Logic
         //Fields set in Init()
         private MatchSettings settings;
         private MatchManager matchManager;
-        private MatchMessenger messenger;
 
         //Misc
         private WaitingCamera activeWaitingCam;
@@ -90,7 +90,7 @@ namespace Sanicball.Logic
                     case RaceState.Waiting:
                         activeWaitingCam = Instantiate(waitingCamPrefab);
                         activeWaitingUI = Instantiate(waitingUIPrefab);
-                        activeWaitingUI.StageNameToShow = ActiveData.Stages[settings.StageId].name;
+                        activeWaitingUI.StageNameToShow = ActiveData.GetStageByBarcode(settings.StageBarcode).name;
                         if (matchManager.OnlineMode)
                         {
                             if (joinedWhileRaceInProgress)
@@ -150,12 +150,11 @@ namespace Sanicball.Logic
             CurrentState = RaceState.Racing;
         }
 
-        public void Init(MatchSettings settings, MatchManager matchManager, MatchMessenger messenger, bool raceIsInProgress)
+        public void Init(MatchSettings settings, MatchManager matchManager, bool raceIsInProgress)
         {
             this.settings = settings;
             this.matchManager = matchManager;
-            this.messenger = messenger;
-
+            var messenger = InstanceFinder.ClientManager;
             messenger.RegisterBroadcast<StartRaceMessage>(StartRaceCallback);
             messenger.RegisterBroadcast<ClientLeftMessage>(ClientLeftCallback);
             messenger.RegisterBroadcast<DoneRacingMessage>(DoneRacingCallback);
@@ -170,7 +169,7 @@ namespace Sanicball.Logic
 
         private void StartRaceCallback(StartRaceMessage msg, Channel channel)
         {
-            countdownOffset = NetworkManager.Instances[0].TimeManager.RoundTripTime;
+            countdownOffset = InstanceFinder.TimeManager.RoundTripTime;
             CurrentState = RaceState.Countdown;
         }
 
@@ -214,7 +213,7 @@ namespace Sanicball.Logic
                     );
 
                 //Create race player
-                var racePlayer = new RacePlayer(matchPlayer.BallObject, messenger, matchPlayer);
+                var racePlayer = new RacePlayer(matchPlayer.BallObject, matchPlayer);
                 players.Add(racePlayer);
                 racePlayer.LapRecordsEnabled = enableLapRecords && local;
                 racePlayer.FinishLinePassed += RacePlayer_FinishLinePassed;
@@ -238,7 +237,7 @@ namespace Sanicball.Logic
                     aiBall.CanMove = false;
 
                     //Create race player
-                    var racePlayer = new RacePlayer(aiBall, messenger, null);
+                    var racePlayer = new RacePlayer(aiBall, null);
                     players.Add(racePlayer);
                     racePlayer.FinishLinePassed += RacePlayer_FinishLinePassed;
 
@@ -272,6 +271,7 @@ namespace Sanicball.Logic
         {
             //Every time a player passes the finish line, check if it's done
             var rp = (RacePlayer)sender;
+            var messenger = InstanceFinder.ClientManager;
 
             if (rp.FinishReport == null && rp.Lap > settings.Laps)
             {
@@ -282,7 +282,7 @@ namespace Sanicball.Logic
                     if (rp.AssociatedMatchPlayer.ClientGuid == matchManager.LocalClientGuid)
                     {
                         //For local player balls, send a DoneRacingMessage.
-                        messenger.SendMessage(new DoneRacingMessage(rp.AssociatedMatchPlayer.ClientGuid, rp.AssociatedMatchPlayer.CtrlType, raceTimer, false));
+                        messenger.Broadcast(new DoneRacingMessage(rp.AssociatedMatchPlayer.ClientGuid, rp.AssociatedMatchPlayer.CtrlType, raceTimer, false));
                     }
                     //For remote player balls, do nothing.
                 }
@@ -324,6 +324,8 @@ namespace Sanicball.Logic
         }
         private void Start()
         {
+            var messenger = InstanceFinder.ClientManager;
+
             if (joinedWhileRaceInProgress)
             {
                 CurrentState = RaceState.Racing;
@@ -340,16 +342,18 @@ namespace Sanicball.Logic
             //In online mode, send a RaceStartMessage as soon as the track is loaded (which is now)
             if (matchManager.OnlineMode)
             {
-                messenger.SendMessage(new StartRaceMessage());
+                messenger.Broadcast(new StartRaceMessage());
             }
         }
 
         private void Update()
         {
+            var messenger = InstanceFinder.ClientManager;
+
             //In offline mode, send a RaceStartMessage once Space (Or A on any joystick) is pressed
             if (!matchManager.OnlineMode && CurrentState == RaceState.Waiting && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton0)))
             {
-                messenger.SendMessage(new StartRaceMessage());
+                messenger.Broadcast(new StartRaceMessage());
             }
 
             //Increment the race timer if it's been started
@@ -367,11 +371,12 @@ namespace Sanicball.Logic
 
         private void OnDestroy()
         {
+            var messenger = InstanceFinder.ClientManager;
             //ALL listeners created in Init() should be removed from the messenger here
             //Otherwise the race manager won't get destroyed properly
-            messenger.RemoveListener<StartRaceMessage>(StartRaceCallback);
-            messenger.RemoveListener<ClientLeftMessage>(ClientLeftCallback);
-            messenger.RemoveListener<DoneRacingMessage>(DoneRacingCallback);
+            messenger.UnregisterBroadcast<StartRaceMessage>(StartRaceCallback);
+            messenger.UnregisterBroadcast<ClientLeftMessage>(ClientLeftCallback);
+            messenger.UnregisterBroadcast<DoneRacingMessage>(DoneRacingCallback);
 
             //Call the Destroy method on all players to properly dispose them
             foreach (RacePlayer p in players)

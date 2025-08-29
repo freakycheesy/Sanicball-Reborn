@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using Sanicball.Data;
 
 namespace SanicballCore
 {
@@ -41,7 +42,7 @@ namespace SanicballCore
         [Newtonsoft.Json.JsonProperty]
         private string aiCharacters;
 
-        public int StageId { get; set; }
+        public string StageBarcode { get; set; }
         public int Laps { get; set; }
         public bool PowerupsEnabled{get; set; }
         public int AICount { get; set; }
@@ -65,7 +66,7 @@ namespace SanicballCore
         {
             return new MatchSettings()
             {
-                StageId = 0,
+                StageBarcode = "BK-TN.Main.Green Hill Zone",
                 Laps = 2,
                 AICount = 0,
                 AISkill = AISkillLevel.Average,

@@ -57,16 +57,16 @@ GameObject:
   - component: {fileID: 1872482782516259268}
   - component: {fileID: 2877945410175181361}
   - component: {fileID: 5667744237273001090}
-  - component: {fileID: 4200324804883259201}
   - component: {fileID: 2644734760683575858}
   - component: {fileID: 7258229147785463773}
   - component: {fileID: 3487722202694244541}
+  - component: {fileID: 367162059254109569}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &6818551846960294037
 Transform:
@@ -130,25 +130,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdee964473d743b1bc62fd8f82ca78f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  secret: saniclikesdeezballs
-  port: 7778
+  secret: secret
+  port: 25000
   searchTimeout: 0
-  automatic: 1
---- !u!114 &4200324804883259201
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9130736802413147131}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 314b449d3505bd24487ba69b61c2fda5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalServerActions: 1
-  _transports:
-  - {fileID: 2644734760683575858}
+  automatic: 0
 --- !u!114 &2644734760683575858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,3 +185,15 @@ MonoBehaviour:
   _offlineScene: Assets/Scenes/Default/Menu.unity
   _onlineScene: Assets/Scenes/Default/Lobby.unity
   _replaceScenes: 0
+--- !u!114 &367162059254109569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9130736802413147131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b5863e325df784a972147eee9caab6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

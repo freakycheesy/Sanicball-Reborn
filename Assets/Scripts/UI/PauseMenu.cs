@@ -22,7 +22,7 @@ namespace Sanicball.UI
 
         public static bool GamePaused { get { return GameObject.FindWithTag(pauseTag); } }
 
-        public bool OnlineMode { get; set; }
+        public bool OnlineMode => true;
         public static PauseMenu Instance;
         private void Awake()
         {

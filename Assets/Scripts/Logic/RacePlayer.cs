@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using FishNet;
 using FishNet.Managing;
 using FishNet.Transporting;
 using Sanicball.Data;
@@ -67,7 +68,6 @@ namespace Sanicball.Logic
         private StageReferences sr;
 
         //Associated logic
-        private MatchMessenger matchMessenger;
         private MatchPlayer associatedMatchPlayer;
         private bool waitingForCheckpointMessage;
 
@@ -99,11 +99,11 @@ namespace Sanicball.Logic
         public int Position { get; set; }
         public Checkpoint NextCheckpoint { get { return nextCheckpoint; } }
 
-        public RacePlayer(Ball ball, MatchMessenger matchMessenger, MatchPlayer associatedMatchPlayer)
+        public RacePlayer(Ball ball, MatchPlayer associatedMatchPlayer)
         {
             sr = StageReferences.Active;
 
-            this.matchMessenger = matchMessenger;
+            var matchMessenger = InstanceFinder.ClientManager;
             this.associatedMatchPlayer = associatedMatchPlayer;
             matchMessenger.RegisterBroadcast<CheckpointPassedMessage>(CheckpointPassedHandler);
             matchMessenger.RegisterBroadcast<RaceTimeoutMessage>(RaceTimeoutHandler);
@@ -177,6 +177,7 @@ namespace Sanicball.Logic
 
         private void Ball_CheckpointPassed(object sender, CheckpointPassArgs e)
         {
+            var matchMessenger = InstanceFinder.ClientManager;
             if (e.CheckpointPassed == nextCheckpoint)
             {
                 if (ball.Type == BallType.Player && ball.CtrlType != ControlType.None)
@@ -185,7 +186,7 @@ namespace Sanicball.Logic
                     {
                         //Send a match message for local players
                         waitingForCheckpointMessage = true;
-                        matchMessenger.SendMessage(new CheckpointPassedMessage(associatedMatchPlayer.ClientGuid, ball.CtrlType, lapTime));
+                        matchMessenger.Broadcast(new CheckpointPassedMessage(associatedMatchPlayer.ClientGuid, ball.CtrlType, lapTime));
                     }
                 }
                 else if (ball.Type == BallType.AI)
@@ -209,7 +210,7 @@ namespace Sanicball.Logic
         {
             if (associatedMatchPlayer != null && msg.ClientGuid == associatedMatchPlayer.ClientGuid && msg.CtrlType == associatedMatchPlayer.CtrlType)
             {
-                timeout = msg.Time - NetworkManager.Instances[0].TimeManager.RoundTripTime;
+                timeout = msg.Time - InstanceFinder.NetworkManager.TimeManager.RoundTripTime;
             }
         }
 
@@ -323,7 +324,7 @@ namespace Sanicball.Logic
 
         public void Destroy()
         {
-            matchMessenger.RemoveListener<CheckpointPassedMessage>(CheckpointPassedHandler);
+            InstanceFinder.ClientManager.UnregisterBroadcast<CheckpointPassedMessage>(CheckpointPassedHandler);
 
             if (Destroyed != null)
                 Destroyed(this, EventArgs.Empty);

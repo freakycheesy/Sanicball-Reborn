@@ -147,12 +147,14 @@ namespace Sanicball.UI
 
         private void CharacterSelectSubpanel_CharacterSelected(object sender, CharacterSelectionArgs e)
         {
+            Debug.Log("CharacterSelectSubpanel_CharacterSelected: " + e.SelectedCharacter);
             SetCharacter(e.SelectedCharacter);
             characterSelectSubpanel.gameObject.SetActive(false);
         }
 
         private void CharacterSelectSubpanel_Cancelled(object sender, System.EventArgs e)
         {
+            Debug.Log("CharacterSelectSubpanel_Cancelled: " + e.ToString());
             if (AssignedPlayer == null)
             {
                 playerManager.RemoveControlType(AssignedCtrlType);

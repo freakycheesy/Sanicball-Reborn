@@ -162,13 +162,11 @@ namespace Sanicball.UI
         {
             if (selected == 0)
             {
-                if (CancelSelected != null)
-                    CancelSelected(this, EventArgs.Empty);
+                CancelSelected?.Invoke(this, EventArgs.Empty);
             }
             else
             {
-                if (CharacterSelected != null)
-                    CharacterSelected(this, new CharacterSelectionArgs(Array.IndexOf(ActiveData.Characters.ToArray(), selectedChar)));
+                CharacterSelected?.Invoke(this, new CharacterSelectionArgs(Array.IndexOf(ActiveData.Characters.ToArray(), selectedChar)));
             }
         }
 

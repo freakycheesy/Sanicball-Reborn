@@ -1,4 +1,5 @@
-﻿using FishNet.Authenticating;
+﻿using FishNet;
+using FishNet.Authenticating;
 using FishNet.Connection;
 using FishNet.Managing;
 using FishNet.Managing.Client;
@@ -22,7 +23,6 @@ namespace Sanicball.Logic
         private UI.PopupConnecting activeConnectingPopup;
 
         //NetClient for when joining online matches
-        private ClientManager joiningClient => NetworkManager.Instances[0].ClientManager;
         public static MatchStarter Instance;
         void Start()
         {
@@ -35,7 +35,7 @@ namespace Sanicball.Logic
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 popupHandler.CloseActivePopup();
-                joiningClient.Connection.Disconnect(true);
+                InstanceFinder.ClientManager.Connection.Disconnect(true);
             }
         }
 
@@ -52,9 +52,7 @@ namespace Sanicball.Logic
 
         public void JoinOnlineGame(ZaLobbyInfo lobbyInfo)
         {
-            ClientInfo info = new ClientInfo(GameVersion.AS_FLOAT, GameVersion.IS_TESTING);
-            MatchManager.JoinLobby(lobbyInfo.IP, lobbyInfo.Port);
-            joiningClient.StartConnection();
+            MatchManager.Instance.JoinLobby(lobbyInfo.IP);
 
             popupHandler.OpenPopup(connectingPopupPrefab);
 
