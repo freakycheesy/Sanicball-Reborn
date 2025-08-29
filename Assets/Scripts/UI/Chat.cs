@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Linq;
-using SanicballCore.MatchMessages;
+using Sanicball.Data;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -40,7 +40,7 @@ namespace Sanicball.UI
         private CanvasGroup canvasGroup;
         private float visibleTime = 0;
 
-        public event System.EventHandler<ChatMessageArgs> MessageSent;
+        public event System.Action<string, string> MessageSent;
 
         private void Start()
         {
@@ -93,21 +93,13 @@ namespace Sanicball.UI
             }
         }
 
-        public void ShowMessage(ChatMessageType type, string from, string text)
+        public void ShowMessage(string from, string text)
         {
             Text messageObj = Instantiate(chatMessagePrefab);
 
             messageObj.transform.SetParent(chatMessageContainer, false);
-            switch (type)
-            {
-                case ChatMessageType.User:
-                    messageObj.text = string.Format("<color=#6688ff><b>{0}</b></color>: {1}", from, text);
-                    break;
+            messageObj.text = string.Format("<color=#6688ff><b>{0}</b></color>: {1}", from, text);
 
-                case ChatMessageType.System:
-                    messageObj.text = string.Format("<color=#ffff77><b>{0}</b></color>", text);
-                    break;
-            }
 
             visibleTime = MAX_VISIBLE_TIME;
         }
@@ -129,7 +121,7 @@ namespace Sanicball.UI
             if (text.Trim() != string.Empty)
             {
                 if (MessageSent != null)
-                    MessageSent(this, new ChatMessageArgs(text));
+                    MessageSent(ActiveData.GameSettings.nickname, text);
             }
             EventSystem.current.SetSelectedGameObject(prevSelectedObject);
 

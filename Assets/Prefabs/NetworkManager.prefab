@@ -58,7 +58,6 @@ GameObject:
   - component: {fileID: 2877945410175181361}
   - component: {fileID: 7639104677302858940}
   - component: {fileID: 7258229147785463773}
-  - component: {fileID: 3487722202694244541}
   - component: {fileID: 367162059254109569}
   m_Layer: 0
   m_Name: NetworkManager
@@ -151,23 +150,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c6eacaa60569d947b383df03fff1ea3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3487722202694244541
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9130736802413147131}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57ce8bbb58966cb45a7140f32da5327a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _enableGlobalScenes: 1
-  _startInOffline: 0
-  _offlineScene: Assets/Scenes/Default/Menu.unity
-  _onlineScene: Assets/Scenes/Default/Lobby.unity
-  _replaceScenes: 0
 --- !u!114 &367162059254109569
 MonoBehaviour:
   m_ObjectHideFlags: 0

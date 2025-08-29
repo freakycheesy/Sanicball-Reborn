@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FishNet;
+using FishNet.Connection;
 using FishNet.Managing;
 using FishNet.Transporting;
 using Sanicball.Data;
 using Sanicball.Gameplay;
 using Sanicball.UI;
 using SanicballCore;
-using SanicballCore.MatchMessages;
 using UnityEngine;
 
 namespace Sanicball.Logic
@@ -25,34 +25,34 @@ namespace Sanicball.Logic
     {
         //Prefabs
         [SerializeField]
-        private WaitingCamera waitingCamPrefab = null;
+        public WaitingCamera waitingCamPrefab = null;
         [SerializeField]
-        private WaitingUI waitingUIPrefab = null;
+        public WaitingUI waitingUIPrefab = null;
         [SerializeField]
-        private RaceCountdown raceCountdownPrefab = null;
+        public RaceCountdown raceCountdownPrefab = null;
         [SerializeField]
-        private PlayerUI playerUIPrefab = null;
+        public PlayerUI playerUIPrefab = null;
         [SerializeField]
-        private RaceUI raceUIPrefab = null;
+        public RaceUI raceUIPrefab = null;
         [SerializeField]
-        private SpectatorView spectatorViewPrefab = null;
+        public SpectatorView spectatorViewPrefab = null;
 
         //Race state
-        private List<RacePlayer> players = new List<RacePlayer>();
-        private RaceState currentState = RaceState.None;
+        public List<RacePlayer> players = new List<RacePlayer>();
+        public RaceState currentState = RaceState.None;
 
         //Fields set in Init()
-        private MatchSettings settings;
-        private MatchManager matchManager;
+        public MatchSettings settings;
+        public MatchManager matchManager;
 
         //Misc
-        private WaitingCamera activeWaitingCam;
-        private WaitingUI activeWaitingUI;
-        private double raceTimer = 0;
-        private bool raceTimerOn = false;
-        private RaceUI raceUI;
-        private float countdownOffset;
-        private bool joinedWhileRaceInProgress;
+        public WaitingCamera activeWaitingCam;
+        public WaitingUI activeWaitingUI;
+        public double raceTimer = 0;
+        public bool raceTimerOn = false;
+        public RaceUI raceUI;
+        public float countdownOffset;
+        public bool joinedWhileRaceInProgress;
 
         //Properties
         public System.TimeSpan RaceTime { get { return System.TimeSpan.FromSeconds(raceTimer); } }
@@ -65,7 +65,7 @@ namespace Sanicball.Logic
         //Return players as read only collection (easier to query)
         public System.Collections.ObjectModel.ReadOnlyCollection<RacePlayer> Players { get { return new System.Collections.ObjectModel.ReadOnlyCollection<RacePlayer>(players); } }
         public static RaceManager Instance;
-        private RaceState CurrentState
+        public RaceState CurrentState
         {
             get
             {
@@ -145,7 +145,7 @@ namespace Sanicball.Logic
             }
         }
 
-        private void Countdown_OnCountdownFinished(object sender, System.EventArgs e)
+        public void Countdown_OnCountdownFinished(object sender, System.EventArgs e)
         {
             CurrentState = RaceState.Racing;
         }
@@ -155,9 +155,6 @@ namespace Sanicball.Logic
             this.settings = settings;
             this.matchManager = matchManager;
             var messenger = InstanceFinder.ClientManager;
-            messenger.RegisterBroadcast<StartRaceMessage>(StartRaceCallback);
-            messenger.RegisterBroadcast<ClientLeftMessage>(ClientLeftCallback);
-            messenger.RegisterBroadcast<DoneRacingMessage>(DoneRacingCallback);
 
             if (raceIsInProgress)
             {
@@ -167,19 +164,19 @@ namespace Sanicball.Logic
             }
         }
 
-        private void StartRaceCallback(StartRaceMessage msg, Channel channel)
+        public void StartRaceCallback()
         {
             countdownOffset = InstanceFinder.TimeManager.RoundTripTime;
             CurrentState = RaceState.Countdown;
         }
 
-        private void ClientLeftCallback(ClientLeftMessage msg, Channel channel)
+        public void ClientLeftCallback(NetworkConnection guid)
         {
             //Find and remove all RacePlayers associated with players from this client
             //TODO: Find some way to still have the player in the race, although disabled - so that players leaving while finished don't just disappear
             foreach (RacePlayer racePlayer in players.ToList())
             {
-                if (racePlayer.AssociatedMatchPlayer != null && racePlayer.AssociatedMatchPlayer.ClientGuid == msg.ClientGuid)
+                if (racePlayer.AssociatedMatchPlayer != null && racePlayer.AssociatedMatchPlayer.ClientGuid == guid)
                 {
                     racePlayer.Destroy();
                     players.Remove(racePlayer);
@@ -187,7 +184,7 @@ namespace Sanicball.Logic
             }
         }
 
-        private void CreateBallObjects()
+        public void CreateBallObjects()
         {
             int nextBallPosition = 0;
             RaceBallSpawner ballSpawner = StageReferences.Active.spawnPoint;
@@ -267,7 +264,7 @@ namespace Sanicball.Logic
             }
         }
 
-        private void RacePlayer_FinishLinePassed(object sender, System.EventArgs e)
+        public void RacePlayer_FinishLinePassed(object sender, System.EventArgs e)
         {
             //Every time a player passes the finish line, check if it's done
             var rp = (RacePlayer)sender;
@@ -282,7 +279,7 @@ namespace Sanicball.Logic
                     if (rp.AssociatedMatchPlayer.ClientGuid == matchManager.LocalClientGuid)
                     {
                         //For local player balls, send a DoneRacingMessage.
-                        messenger.Broadcast(new DoneRacingMessage(rp.AssociatedMatchPlayer.ClientGuid, rp.AssociatedMatchPlayer.CtrlType, raceTimer, false));
+                        LobbyScript.Instance.DoneRacingRpc(rp.AssociatedMatchPlayer.ClientGuid, rp.AssociatedMatchPlayer.CtrlType, raceTimer, false);
                     }
                     //For remote player balls, do nothing.
                 }
@@ -294,16 +291,16 @@ namespace Sanicball.Logic
             }
         }
 
-        private void DoneRacingCallback(DoneRacingMessage msg, Channel channel)
+        public void DoneRacingCallback(NetworkConnection clientGuid, ControlType ctrlType, double raceTimer, bool vl)
         {
             RacePlayer rp = players.FirstOrDefault(a => a.AssociatedMatchPlayer != null
-            && a.AssociatedMatchPlayer.ClientGuid == msg.ClientGuid
-            && a.AssociatedMatchPlayer.CtrlType == msg.CtrlType);
+            && a.AssociatedMatchPlayer.ClientGuid == clientGuid
+            && a.AssociatedMatchPlayer.CtrlType == ctrlType);
 
-            DoneRacingInner(rp, msg.RaceTime, msg.Disqualified);
+            DoneRacingInner(rp, raceTimer, vl);
         }
 
-        private void DoneRacingInner(RacePlayer rp, double raceTime, bool disqualified)
+        public void DoneRacingInner(RacePlayer rp, double raceTime, bool disqualified)
         {
             int pos = players.IndexOf(rp) + 1;
             if (disqualified) pos = RaceFinishReport.DISQUALIFIED_POS;
@@ -318,11 +315,11 @@ namespace Sanicball.Logic
         }
 
         #region Unity event functions
-        private void Awake()
+        public void Awake()
         {
             Instance = this;
         }
-        private void Start()
+        public void Start()
         {
             var messenger = InstanceFinder.ClientManager;
 
@@ -342,18 +339,18 @@ namespace Sanicball.Logic
             //In online mode, send a RaceStartMessage as soon as the track is loaded (which is now)
             if (matchManager.OnlineMode)
             {
-                messenger.Broadcast(new StartRaceMessage());
+                LobbyScript.Instance.StartRaceRpc();
             }
         }
 
-        private void Update()
+        public void Update()
         {
             var messenger = InstanceFinder.ClientManager;
 
             //In offline mode, send a RaceStartMessage once Space (Or A on any joystick) is pressed
             if (!matchManager.OnlineMode && CurrentState == RaceState.Waiting && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton0)))
             {
-                messenger.Broadcast(new StartRaceMessage());
+                LobbyScript.Instance.StartRaceRpc();
             }
 
             //Increment the race timer if it's been started
@@ -369,14 +366,11 @@ namespace Sanicball.Logic
                 players[i].Position = i + 1;
         }
 
-        private void OnDestroy()
+        public void OnDestroy()
         {
             var messenger = InstanceFinder.ClientManager;
             //ALL listeners created in Init() should be removed from the messenger here
             //Otherwise the race manager won't get destroyed properly
-            messenger.UnregisterBroadcast<StartRaceMessage>(StartRaceCallback);
-            messenger.UnregisterBroadcast<ClientLeftMessage>(ClientLeftCallback);
-            messenger.UnregisterBroadcast<DoneRacingMessage>(DoneRacingCallback);
 
             //Call the Destroy method on all players to properly dispose them
             foreach (RacePlayer p in players)

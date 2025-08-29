@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using SanicballCore;
-using SanicballCore.MatchMessages;
 using UnityEngine;
 using Sanicball.Data;
 using FishNet.Connection;

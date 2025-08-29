@@ -9,6 +9,7 @@ using FishNet.Connection;
 using FishNet.Managing;
 using FishNet.Managing.Client;
 using FishNet.Managing.Scened;
+using FishNet.Object;
 using FishNet.Transporting;
 using FishNet.Transporting.Bayou;
 using FishNet.Transporting.Multipass;
@@ -17,7 +18,6 @@ using Newtonsoft.Json;
 using Sanicball.Data;
 using Sanicball.UI;
 using SanicballCore;
-using SanicballCore.MatchMessages;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Rendering.Universal;
@@ -33,9 +33,9 @@ namespace Sanicball.Logic
     {
         #region Events
 
-        public event EventHandler<MatchPlayerEventArgs> MatchPlayerAdded;
-        public event EventHandler<MatchPlayerEventArgs> MatchPlayerRemoved;
-        public event EventHandler MatchSettingsChanged;
+        public EventHandler<MatchPlayerEventArgs> MatchPlayerAdded;
+        public EventHandler<MatchPlayerEventArgs> MatchPlayerRemoved;
+        public EventHandler MatchSettingsChanged;
 
         #endregion Events
 
@@ -47,15 +47,15 @@ namespace Sanicball.Logic
 
         //Prefabs
         [SerializeField]
-        private PauseMenu pauseMenuPrefab;
+        public PauseMenu pauseMenuPrefab;
         [SerializeField]
-        private Chat chatPrefab;
+        public Chat chatPrefab;
         [SerializeField]
-        private RaceManager raceManagerPrefab;
+        public RaceManager raceManagerPrefab;
         [SerializeField]
-        private UI.Popup disconnectedPopupPrefab;
+        public UI.Popup disconnectedPopupPrefab;
         [SerializeField]
-        private Marker markerPrefab = null;
+        public Marker markerPrefab = null;
 
         #endregion Exposed fields
 
@@ -64,48 +64,48 @@ namespace Sanicball.Logic
         //List of all clients in the match. Only serves a purpose in online play.
         //In local play, this list will always only contain the local client.
         [SerializeField]
-        private List<MatchClient> clients = new List<MatchClient>();
+        public List<MatchClient> clients = new List<MatchClient>();
 
         //Holds the guid of the local client, to check if messages are directed at it.
-        private NetworkConnection myGuid;
+        public NetworkConnection myGuid;
 
         //List of all players - players are seperate from clients because each client can have
         //up to 4 players playing in splitscreen.
-        private List<MatchPlayer> players = new List<MatchPlayer>();
+        public List<MatchPlayer> players = new List<MatchPlayer>();
 
         //These settings will be used when starting a race
-        [SerializeField] private MatchSettings currentSettings = MatchSettings.CreateDefault();
+        [SerializeField] public MatchSettings currentSettings = MatchSettings.CreateDefault();
 
         //Lobby countdown timer stuff
-        private bool lobbyTimerOn = false;
-        private const float lobbyTimerMax = 3;
-        private float lobbyTimer = lobbyTimerMax;
+        public bool lobbyTimerOn = false;
+        public const float lobbyTimerMax = 3;
+        public float lobbyTimer = lobbyTimerMax;
 
         //Auto start timer (Only used in online mode)
-        private bool autoStartTimerOn = false;
-        private float autoStartTimer = 0;
+        public bool autoStartTimerOn = false;
+        public float autoStartTimer = 0;
 
         #endregion Match state
 
         #region Scenes and scene initializing
 
         //Bools for scene initializing and related stuff
-        private bool inLobby = false; //Are we in the lobby or in a race?
-        private bool loadingLobby = false;
-        private bool loadingStage = false;
-        private bool joiningRaceInProgress = false; //If true, RaceManager will be created as if a race was already in progress.
-        private bool showSettingsOnLobbyLoad = false; //If true, the match settings window will pop up when the lobby scene is entered.
+        public bool inLobby = false; //Are we in the lobby or in a race?
+        public bool loadingLobby = false;
+        public bool loadingStage = false;
+        public bool joiningRaceInProgress = false; //If true, RaceManager will be created as if a race was already in progress.
+        public bool showSettingsOnLobbyLoad = false; //If true, the match settings window will pop up when the lobby scene is entered.
 
         #endregion Scenes and scene initializing
 
         //Match messenger used to send and receive state changes.
         //This will be either a LocalMatchMessenger or OnlineMatchMessenger, but each are used the same way.
 
-        private UI.Chat activeChat;
+        public UI.Chat activeChat;
 
         //Timer used for syncing realtime stuff in online
-        private float netUpdateTimer = 0;
-        private const int NET_UPDATES_PER_SECOND = 40;
+        public float netUpdateTimer = 0;
+        public const int NET_UPDATES_PER_SECOND = 40;
 
         #region Properties
         /// <summary>
@@ -121,7 +121,7 @@ namespace Sanicball.Logic
         /// <summary>
         /// Current settings for this match. On remote clients, this is only used for showing settings on the UI.
         /// </summary>
-        public MatchSettings CurrentSettings { get { return currentSettings; } }
+        public MatchSettings CurrentSettings { get { return currentSettings; } set{ currentSettings = value; } }
 
         public NetworkConnection LocalClientGuid { get { return myGuid; } }
 
@@ -134,83 +134,56 @@ namespace Sanicball.Logic
         #region State changing methods
         [TextArea(1, 50)]
         public string matchSettingJson;
+
+        [Server]
         public void RequestSettingsChange(MatchSettings newSettings)
         {
-            InstanceFinder.ServerManager.Broadcast(new SettingsChangedMessage(newSettings));
+            LobbyScript.Instance.ChangeSettingsRpc(newSettings);
         }
 
         public void RequestPlayerJoin(ControlType ctrlType, int initialCharacter)
         {
-            InstanceFinder.ClientManager.Broadcast(new PlayerJoinedMessage(myGuid, ctrlType, initialCharacter));
+            LobbyScript.Instance.PlayerJoinRpc(myGuid, ctrlType, initialCharacter);
         }
 
         public void RequestPlayerLeave(ControlType ctrlType)
         {
-            InstanceFinder.ClientManager.Broadcast(new PlayerLeftMessage(myGuid, ctrlType));
+            LobbyScript.Instance.PlayerLeaveRpc(myGuid, ctrlType);
         }
 
         public void RequestCharacterChange(ControlType ctrlType, int newCharacter)
         {
-            InstanceFinder.ClientManager.Broadcast(new CharacterChangedMessage(myGuid, ctrlType, newCharacter));
+            LobbyScript.Instance.CharacterChangedRpc(myGuid, ctrlType, newCharacter);
         }
 
         public void RequestReadyChange(ControlType ctrlType, bool ready)
         {
-            InstanceFinder.ClientManager.Broadcast(new ChangedReadyMessage(myGuid, ctrlType, ready));
+            LobbyScript.Instance.ChangedReadyRpc(myGuid, ctrlType, ready);
         }
 
         public void RequestLoadLobby()
         {
-            InstanceFinder.ClientManager.Broadcast(new LoadLobbyMessage());
+            LobbyScript.Instance.LoadLobbyRpc();
         }
 
         #endregion State changing methods
 
         #region Match message callbacks
 
-        private void SettingsChangedCallback(SettingsChangedMessage msg, Channel channel)
-        {
-            currentSettings = msg.NewMatchSettings;
-            MatchSettingsChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void ClientJoinedCallback(ClientJoinedMessage msg, Channel channel)
-        {
-            clients.Add(new MatchClient(msg.ClientGuid, msg.ClientName));
-            Debug.Log("New client " + msg.ClientName);
-        }
-
-        private void ClientLeftCallback(ClientLeftMessage msg, Channel channel)
+        public void ClientLeftCallback(NetworkConnection guid)
         {
             //Remove all players added by this client
-            List<MatchPlayer> playersToRemove = players.Where(a => a.ClientGuid == msg.ClientGuid).ToList();
+            List<MatchPlayer> playersToRemove = players.Where(a => a.ClientGuid == guid).ToList();
             foreach (MatchPlayer player in playersToRemove)
             {
-                PlayerLeftCallback(new PlayerLeftMessage(player.ClientGuid, player.CtrlType), channel);
+                PlayerLeftCallback(player.ClientGuid, player.CtrlType);
             }
             //Remove the client
-            clients.RemoveAll(a => a.Guid == msg.ClientGuid);
+            clients.RemoveAll(a => a.Guid == guid);
         }
-
-        private void PlayerJoinedCallback(PlayerJoinedMessage msg, Channel channel)
+        public void PlayerLeftCallback(NetworkConnection guid, ControlType type)
         {
-            var p = new MatchPlayer(msg.ClientGuid, msg.CtrlType, msg.InitialCharacter);
-            players.Add(p);
-
-            if (inLobby)
-            {
-                SpawnLobbyBall(p);
-            }
-
-            StopLobbyTimer();
-
-            if (MatchPlayerAdded != null)
-                MatchPlayerAdded(this, new MatchPlayerEventArgs(p, msg.ClientGuid == myGuid));
-        }
-
-        private void PlayerLeftCallback(PlayerLeftMessage msg, Channel channel)
-        {
-            var player = players.FirstOrDefault(a => a.ClientGuid == msg.ClientGuid && a.CtrlType == msg.CtrlType);
+            var player = players.FirstOrDefault(a => a.ClientGuid == guid && a.CtrlType == type);
             if (player != null)
             {
                 players.Remove(player);
@@ -222,28 +195,28 @@ namespace Sanicball.Logic
                 }
 
                 if (MatchPlayerRemoved != null)
-                    MatchPlayerRemoved(this, new MatchPlayerEventArgs(player, msg.ClientGuid == myGuid)); //TODO: determine if removed player was local
+                    MatchPlayerRemoved(this, new MatchPlayerEventArgs(player, guid == myGuid)); //TODO: determine if removed player was local
             }
         }
 
-        private void CharacterChangedCallback(CharacterChangedMessage msg, Channel channel)
+        public void CharacterChangedCallback(NetworkConnection myGuid, ControlType ctrlType, int newCharacter)
         {
             if (!inLobby)
             {
                 Debug.LogError("Cannot set character outside of lobby!");
             }
 
-            var player = players.FirstOrDefault(a => a.ClientGuid == msg.ClientGuid && a.CtrlType == msg.CtrlType);
+            var player = players.FirstOrDefault(a => a.ClientGuid == myGuid && a.CtrlType == ctrlType);
             if (player != null)
             {
-                player.CharacterId = msg.NewCharacter;
+                player.CharacterId = newCharacter;
                 SpawnLobbyBall(player);
             }
         }
 
-        private void ChangedReadyCallback(ChangedReadyMessage msg, Channel channel)
+        public void ChangedReadyCallback(NetworkConnection myGuid, ControlType ctrlType, bool ready)
         {
-            var player = players.FirstOrDefault(a => a.ClientGuid == msg.ClientGuid && a.CtrlType == msg.CtrlType);
+            var player = players.FirstOrDefault(a => a.ClientGuid == myGuid && a.CtrlType == ctrlType);
             if (player != null)
             {
                 player.ReadyToRace = !player.ReadyToRace;
@@ -261,7 +234,7 @@ namespace Sanicball.Logic
             }
         }
 
-        private void LoadRaceCallback(LoadRaceMessage msg, Channel channel)
+        public void LoadRaceCallback()
         {
             StopLobbyTimer();
             CameraFade.StartAlphaFade(Color.black, false, 0.3f, 0.05f, () =>
@@ -270,20 +243,20 @@ namespace Sanicball.Logic
             });
         }
 
-        private void ChatCallback(ChatMessage msg, Channel channel)
+        public void ChatCallback(string from, string text)
         {
             if (activeChat)
-                activeChat.ShowMessage(msg.Type, msg.From, msg.Text);
+                activeChat.ShowMessage(from, text);
         }
 
-        private void LoadLobbyCallback(LoadLobbyMessage msg, Channel channel)
+        public void LoadLobbyCallback()
         {
             GoToLobby();
         }
 
-        private void AutoStartTimerCallback(AutoStartTimerMessage msg, Channel channel)
+        public void AutoStartTimerCallback(bool Enabled)
         {
-            autoStartTimerOn = msg.Enabled;
+            autoStartTimerOn = Enabled;
             autoStartTimer = currentSettings.AutoStartTime - InstanceFinder.TimeManager.RoundTripTime;
         }
 
@@ -302,7 +275,7 @@ namespace Sanicball.Logic
             InstanceFinder.ServerManager.StartConnection(25000);
             InstanceFinder.ServerManager.OnServerConnectionState += (state) =>
             {
-                if (InstanceFinder.IsServerOnlyStarted)
+                if (state.ConnectionState.IsStartedOrStarting()&&InstanceFinder.ServerManager.Started)
                 {
                     InstanceFinder.ClientManager.StartConnection();
                     Instance.showSettingsOnLobbyLoad = true;
@@ -383,7 +356,7 @@ namespace Sanicball.Logic
             }
             Instance = this;
         }
-        private void Start()
+        public void Start()
         {
             if (Instance != this) return;
             Instance = this;
@@ -391,38 +364,26 @@ namespace Sanicball.Logic
             DontDestroyOnLoad(gameObject);
             //A messenger should be created by now! Time to create some message listeners
             var messenger = InstanceFinder.ClientManager;
-            messenger.RegisterBroadcast<SettingsChangedMessage>(SettingsChangedCallback);
-            messenger.RegisterBroadcast<ClientJoinedMessage>(ClientJoinedCallback);
-            messenger.RegisterBroadcast<ClientLeftMessage>(ClientLeftCallback);
-            messenger.RegisterBroadcast<PlayerJoinedMessage>(PlayerJoinedCallback);
-            messenger.RegisterBroadcast<PlayerLeftMessage>(PlayerLeftCallback);
-            messenger.RegisterBroadcast<CharacterChangedMessage>(CharacterChangedCallback);
-            messenger.RegisterBroadcast<ChangedReadyMessage>(ChangedReadyCallback);
-            messenger.RegisterBroadcast<LoadRaceMessage>(LoadRaceCallback);
-            messenger.RegisterBroadcast<ChatMessage>(ChatCallback);
-            messenger.RegisterBroadcast<LoadLobbyMessage>(LoadLobbyCallback);
-            messenger.RegisterBroadcast<AutoStartTimerMessage>(AutoStartTimerCallback);
 
             messenger.OnAuthenticated += () =>
             {
-                myGuid = InstanceFinder.ClientManager.Connection;
-                SendClientJoinedMessage(messenger);
+                myGuid = LobbyScript.Instance.LocalConnection;
+                SendClientJoinedMessage();
             };
         }
 
-        void SendClientJoinedMessage(ClientManager messenger)
+        void SendClientJoinedMessage()
         {
-            ClientJoinedMessage message = new ClientJoinedMessage(myGuid, ActiveData.GameSettings.nickname);
-            messenger.Broadcast(message);
+            LobbyScript.Instance.ClientJoinRpc(myGuid, ActiveData.GameSettings.nickname);
         }
 
-        private void LocalChatMessageSent(object sender, UI.ChatMessageArgs args)
+        public void LocalChatMessageSent(string from, string text)
         {
             MatchClient myClient = clients.FirstOrDefault(a => a.Guid == myGuid);
-            InstanceFinder.ClientManager.Broadcast(new ChatMessage(myClient.Name, ChatMessageType.User, args.Text));
+            ChatCallback(from, text);
         }
         /*
-                private void OnlinePlayerMovement(object sender, PlayerMovementArgs e)
+                public void OnlinePlayerMovement(object sender, PlayerMovementArgs e)
                 {
                     MatchPlayer player = players.FirstOrDefault(a => a.ClientGuid == e.Movement.ClientGuid && a.CtrlType == e.Movement.CtrlType);
                     if (player != null && player.BallObject != null)
@@ -432,7 +393,7 @@ namespace Sanicball.Logic
                 }
         */
         public bool OnlineMode => true;
-        private void Update()
+        public void Update()
         {
             var messenger = InstanceFinder.ClientManager;
             matchSettingJson = JsonConvert.SerializeObject(currentSettings);
@@ -459,7 +420,7 @@ namespace Sanicball.Logic
                 //LoadRaceMessages don't need to be sent in online mode - the server will ignore it anyway.
                 if (lobbyTimer <= 0 && !OnlineMode)
                 {
-                    messenger.Broadcast(new LoadRaceMessage());
+                    LobbyScript.Instance.LoadRaceRpc();
                 }
             }
 
@@ -498,14 +459,14 @@ namespace Sanicball.Logic
 
         #region Players ready and lobby timer
 
-        private void StartLobbyTimer(float offset = 0)
+        public void StartLobbyTimer(float offset = 0)
         {
             lobbyTimerOn = true;
             lobbyTimer -= offset;
             LobbyReferences.Active.CountdownField.enabled = true;
         }
 
-        private void StopLobbyTimer()
+        public void StopLobbyTimer()
         {
             lobbyTimerOn = false;
             lobbyTimer = lobbyTimerMax;
@@ -516,7 +477,8 @@ namespace Sanicball.Logic
 
         #region Scene changing / race loading
 
-        private void GoToLobby()
+        [Server]
+        public void GoToLobby()
         {
             if (inLobby) return;
 
@@ -528,7 +490,8 @@ namespace Sanicball.Logic
             InstanceFinder.SceneManager.LoadGlobalScenes(data);
         }
 
-        private void GoToStage()
+        [Server]
+        public void GoToStage()
         {
             CurrentStage = ActiveData.GetStageByBarcode(currentSettings.StageBarcode);
 
@@ -546,7 +509,7 @@ namespace Sanicball.Logic
         public static StageInfo CurrentStage;
 
         //Check if we were loading the lobby or the race
-        private void OnLevelHasLoaded()
+        public void OnLevelHasLoaded()
         {
             if (loadingLobby)
             {
@@ -565,7 +528,7 @@ namespace Sanicball.Logic
         }
 
         //Initiate the lobby after loading lobby scene
-        private void InitLobby()
+        public void InitLobby()
         {
             inLobby = true;
 
@@ -583,7 +546,7 @@ namespace Sanicball.Logic
         }
 
         //Initiate a race after loading the stage scene
-        private void InitRace()
+        public void InitRace()
         {
             inLobby = false;
 
@@ -597,7 +560,7 @@ namespace Sanicball.Logic
             StartCoroutine(QuitMatchInternal(reason));
         }
 
-        private IEnumerator QuitMatchInternal(string reason)
+        public IEnumerator QuitMatchInternal(string reason)
         {
             UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(menuScene);
 
@@ -614,7 +577,7 @@ namespace Sanicball.Logic
 
         #endregion Scene changing / race loading
 
-        private void SpawnLobbyBall(MatchPlayer player)
+        public void SpawnLobbyBall(MatchPlayer player)
         {
             var spawner = LobbyReferences.Active.BallSpawner;
             if (player.BallObject != null)

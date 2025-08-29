@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using FishNet;
+using FishNet.Connection;
 using FishNet.Managing;
 using FishNet.Transporting;
 using Sanicball.Data;
 using Sanicball.Gameplay;
 using SanicballCore;
-using SanicballCore.MatchMessages;
 using UnityEngine;
 
 namespace Sanicball.Logic
@@ -18,8 +18,8 @@ namespace Sanicball.Logic
         /// </summary>
         public const int DISQUALIFIED_POS = -1;
 
-        private TimeSpan time;
-        private int position;
+        public TimeSpan time;
+        public int position;
 
         public int Position { get { return position; } }
         public TimeSpan Time { get { return time; } }
@@ -34,8 +34,8 @@ namespace Sanicball.Logic
 
     public class NextCheckpointPassArgs : EventArgs
     {
-        public int IndexOfPreviousCheckpoint { get; private set; }
-        public TimeSpan CurrentLapTime { get; private set; }
+        public int IndexOfPreviousCheckpoint { get; set; }
+        public TimeSpan CurrentLapTime { get; set; }
 
         public NextCheckpointPassArgs(int indexOfPreviousCheckpoint, TimeSpan currentLapTime)
         {
@@ -47,29 +47,29 @@ namespace Sanicball.Logic
     [Serializable] //This is so the list if race players can be viewed in the inspector
     public class RacePlayer
     {
-        private Ball ball;
-        private IBallCamera ballCamera;
-        private RaceFinishReport finishReport;
+        public Ball ball;
+        public IBallCamera ballCamera;
+        public RaceFinishReport finishReport;
 
         //Race progress
-        private int lap;
-        private int currentCheckpointIndex;
+        public int lap;
+        public int currentCheckpointIndex;
 
         //Checkpoint related stuff
-        private Vector3 currentCheckpointPos;
-        private Checkpoint nextCheckpoint;
+        public Vector3 currentCheckpointPos;
+        public Checkpoint nextCheckpoint;
 
         //Time
-        private float lapTime;
-        private float[] checkpointTimes;
-        private float timeout;
+        public float lapTime;
+        public float[] checkpointTimes;
+        public float timeout;
 
         //Cache of the scene's StageReferences object (Because it's used often)
-        private StageReferences sr;
+        public StageReferences sr;
 
         //Associated logic
-        private MatchPlayer associatedMatchPlayer;
-        private bool waitingForCheckpointMessage;
+        public MatchPlayer associatedMatchPlayer;
+        public bool waitingForCheckpointMessage;
 
         //Events
         public event EventHandler<NextCheckpointPassArgs> NextCheckpointPassed;
@@ -105,8 +105,6 @@ namespace Sanicball.Logic
 
             var matchMessenger = InstanceFinder.ClientManager;
             this.associatedMatchPlayer = associatedMatchPlayer;
-            matchMessenger.RegisterBroadcast<CheckpointPassedMessage>(CheckpointPassedHandler);
-            matchMessenger.RegisterBroadcast<RaceTimeoutMessage>(RaceTimeoutHandler);
 
             lap = 1;
 
@@ -175,7 +173,7 @@ namespace Sanicball.Logic
             return Lap + lapProg;
         }
 
-        private void Ball_CheckpointPassed(object sender, CheckpointPassArgs e)
+        public void Ball_CheckpointPassed(object sender, CheckpointPassArgs e)
         {
             var matchMessenger = InstanceFinder.ClientManager;
             if (e.CheckpointPassed == nextCheckpoint)
@@ -186,7 +184,8 @@ namespace Sanicball.Logic
                     {
                         //Send a match message for local players
                         waitingForCheckpointMessage = true;
-                        matchMessenger.Broadcast(new CheckpointPassedMessage(associatedMatchPlayer.ClientGuid, ball.CtrlType, lapTime));
+                        Instance = this;
+                        LobbyScript.Instance.CheckpointPassedMessage( associatedMatchPlayer.ClientGuid, ball.CtrlType, lapTime);
                     }
                 }
                 else if (ball.Type == BallType.AI)
@@ -196,25 +195,25 @@ namespace Sanicball.Logic
                 }
             }
         }
-
-        private void CheckpointPassedHandler(CheckpointPassedMessage msg, Channel channel)
+        public static RacePlayer Instance { get; private set; }
+        public void CheckpointPassedHandler(NetworkConnection clientGuid, ControlType ctrlType, float lapTime)
         {
-            if (associatedMatchPlayer != null && msg.ClientGuid == associatedMatchPlayer.ClientGuid && msg.CtrlType == associatedMatchPlayer.CtrlType)
+            if (associatedMatchPlayer != null && clientGuid == associatedMatchPlayer.ClientGuid && ctrlType == associatedMatchPlayer.CtrlType)
             {
-                PassNextCheckpoint(msg.LapTime);
+                PassNextCheckpoint(lapTime);
                 waitingForCheckpointMessage = false;
             }
         }
 
-        private void RaceTimeoutHandler(RaceTimeoutMessage msg, Channel channel)
+        public void RaceTimeoutHandler(NetworkConnection clientGuid, ControlType ctrlType, float lapTime)
         {
-            if (associatedMatchPlayer != null && msg.ClientGuid == associatedMatchPlayer.ClientGuid && msg.CtrlType == associatedMatchPlayer.CtrlType)
+            if (associatedMatchPlayer != null && clientGuid == associatedMatchPlayer.ClientGuid && ctrlType == associatedMatchPlayer.CtrlType)
             {
-                timeout = msg.Time - InstanceFinder.NetworkManager.TimeManager.RoundTripTime;
+                timeout = lapTime - InstanceFinder.NetworkManager.TimeManager.RoundTripTime;
             }
         }
 
-        private void PassNextCheckpoint(float lapTime)
+        public void PassNextCheckpoint(float lapTime)
         {
             checkpointTimes[currentCheckpointIndex] = lapTime;
 
@@ -263,7 +262,7 @@ namespace Sanicball.Logic
             TrySetAITarget();
         }
 
-        private void Ball_RespawnRequested(object sender, EventArgs e)
+        public void Ball_RespawnRequested(object sender, EventArgs e)
         {
             if (Respawned != null)
             {
@@ -285,7 +284,7 @@ namespace Sanicball.Logic
             TrySetAITarget();
         }
 
-        private void TrySetAITarget()
+        public void TrySetAITarget()
         {
             BallControlAI ai = ball.GetComponent<BallControlAI>();
             if (ai)
@@ -295,7 +294,7 @@ namespace Sanicball.Logic
             }
         }
 
-        private void SetNextCheckpoint()
+        public void SetNextCheckpoint()
         {
             if (RaceFinished)
             {
@@ -324,7 +323,6 @@ namespace Sanicball.Logic
 
         public void Destroy()
         {
-            InstanceFinder.ClientManager.UnregisterBroadcast<CheckpointPassedMessage>(CheckpointPassedHandler);
 
             if (Destroyed != null)
                 Destroyed(this, EventArgs.Empty);
