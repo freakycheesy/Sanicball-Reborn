@@ -9,7 +9,7 @@ using System;
 public class LobbyScript : NetworkBehaviour
 {
      public static LobbyScript Instance;
-
+     
      public override void OnStartNetwork()
      {
           base.OnStartNetwork();
