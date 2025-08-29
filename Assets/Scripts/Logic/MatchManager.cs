@@ -302,7 +302,7 @@ namespace Sanicball.Logic
             InstanceFinder.ServerManager.StartConnection(25000);
             InstanceFinder.ServerManager.OnServerConnectionState += (state) =>
             {
-                if (state.ConnectionState.IsStartedOrStarting())
+                if (InstanceFinder.IsServerOnlyStarted)
                 {
                     InstanceFinder.ClientManager.StartConnection();
                     Instance.showSettingsOnLobbyLoad = true;

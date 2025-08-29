@@ -1,15 +1,16 @@
 ﻿using FishNet.Broadcast;
+using FishNet.Connection;
 
 namespace SanicballCore.MatchMessages
 {
     public struct RaceFinishedMessage : IBroadcast
     {
-        public System.Guid ClientGuid { get; private set; }
+        public NetworkConnection ClientGuid { get; private set; }
         public ControlType CtrlType { get; private set; }
         public float RaceTime { get; private set; }
         public int RacePosition { get; private set; }
 
-        public RaceFinishedMessage(System.Guid clientGuid, ControlType ctrlType, float raceTime, int racePosition)
+        public RaceFinishedMessage(NetworkConnection clientGuid, ControlType ctrlType, float raceTime, int racePosition)
         {
             ClientGuid = clientGuid;
             CtrlType = ctrlType;

@@ -54,8 +54,8 @@ namespace Sanicball.UI
         {
             errorField.enabled = false;
             discoveryClient = FindAnyObjectByType<FishNet.Discovery.NetworkDiscovery>();
+            if (!discoveryClient) return;
             discoveryClient.SearchForServers();
-
             discoveryClient.ServerFoundCallback += (msg) =>
             {
                 ZaLobbyInfo lobbyInfo = new ZaLobbyInfo();
@@ -90,6 +90,7 @@ namespace Sanicball.UI
 
         void OnDestroy()
         {
+            if (!discoveryClient) return;
             InstanceFinder.ServerManager.OnServerConnectionState -= StopDiscovery;
 
             InstanceFinder.ClientManager.OnClientConnectionState -= StopDiscovery;

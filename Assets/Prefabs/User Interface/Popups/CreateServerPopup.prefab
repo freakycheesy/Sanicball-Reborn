@@ -78,7 +78,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: 25000
 --- !u!1 &1028617501416292
 GameObject:
   m_ObjectHideFlags: 0
@@ -1141,10 +1141,6 @@ MonoBehaviour:
   portOutput: {fileID: 114215251305168828}
   connectingPopupPrefab: {fileID: 11490040, guid: d36f6e19722c0544da5ffd3f126d226a,
     type: 3}
-  serverStarterPrefab: {fileID: 8827540570212952484, guid: 228d30c9ad5ca7445a03e8514275f0c5,
-    type: 3}
-  serverConnectorPrefab: {fileID: 8827540570212952484, guid: b69bc9277c4ab0a46bd604afd5ee0e25,
-    type: 3}
   popupHandler: {fileID: 0}
 --- !u!1 &1513296903605700
 GameObject:
@@ -1448,7 +1444,7 @@ MonoBehaviour:
   m_LineType: 0
   m_HideMobileInput: 0
   m_CharacterValidation: 1
-  m_CharacterLimit: 32
+  m_CharacterLimit: 5
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
@@ -1461,7 +1457,7 @@ MonoBehaviour:
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
-  m_Text: 
+  m_Text: 25000
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
@@ -1853,7 +1849,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1762062168923520}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
