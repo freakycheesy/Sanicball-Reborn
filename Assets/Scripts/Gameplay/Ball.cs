@@ -69,7 +69,6 @@ namespace Sanicball.Gameplay
         [SerializeField]
         private SpeedFire speedFire;
 
-        public ParticleSystem DeathParticles;
         public DriftySmoke Smoke { get { return smoke; } }
         public OmniCamera Camera { get { return camera; } }
         public PivotCamera OldCamera { get { return oldCamera; } }
@@ -124,7 +123,7 @@ namespace Sanicball.Gameplay
         public string Nickname { get { return nickname.Value; } }
 
         //Component caches
-        private Rigidbody rb;
+        [HideInInspector] public Rigidbody rb;
         public BallControlInput Input { get { return input; } }
 
         //Events
@@ -157,7 +156,6 @@ namespace Sanicball.Gameplay
         {
             if (RespawnRequested != null)
                 RespawnRequested(this, System.EventArgs.Empty);
-            CreateDeathParticles();
         }
 
         public void Init(BallType type, ControlType ctrlType, int characterId, string nickname)
@@ -448,12 +446,6 @@ namespace Sanicball.Gameplay
         void OnDestroy()
         {
             Balls.Remove(this);
-            CreateDeathParticles();
-        }
-
-        private void CreateDeathParticles()
-        {
-            Instantiate(prefabs.DeathParticles, transform.position, Quaternion.identity);
         }
     }
 }

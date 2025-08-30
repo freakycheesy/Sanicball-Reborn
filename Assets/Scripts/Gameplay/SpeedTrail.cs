@@ -6,7 +6,6 @@ namespace Sanicball.Gameplay
     [RequireComponent(typeof(TrailRenderer))]
     public class SpeedTrail : MonoBehaviour
     {
-        public Collider Collider;
         private TrailRenderer tr;
 
         // Use this for initialization
@@ -20,7 +19,7 @@ namespace Sanicball.Gameplay
         {
             if (!tr.enabled) return;
 
-            float spd = Mathf.Max(0, Collider.attachedRigidbody.linearVelocity.magnitude - 60);
+            float spd = Mathf.Max(0, GetComponentInParent<Rigidbody>().linearVelocity.magnitude - 60);
             tr.time = Mathf.Clamp(spd / 20, 0, 5);
             tr.startWidth = Mathf.Clamp(spd / 80, 0, 0.8f);
             tr.material.mainTextureScale = new Vector2(tr.time * 100, 1);

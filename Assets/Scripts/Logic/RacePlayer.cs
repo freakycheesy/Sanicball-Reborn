@@ -269,9 +269,9 @@ namespace Sanicball.Logic
                 Respawned(this, EventArgs.Empty);
             }
 
-            ball.transform.position = sr.checkpoints[currentCheckpointIndex].GetRespawnPoint() + Vector3.up * ball.transform.localScale.x * 0.5f;
-            ball.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
-            ball.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            ball.rb.position = sr.checkpoints[currentCheckpointIndex].GetRespawnPoint() + Vector3.up * ball.transform.localScale.x * 0.5f;
+            ball.rb.linearVelocity = Vector3.zero;
+            ball.rb.angularVelocity = Vector3.zero;
             if (ballCamera != null)
             {
                 ballCamera.SetDirection(sr.checkpoints[currentCheckpointIndex].transform.rotation);

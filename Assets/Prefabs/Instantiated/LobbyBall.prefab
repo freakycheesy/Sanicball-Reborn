@@ -610,10 +610,10 @@ MonoBehaviour:
     grip: 0
   overrideStats: 1
   overridenCharacterStats:
-    rollSpeed: 100
-    airSpeed: 15
-    jumpHeight: 14
-    grip: 0
+    rollSpeed: 50
+    airSpeed: 7.5
+    jumpHeight: 7
+    grip: 1
   canMove: 1
   input: {fileID: 0}
   grounded: 0

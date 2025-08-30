@@ -48,11 +48,11 @@ public class SanicPallet : ScriptableObject
     {
         foreach (var stage in Stages)
         {
-            stage.BARCODE = $"{Author}.{name}.{stage.name}";
+            stage.BARCODE = $"{Author}.{name}.{stage.name}".Replace(" ", "").ToLower();
         }
         foreach (var song in Playlist)
         {
-            song.BARCODE = $"{Author}.{name}.{song.name}";
+            song.BARCODE = $"{Author}.{name}.{song.name}".Replace(" ", "").ToLower();
         }
     }
 #if UNITY_EDITOR

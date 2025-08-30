@@ -35,7 +35,6 @@ namespace Sanicball.UI
                 Cursor.visible = true;
             }
         }
-
         private void Start()
         {
             UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(firstSelected);
@@ -44,7 +43,6 @@ namespace Sanicball.UI
                 Time.timeScale = 0;
                 AudioListener.pause = true;
             }
-
             if (SceneManager.GetSceneAt(1).name == "Lobby")
             {
                 contextSensitiveButtonLabel.text = "Change match settings";

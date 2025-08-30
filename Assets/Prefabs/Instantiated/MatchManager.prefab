@@ -44,8 +44,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d840ab754b706e64cac02c36439af403, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menuScene: Assets/Scenes/Default/Menu.unity
-  lobbyScene: Assets/Scenes/Default/Lobby.unity
+  menuScene:
+    m_AssetGUID: 451586f28ff22a946b895ef0d457d0d9
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  lobbyScene:
+    m_AssetGUID: c1e00a02ec0c7304584fa323ef166aaf
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
   pauseMenuPrefab: {fileID: 11429824, guid: 26112b52065230d4d957e3f9d87cb82e, type: 3}
   chatPrefab: {fileID: 11491130, guid: 5161f6d36bd9b40418c825fd34b1deb7, type: 3}
   raceManagerPrefab: {fileID: 11420630, guid: e716ae2f6176c9442addf97bb30866ee, type: 3}

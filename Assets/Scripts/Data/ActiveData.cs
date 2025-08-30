@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using FishNet;
 using FishNet.Managing;
 using FishNet.Managing.Scened;
 using Newtonsoft.Json;
 using Sanicball.Logic;
 using Sanicball.Powerups;
 using SanicballCore;
+using Scenes;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Audio;
@@ -95,7 +98,13 @@ namespace Sanicball.Data
         public static void FindPallets()
         {
             PalletHandle = Addressables.LoadAssetsAsync<SanicPallet>("mod", LoadPalletCallback);
-            PalletHandle.Completed += (_) => { MatchSettings = MatchSettings.CreateDefault(); Debug.Log("Completed Loading Pallet!"); };
+            PalletHandle.Completed += (_) => { MatchSettings = MatchSettings.CreateDefault(); Stages.ForEach(AddToSceneProcessor); Debug.Log("Completed Loading Pallet!"); };
+        }
+
+        private static void AddToSceneProcessor(StageInfo info)
+        {
+            var processor = FindAnyObjectByType<AddressableSceneProcessor>();
+            processor.CompiledAddressableReferences.Add((string)info.scene.RuntimeKey, info.scene);
         }
 
         public static void LoadPalletCallback(SanicPallet pallet)
@@ -133,12 +142,13 @@ namespace Sanicball.Data
             return selectedStage;
         }
 
-        public static void LoadLevel(SceneReference level, LoadSceneMode mode = LoadSceneMode.Single)
+        public static void LoadLevel(StageInfo level, LoadSceneMode mode = LoadSceneMode.Single)
         {
-            SceneLoadData data = new SceneLoadData(level.RuntimeKey.ToString());
+            SceneLoadData data = new SceneLoadData((string)level.scene.RuntimeKey);
             data.Options.Addressables = true;
-            data.ReplaceScenes = ReplaceOption.OnlineOnly;
-            NetworkManager.Instances[0].SceneManager.LoadGlobalScenes(data);
+            data.ReplaceScenes = ReplaceOption.All;
+            InstanceFinder.SceneManager.LoadGlobalScenes(data);
+            //level.LoadSceneAsync(mode);
             //Addressables.LoadSceneAsync(level, mode);
         }
         

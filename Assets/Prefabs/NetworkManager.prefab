@@ -57,8 +57,10 @@ GameObject:
   - component: {fileID: 1872482782516259268}
   - component: {fileID: 2877945410175181361}
   - component: {fileID: 7639104677302858940}
-  - component: {fileID: 7258229147785463773}
   - component: {fileID: 4298264846934593681}
+  - component: {fileID: 6088489137464588548}
+  - component: {fileID: 1207883465951028559}
+  - component: {fileID: 493739462079528406}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -138,18 +140,6 @@ MonoBehaviour:
   _port: 7770
   _maximumClients: 4095
   _clientAddress: localhost
---- !u!114 &7258229147785463773
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9130736802413147131}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c6eacaa60569d947b383df03fff1ea3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4298264846934593681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,3 +157,54 @@ MonoBehaviour:
   _createLocalStates: 1
   _stateInterpolation: 2
   _stateOrder: 1
+--- !u!114 &6088489137464588548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9130736802413147131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b5863e325df784a972147eee9caab6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1207883465951028559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9130736802413147131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50eb82460bedbd247bdb548d42f03579, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SceneRefs:
+  - m_AssetGUID: 451586f28ff22a946b895ef0d457d0d9
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: c1e00a02ec0c7304584fa323ef166aaf
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+--- !u!114 &493739462079528406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9130736802413147131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15895a51081447d46bda466e7e830c08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sceneProcessor: {fileID: 1207883465951028559}
+  _lightProbeUpdating: 0
+  _moveClientObjects: 1
+  _setActiveScene: 1

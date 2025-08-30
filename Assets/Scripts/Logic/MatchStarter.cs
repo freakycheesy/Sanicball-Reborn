@@ -42,7 +42,7 @@ namespace Sanicball.Logic
         public void BeginLocalGame()
         {
             MatchManager manager = Instantiate(matchManagerPrefab);
-            manager.InitLocalMatch();
+            manager.InitMatch();
         }
 
         public void JoinOnlineGame(string ip = "127.0.0.1", ushort port = 25000)
@@ -63,7 +63,7 @@ namespace Sanicball.Logic
         private void BeginOnlineGame(MatchState matchState)
         {
             MatchManager manager = Instantiate(matchManagerPrefab);
-            manager.InitOnlineMatch(matchState);
+            manager.InitMatch();
         }
     }
 }

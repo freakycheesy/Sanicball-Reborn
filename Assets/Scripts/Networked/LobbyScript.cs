@@ -12,8 +12,15 @@ public class LobbyScript : NetworkBehaviour
 {
      public static LobbyScript Instance;
 
-    void Awake()
+    public override void OnStartNetwork()
     {
+          base.OnStartNetwork();
+          if (Instance)
+          {
+               Despawn(NetworkObject, DespawnType.Destroy);
+               Destroy(this.gameObject);
+               return;
+          }
           Instance = this;
      }
 
@@ -25,7 +32,7 @@ public class LobbyScript : NetworkBehaviour
      }
 
 
-     [ObserversRpc(ExcludeServer = false)]
+     [ServerRpc(RequireOwnership = false, RunLocally = true)]
      public void ChangeSettingsRpc(MatchSettings settings)
      {
           MatchManager.Instance.CurrentSettings = settings;
@@ -33,7 +40,7 @@ public class LobbyScript : NetworkBehaviour
           MatchManager.Instance.MatchSettingsChanged?.Invoke(this, EventArgs.Empty);
      }
 
-     [ServerRpc(RequireOwnership = false)]
+     [ServerRpc(RequireOwnership = false, RunLocally = true)]
      public void ClientJoinRpc(NetworkConnection conn, string nickname)
      {
           var matchClient = new MatchClient(conn, nickname);
@@ -42,7 +49,7 @@ public class LobbyScript : NetworkBehaviour
           Debug.Log("New client " + nickname);
      }
 
-     [ServerRpc(RequireOwnership = false)]
+     [ServerRpc(RequireOwnership = false, RunLocally = true)]
      public void PlayerJoinRpc(NetworkConnection conn, ControlType type, int characterId)
      {
           var p = new MatchPlayer(conn, type, characterId);
@@ -58,67 +65,67 @@ public class LobbyScript : NetworkBehaviour
           MatchManager.Instance.MatchPlayerAdded(this, new MatchPlayerEventArgs(p, conn == MatchManager.Instance.myGuid));
      }
 
-     [ServerRpc(RequireOwnership = false)]
+     [ServerRpc(RequireOwnership = false, RunLocally = true)]
      public void PlayerLeaveRpc(NetworkConnection conn, ControlType type)
      {
           MatchManager.Instance.PlayerLeftCallback(conn, type);
      }
 
-     [ServerRpc(RequireOwnership = false)]
+     [ServerRpc(RequireOwnership = false, RunLocally = true)]
      public void CharacterChangedRpc(NetworkConnection myGuid, ControlType ctrlType, int newCharacter)
      {
           MatchManager.Instance.CharacterChangedCallback(myGuid, ctrlType, newCharacter);
      }
 
-     [ServerRpc(RequireOwnership = false)]
+     [ServerRpc(RequireOwnership = false, RunLocally = true)]
      public void ChangedReadyServerRpc(NetworkConnection myGuid, ControlType ctrlType, bool ready)
     {
           ChangedReadyRpc(myGuid, ctrlType, ready);
     }
 
      [ObserversRpc(ExcludeServer = false)]
-    private void ChangedReadyRpc(NetworkConnection myGuid, ControlType ctrlType, bool ready)
+     private void ChangedReadyRpc(NetworkConnection myGuid, ControlType ctrlType, bool ready)
      {
-          MatchManager.Instance.ChangedReadyCallback(myGuid, ctrlType, ready);
+          MatchManager.Instance.ChangedReadyCallback(myGuid, ctrlType);
      }
 
-    [ObserversRpc(ExcludeServer = false)]
+     [ServerRpc(RequireOwnership = false, RunLocally = true)]
      public void LoadRaceRpc()
      {
           MatchManager.Instance.LoadRaceCallback();
      }
 
-     [ObserversRpc(ExcludeServer = false)]
+     [ServerRpc(RequireOwnership = false, RunLocally = true)]
      public void StartRaceRpc()
      {
           RaceManager.Instance.StartRaceCallback();
      }
 
-     [ServerRpc(RequireOwnership = false)]
+     [ServerRpc(RequireOwnership = false, RunLocally = true)]
      public void LoadLobbyRpc()
      {
           MatchManager.Instance.LoadLobbyCallback();
      }
 
-     [ServerRpc(RequireOwnership = false)]
+     [ServerRpc(RequireOwnership = false, RunLocally = true)]
      public void ChatMessageServerRpc(string from, string text)
      {
           ChatMessageRpc(from, text);
      }
 
-     [ObserversRpc(ExcludeServer = false)]
+     [ServerRpc(RequireOwnership = false, RunLocally = true)]
      public void ChatMessageRpc(string from, string text)
      {
           MatchManager.Instance.ChatCallback(from, text);
      }
 
-     [ServerRpc(RequireOwnership = false)]
+     [ServerRpc(RequireOwnership = false, RunLocally = true)]
      public void DoneRacingRpc(NetworkConnection clientGuid, ControlType ctrlType, double raceTimer, bool v)
      {
           RaceManager.Instance.DoneRacingCallback(clientGuid, ctrlType, raceTimer, v);
      }
 
-     [ServerRpc(RequireOwnership = false)]
+     [ServerRpc(RequireOwnership = false, RunLocally = true)]
      public void CheckpointPassedMessage(NetworkConnection clientGuid, ControlType ctrlType, float lapTime)
      {
           RacePlayer.Instance.CheckpointPassedHandler(clientGuid, ctrlType, lapTime);

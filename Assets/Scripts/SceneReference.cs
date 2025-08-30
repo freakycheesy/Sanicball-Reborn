@@ -1,12 +1,15 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-[System.Serializable]
-public class SceneReference : AssetReference
+namespace Sanicball.Data
 {
-    public SceneReference(string guid) : base(guid) { }
-    public override bool ValidateAsset(string path)
+    [System.Serializable]
+    public class SceneReference : AssetReference
     {
-        return path.EndsWith(".unity");
+        public SceneReference(string guid) : base(guid) { }
+        public override bool ValidateAsset(string path)
+        {
+            return path.EndsWith(".unity");
+        }
     }
 }

@@ -15,7 +15,7 @@ MonoBehaviour:
   Author: BK-TN
   Stages:
   - id: 0
-    BARCODE: BK-TN.Main.Green Hill Zone
+    BARCODE: bk-tn.main.greenhillzone
     name: Green Hill Zone
     scene:
       m_AssetGUID: dd3bbb09ce1af034192ad01d199b5a98
@@ -26,7 +26,7 @@ MonoBehaviour:
     picture: {fileID: 21300000, guid: dc57cdcc46adee64d900215deab711b3, type: 3}
     overviewPrefab: {fileID: 120352, guid: b92fe95a3f8ff594cafa50f76cc55858, type: 3}
   - id: 1
-    BARCODE: BK-TN.Main.Flame Core
+    BARCODE: bk-tn.main.flamecore
     name: Flame Core
     scene:
       m_AssetGUID: 8912b8b165639fe4285eff0f6d6d3b66
@@ -37,7 +37,7 @@ MonoBehaviour:
     picture: {fileID: 21300000, guid: 9bcec5996a6fdb245ba294c8d86c550d, type: 3}
     overviewPrefab: {fileID: 106172, guid: 776929cd993de29429473a9a6bcc039b, type: 3}
   - id: 2
-    BARCODE: BK-TN.Main.Ice Mountain
+    BARCODE: bk-tn.main.icemountain
     name: Ice Mountain
     scene:
       m_AssetGUID: b2b8ab8885b2c404985feb6cf44156e0
@@ -48,7 +48,7 @@ MonoBehaviour:
     picture: {fileID: 21300000, guid: d40157bf96b0396468a82dbfcacc592e, type: 3}
     overviewPrefab: {fileID: 192978, guid: 7ff5f6fb8ee4cf446994c3b6ee13052e, type: 3}
   - id: 3
-    BARCODE: BK-TN.Main.Dusty Desert
+    BARCODE: bk-tn.main.dustydesert
     name: Dusty Desert
     scene:
       m_AssetGUID: a786b0209e96abe4c8fd49cc4d26f4ac
@@ -59,7 +59,7 @@ MonoBehaviour:
     picture: {fileID: 21300000, guid: aa4ed67424b96f7428b3787be36fb735, type: 3}
     overviewPrefab: {fileID: 152692, guid: 58a107525dc8c9842b4a718ba470c3d3, type: 3}
   - id: 4
-    BARCODE: BK-TN.Main.Rainbow Road
+    BARCODE: bk-tn.main.rainbowroad
     name: Rainbow Road
     scene:
       m_AssetGUID: c6ff669b6a5dbd44bba8bdd7dbef35ff
@@ -70,73 +70,73 @@ MonoBehaviour:
     picture: {fileID: 21300000, guid: af8ac845d97f57e45a78119b192cca54, type: 3}
     overviewPrefab: {fileID: 181008, guid: cfb95fbdd5d7c3b40965abafdb30631c, type: 3}
   Playlist:
-  - BARCODE: BK-TN.Main.Chariots Of Fire
+  - BARCODE: bk-tn.main.chariotsoffire
     name: Chariots Of Fire
     resource: {fileID: 8300000, guid: 8efd343ca38873e45b0ec1557b18daa2, type: 3}
-  - BARCODE: BK-TN.Main.Bangarang
+  - BARCODE: bk-tn.main.bangarang
     name: Bangarang
     resource: {fileID: 8300000, guid: 44aeddca0c186224090a76d97139eaa4, type: 3}
-  - BARCODE: BK-TN.Main.dread
+  - BARCODE: bk-tn.main.dread
     name: dread
     resource: {fileID: 8300000, guid: 4b762afc59ab67f46a8a8b2b5517bd27, type: 3}
-  - BARCODE: BK-TN.Main.Ogresong
+  - BARCODE: bk-tn.main.ogresong
     name: Ogresong
     resource: {fileID: 8300000, guid: 6750ff96a85e2ca43826fc5bff41c982, type: 3}
-  - BARCODE: BK-TN.Main.Eargasm
+  - BARCODE: bk-tn.main.eargasm
     name: Eargasm
     resource: {fileID: 8300000, guid: b18271ab4d4f23748ab35d0788a5b273, type: 3}
-  - BARCODE: BK-TN.Main.Green Hill Zone
+  - BARCODE: bk-tn.main.greenhillzone
     name: Green Hill Zone
     resource: {fileID: 8300000, guid: 65bc1dc0818c22b4e8857068055157b3, type: 3}
-  - BARCODE: 'BK-TN.Main.SUNGYOO - All I Need [NCS]'
+  - BARCODE: 'bk-tn.main.sungyoo-allineed[ncs]'
     name: 'SUNGYOO - All I Need [NCS]'
     resource: {fileID: 8300000, guid: c956c621e09144bf8805aeee14accdc2, type: 3}
-  - BARCODE: BK-TN.Main.Lost Identites - Moments
+  - BARCODE: bk-tn.main.lostidentites-moments
     name: Lost Identites - Moments
     resource: {fileID: 8300000, guid: f2e8dc6161fc541c99ad23ec12eb1d92, type: 3}
-  - BARCODE: BK-TN.Main.01_Speedway
+  - BARCODE: bk-tn.main.01_speedway
     name: 01_Speedway
     resource: {fileID: 8300000, guid: c03bfee26a820a346acb833fe9c55e6e, type: 3}
-  - BARCODE: BK-TN.Main.02_Pigcart
+  - BARCODE: bk-tn.main.02_pigcart
     name: 02_Pigcart
     resource: {fileID: 8300000, guid: ef283d9cd9a1df049aa8104acd1f9467, type: 3}
-  - BARCODE: BK-TN.Main.03_CityEscapin
+  - BARCODE: bk-tn.main.03_cityescapin
     name: 03_CityEscapin
     resource: {fileID: 8300000, guid: f06d9b26bb25af2419c9fac3323bf81d, type: 3}
-  - BARCODE: BK-TN.Main.04_StraightAhead
+  - BARCODE: bk-tn.main.04_straightahead
     name: 04_StraightAhead
     resource: {fileID: 8300000, guid: 903093182a60b404b8e1c7e1b3683647, type: 3}
-  - BARCODE: BK-TN.Main.05_FeelTheSunshine
+  - BARCODE: bk-tn.main.05_feelthesunshine
     name: 05_FeelTheSunshine
     resource: {fileID: 8300000, guid: 2f11158510addae4e9aa863d642470c6, type: 3}
-  - BARCODE: BK-TN.Main.06_GtgFast
+  - BARCODE: bk-tn.main.06_gtgfast
     name: 06_GtgFast
     resource: {fileID: 8300000, guid: b445743520587ac4d94a171cc16853db, type: 3}
-  - BARCODE: BK-TN.Main.07_SanicBoom
+  - BARCODE: bk-tn.main.07_sanicboom
     name: 07_SanicBoom
     resource: {fileID: 8300000, guid: 620a36572d220564d8b06d50a724704e, type: 3}
-  - BARCODE: BK-TN.Main.08_RollingStart
+  - BARCODE: bk-tn.main.08_rollingstart
     name: 08_RollingStart
     resource: {fileID: 8300000, guid: d23cf9326a1ddb14ebd6b635fa272c81, type: 3}
-  - BARCODE: BK-TN.Main.09_TootToot
+  - BARCODE: bk-tn.main.09_toottoot
     name: 09_TootToot
     resource: {fileID: 8300000, guid: 76ab3b513c848a8479975f626779e5f3, type: 3}
-  - BARCODE: BK-TN.Main.10_Pronto
+  - BARCODE: bk-tn.main.10_pronto
     name: 10_Pronto
     resource: {fileID: 8300000, guid: 1d9b7697ce54b7c4b9ec6bc3eeff5d8a, type: 3}
-  - BARCODE: BK-TN.Main.11_Katamari
+  - BARCODE: bk-tn.main.11_katamari
     name: 11_Katamari
     resource: {fileID: 8300000, guid: 8b1be8e83aad861459e1577652dd3ec3, type: 3}
-  - BARCODE: BK-TN.Main.12_Guile
+  - BARCODE: bk-tn.main.12_guile
     name: 12_Guile
     resource: {fileID: 8300000, guid: d1716965cd9df0147baf075f821843a1, type: 3}
-  - BARCODE: BK-TN.Main.13_SingingBirds
+  - BARCODE: bk-tn.main.13_singingbirds
     name: 13_SingingBirds
     resource: {fileID: 8300000, guid: 758413b45beffa24196bf83fee8b5444, type: 3}
-  - BARCODE: BK-TN.Main.14_SpaceCity
+  - BARCODE: bk-tn.main.14_spacecity
     name: 14_SpaceCity
     resource: {fileID: 8300000, guid: 22208ce0732d0284cbb8dd1506ea252f, type: 3}
-  - BARCODE: BK-TN.Main.15_DejaVu
+  - BARCODE: bk-tn.main.15_dejavu
     name: 15_DejaVu
     resource: {fileID: 8300000, guid: 8e6a1b8eeb5643741871ab2b85cdef38, type: 3}
   Avatars:

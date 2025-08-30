@@ -4,24 +4,19 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using FishNet;
-using FishNet.Authenticating;
 using FishNet.Connection;
-using FishNet.Managing;
-using FishNet.Managing.Client;
 using FishNet.Managing.Scened;
 using FishNet.Object;
 using FishNet.Transporting;
-using FishNet.Transporting.Bayou;
-using FishNet.Transporting.Multipass;
 using GameKit.Dependencies.Utilities.Types;
 using Newtonsoft.Json;
 using Sanicball.Data;
 using Sanicball.UI;
 using SanicballCore;
+using Scenes;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 
 namespace Sanicball.Logic
@@ -42,8 +37,8 @@ namespace Sanicball.Logic
         #region Exposed fields
 
         public static MatchManager Instance;
-        [Scene] public string menuScene;
-        [Scene] public string lobbyScene;
+        public SceneReference menuScene;
+        public SceneReference lobbyScene;
 
         //Prefabs
         [SerializeField]
@@ -121,7 +116,7 @@ namespace Sanicball.Logic
         /// <summary>
         /// Current settings for this match. On remote clients, this is only used for showing settings on the UI.
         /// </summary>
-        public MatchSettings CurrentSettings { get { return currentSettings; } set{ currentSettings = value; } }
+        public MatchSettings CurrentSettings { get { return currentSettings; } set { currentSettings = value; } }
 
         public NetworkConnection LocalClientGuid { get { return myGuid; } }
 
@@ -214,7 +209,7 @@ namespace Sanicball.Logic
             }
         }
 
-        public void ChangedReadyCallback(NetworkConnection myGuid, ControlType ctrlType, bool ready)
+        public void ChangedReadyCallback(NetworkConnection myGuid, ControlType ctrlType)
         {
             var player = players.FirstOrDefault(a => a.ClientGuid == myGuid && a.CtrlType == ctrlType);
             if (player != null)
@@ -225,10 +220,12 @@ namespace Sanicball.Logic
                 var allReady = players.TrueForAll(a => a.ReadyToRace);
                 if (allReady && !lobbyTimerOn)
                 {
-                    StartLobbyTimer(InstanceFinder.TimeManager.RoundTripTime);
+                    Debug.Log("Start Lobby Timer");
+                    StartLobbyTimer(0);
                 }
                 if (!allReady && lobbyTimerOn)
                 {
+                    Debug.Log("Stop Lobby Timer");
                     StopLobbyTimer();
                 }
             }
@@ -237,10 +234,7 @@ namespace Sanicball.Logic
         public void LoadRaceCallback()
         {
             StopLobbyTimer();
-            CameraFade.StartAlphaFade(Color.black, false, 0.3f, 0.05f, () =>
-            {
-                GoToStage();
-            });
+            CameraFade.StartAlphaFade(Color.black, false, 0.3f, 0.05f, GoToStage);
         }
 
         public void ChatCallback(string from, string text)
@@ -264,9 +258,9 @@ namespace Sanicball.Logic
 
         #region Match initializing
 
-        public void InitLocalMatch()
+        public void InitMatch()
         {
-            CreateLobby();   
+            CreateLobby();
         }
 
         public void CreateLobby()
@@ -275,11 +269,13 @@ namespace Sanicball.Logic
             InstanceFinder.ServerManager.StartConnection(25000);
             InstanceFinder.ServerManager.OnServerConnectionState += (state) =>
             {
-                if (state.ConnectionState.IsStartedOrStarting()&&InstanceFinder.ServerManager.Started)
+                if (state.ConnectionState.IsStartedOrStarting() && InstanceFinder.ServerManager.Started)
                 {
-                    InstanceFinder.ClientManager.StartConnection();
                     Instance.showSettingsOnLobbyLoad = true;
                     Instance.GoToLobby();
+                    activeChat = Instantiate(chatPrefab);
+                    activeChat.MessageSent += LocalChatMessageSent;
+                    InstanceFinder.ClientManager.StartConnection();
                 }
             };
         }
@@ -291,60 +287,10 @@ namespace Sanicball.Logic
             InstanceFinder.ClientManager.StartConnection();
         }
 
-        public void InitOnlineMatch(MatchState matchState)
+        public void LeaveLobby()
         {
-            //Create existing clients
-            foreach (var clientInfo in matchState.Clients)
-            {
-                clients.Add(new MatchClient(clientInfo.Guid, clientInfo.Name));
-            }
-
-            //Create existing players
-            foreach (var playerInfo in matchState.Players)
-            {
-                MatchPlayer p = new MatchPlayer(playerInfo.ClientGuid, playerInfo.CtrlType, playerInfo.CharacterId);
-                p.ReadyToRace = playerInfo.ReadyToRace;
-                players.Add(p);
-
-                if (inLobby)
-                {
-                    SpawnLobbyBall(p);
-                }
-            }
-
-            //Set settings
-            currentSettings = matchState.Settings;
-
-            //Set auto start timer
-            //TODO Get and apply travel time
-            autoStartTimerOn = matchState.CurAutoStartTime != 0;
-            autoStartTimer = matchState.CurAutoStartTime;
-
-            //Create messenger
-            InstanceFinder.ClientManager.OnClientConnectionState += (state) =>
-            {
-                if (state.ConnectionState.IsStoppedOrStopping())
-                {
-                    QuitMatch("Client disconnected.");
-                }
-            };
-            //messenger.OnPlayerMovement += OnlinePlayerMovement;
-
-            //Create chat
-            activeChat = Instantiate(chatPrefab);
-            activeChat.MessageSent += LocalChatMessageSent;
-
-            //Enter the lobby or stage
-            if (matchState.InRace)
-            {
-                joiningRaceInProgress = true;
-                GoToStage();
-            }
-            else
-            {
-                //showSettingsOnLobbyLoad = true;
-                GoToLobby();
-            }
+            if (InstanceFinder.IsClientStarted) InstanceFinder.ClientManager.StopConnection();
+            if (InstanceFinder.IsServerStarted) InstanceFinder.ServerManager.StopConnection(true);
         }
 
         #endregion Match initializing
@@ -369,7 +315,7 @@ namespace Sanicball.Logic
 
             InstanceFinder.ServerManager.OnServerConnectionState += (state) =>
             {
-                if (state.ConnectionState.IsStartedOrStarting())
+                if (InstanceFinder.IsServerStarted)
                 {
                     InstanceFinder.ServerManager.Spawn(Instantiate(LobbyPrefab.gameObject));
                 }
@@ -417,7 +363,7 @@ namespace Sanicball.Logic
                 LobbyReferences.Active.CountdownField.text = "Match starts in " + Mathf.Max(1f, Mathf.Ceil(lobbyTimer));
 
                 //LoadRaceMessages don't need to be sent in online mode - the server will ignore it anyway.
-                if (lobbyTimer <= 0 && !OnlineMode)
+                if (lobbyTimer <= 0)
                 {
                     LobbyScript.Instance.LoadRaceRpc();
                 }
@@ -476,18 +422,19 @@ namespace Sanicball.Logic
 
         #region Scene changing / race loading
 
+        [Server]
         public void GoToLobby()
         {
             if (inLobby) return;
 
             loadingStage = false;
             loadingLobby = true;
-            SceneLoadData data = new SceneLoadData(lobbyScene);
+            SceneLoadData data = new SceneLoadData(lobbyScene.RuntimeKey.ToString());
             data.Options.Addressables = false;
             data.ReplaceScenes = ReplaceOption.All;
             InstanceFinder.SceneManager.LoadGlobalScenes(data);
         }
-
+        [Server]
         public void GoToStage()
         {
             CurrentStage = ActiveData.GetStageByBarcode(currentSettings.StageBarcode);
@@ -500,7 +447,7 @@ namespace Sanicball.Logic
                 p.ReadyToRace = false;
             }
 
-            ActiveData.LoadLevel(CurrentStage.scene);
+            ActiveData.LoadLevel(CurrentStage);
         }
 
         public static StageInfo CurrentStage;
@@ -559,8 +506,7 @@ namespace Sanicball.Logic
 
         public IEnumerator QuitMatchInternal(string reason)
         {
-            InstanceFinder.TransportManager.Transport.StopConnection(true);
-            InstanceFinder.TransportManager.Transport.StopConnection(false);
+            LeaveLobby();
 
             if (reason != null)
             {
@@ -570,7 +516,7 @@ namespace Sanicball.Logic
                 FindAnyObjectByType<UI.PopupDisconnected>().Reason = reason;
             }
 
-            UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(menuScene);
+            Addressables.LoadSceneAsync(menuScene);
         }
 
         #endregion Scene changing / race loading

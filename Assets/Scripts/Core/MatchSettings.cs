@@ -66,7 +66,7 @@ namespace SanicballCore
         {
             return new MatchSettings()
             {
-                StageBarcode = "BK-TN.Main.Green Hill Zone",
+                StageBarcode = "bk-tn.main.greenhillzone",
                 Laps = 2,
                 AICount = 0,
                 AISkill = AISkillLevel.Average,

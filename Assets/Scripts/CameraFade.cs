@@ -195,7 +195,7 @@ namespace Sanicball
                         instance.m_DeltaColor = new Color(0, 0, 0, 0);
 
                         if (instance.m_OnFadeFinish != null)
-                            instance.m_OnFadeFinish();
+                            instance.m_OnFadeFinish?.Invoke();
 
                         Die();
                     }
