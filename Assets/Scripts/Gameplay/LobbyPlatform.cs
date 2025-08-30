@@ -21,21 +21,16 @@ namespace Sanicball.Gameplay
             joint.targetPosition = new Vector3(offset, offset, offset);
             joint.yDrive = yDrive;
         }
-
         private void Start()
         {
             if (!TryGetComponent(out joint)) { Debug.LogError("No Config Joint"); return; }
             joint.targetPosition = lowerPos;
             yDrive = joint.yDrive;
         }
-
         private void OnCollisionEnter(Collision collision)
         {
             if (collision.transform.position.y > transform.position.y) return;
-            joint.targetPosition = lowerPos * 6;
-            var drive = yDrive;
-            drive.positionSpring *= 6;
-            joint.yDrive = drive;
+            joint.targetPosition = lowerPos * 5;
             Invoke(nameof(GoToBase), baseDelay);
         }
     }

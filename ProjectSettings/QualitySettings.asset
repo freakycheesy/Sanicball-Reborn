@@ -36,13 +36,13 @@ QualitySettings:
     lodBias: 2
     maximumLODLevel: 0
     enableLODCrossFade: 1
-    streamingMipmapsActive: 1
-    streamingMipmapsAddAllCameras: 1
+    streamingMipmapsActive: 0
+    streamingMipmapsAddAllCameras: 0
     streamingMipmapsMemoryBudget: 512
     streamingMipmapsRenderersPerFrame: 512
     streamingMipmapsMaxLevelReduction: 2
     streamingMipmapsMaxFileIORequests: 1024
-    particleRaycastBudget: 4096
+    particleRaycastBudget: 512
     asyncUploadTimeSlice: 2
     asyncUploadBufferSize: 4
     asyncUploadPersistentBuffer: 1

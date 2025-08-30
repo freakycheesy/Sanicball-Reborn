@@ -146,6 +146,7 @@ namespace Sanicball.Data
         {
             SceneLoadData data = new SceneLoadData((string)level.scene.RuntimeKey);
             data.Options.Addressables = true;
+            data.PreferredActiveScene = new(new((string)level.scene.RuntimeKey));
             data.ReplaceScenes = ReplaceOption.All;
             InstanceFinder.SceneManager.LoadGlobalScenes(data);
             //level.LoadSceneAsync(mode);

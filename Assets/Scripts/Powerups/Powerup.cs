@@ -1,3 +1,4 @@
+using FishNet.Object;
 using Sanicball.Data;
 using Sanicball.Gameplay;
 using UltEvents;
@@ -6,7 +7,7 @@ using UnityEngine;
 namespace Sanicball.Powerups
 {
     [RequireComponent(typeof(Collider))]
-    public class Powerup : MonoBehaviour
+    public class Powerup : NetworkBehaviour
     {
         public PowerupLogic containedPowerup;
         public bool Disabled { get; private set; }
@@ -14,6 +15,8 @@ namespace Sanicball.Powerups
         public UltEvent OnRespawn;
         public float respawnTime = 2f;
         public SpriteRenderer icon;
+        public GameObject Renderer;
+        public ParticleSystem Particles;
 
         void Start()
         {
@@ -28,6 +31,7 @@ namespace Sanicball.Powerups
         }
 
 
+        [Server]
         void OnTriggerEnter(Collider other)
         {
             if (Disabled) return;
@@ -35,17 +39,26 @@ namespace Sanicball.Powerups
                 {
                     if (manager.selectedPowerup) return;
                     Disabled = true;
+                    PowerupRpc(false);
                     containedPowerup.manager = manager;
                     manager.PickedUp(containedPowerup);
-                    OnPickup.Invoke();
                     Invoke(nameof(OnReset), respawnTime);
                 }
+        }
+
+        [ObserversRpc(ExcludeServer = false, ExcludeOwner = false)]
+        public void PowerupRpc(bool enabled)
+        {
+            Renderer?.SetActive(enabled);
+            Particles?.Play();
+            if(!enabled) OnPickup?.Invoke();
+            else OnRespawn?.Invoke();
         }
 
         private void OnReset()
         {
             Disabled = false;
-            OnRespawn.Invoke();
+            PowerupRpc(true);
         }
 
     }

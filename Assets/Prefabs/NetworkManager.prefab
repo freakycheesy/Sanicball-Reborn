@@ -181,6 +181,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50eb82460bedbd247bdb548d42f03579, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CompiledAddressableReferences:
+    m_Keys: []
+    m_Values: []
   SceneRefs:
   - m_AssetGUID: 451586f28ff22a946b895ef0d457d0d9
     m_SubObjectName: 
@@ -206,5 +209,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneProcessor: {fileID: 1207883465951028559}
   _lightProbeUpdating: 0
-  _moveClientObjects: 1
+  _moveClientObjects: 0
   _setActiveScene: 1

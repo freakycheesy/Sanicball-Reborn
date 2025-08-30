@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using SanicballCore;
 using UnityEngine;
 
 namespace Sanicball.Gameplay
 {
     [RequireComponent(typeof(Camera))]
-    public class LobbyCamera : MonoBehaviour
+    public class LobbyCamera : FixedCamera
     {
-        public static LobbyCamera Instance;
+        public new static LobbyCamera Instance { get; private set; }
         public float rotationSpeed;
 
         private Quaternion startRotation;

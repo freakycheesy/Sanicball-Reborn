@@ -596,8 +596,6 @@ MonoBehaviour:
     oldCamera: {fileID: 11400000, guid: 395e30509a198fc4fb2aac437f95e4c0, type: 3}
     removalParticles: {fileID: 19835562, guid: e8c684b001602cc4295dfd027bb84014, type: 3}
     speedFire: {fileID: 11405568, guid: 05801caa43fa986428513178add4eac3, type: 3}
-    DeathParticles: {fileID: 8794280333411727947, guid: 271791f023ca7f34caaacc3ae18e9158,
-      type: 3}
   sounds:
     jump: {fileID: 8245922}
     roll: {fileID: 8294728}
@@ -610,10 +608,10 @@ MonoBehaviour:
     grip: 0
   overrideStats: 1
   overridenCharacterStats:
-    rollSpeed: 50
+    rollSpeed: 40
     airSpeed: 7.5
-    jumpHeight: 7
-    grip: 1
+    jumpHeight: 14
+    grip: 0
   canMove: 1
   input: {fileID: 0}
   grounded: 0
@@ -621,6 +619,7 @@ MonoBehaviour:
   upResetTimer: 0
   smoke: {fileID: 0}
   speedFire: {fileID: 0}
+  rb: {fileID: 0}
   Renderer: {fileID: 3192411394429861634}
   TrailRenderer: {fileID: 7317994723420640640}
 --- !u!135 &13574756
@@ -1015,4 +1014,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eff90930fb834e74cbbc36e9c9566cb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Collider: {fileID: 13574756}

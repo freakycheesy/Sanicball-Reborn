@@ -282,20 +282,21 @@ namespace Sanicball.Gameplay
             //set collision mesh too
             if (c.collisionMesh != null)
             {
-                if (c.collisionMesh.vertexCount <= 255)
+                if (c.collisionMesh.vertexCount <= maxVertexCount)
                 {
-                    Destroy(GetComponent<Collider>());
-                    MeshCollider mc = gameObject.AddComponent<MeshCollider>();
+                    Destroy(GetComponentInChildren<Collider>());
+                    MeshCollider mc = Renderer.gameObject.AddComponent<MeshCollider>();
                     mc.sharedMesh = c.collisionMesh;
                     mc.convex = true;
                 }
                 else
                 {
-                    Debug.LogWarning("Vertex count for " + c.name + "'s collision mesh is bigger than 255!");
+                    Debug.LogWarning($"Vertex count for {c.name}'s collision mesh is bigger than {maxVertexCount}!");
                 }
             }
             characterStats = c.stats;
         }
+        private const float maxVertexCount = 1000;
         private bool _overridenCharacterStatsSet = false;
         private void FixedUpdate()
         {

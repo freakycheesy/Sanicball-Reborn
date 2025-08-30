@@ -5315,6 +5315,7 @@ GameObject:
   - component: {fileID: 8098385900367573636}
   - component: {fileID: 5612286020025509680}
   - component: {fileID: 8644047089235745693}
+  - component: {fileID: 7861864120282727156}
   m_Layer: 0
   m_Name: Powerup
   m_TagString: Untagged
@@ -5372,38 +5373,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57b4db84e2c865e4fb97223dc4d8569e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 7861864120282727156}
+  _networkObjectCache: {fileID: 0}
   containedPowerup: {fileID: 11400000, guid: b5dbb1884bb044940b87805d146b0cdd, type: 2}
   OnPickup:
-    _PersistentCalls:
-    - _Target: {fileID: 1121606384961457644}
-      _MemberName: Play
-      _PersistentArguments: []
-    - _Target: {fileID: 6467321887924035160}
-      _MemberName: SetActive
-      _PersistentArguments:
-      - _Type: 1
-        _Int: 0
-        _String: 
-        _X: 0
-        _Y: 0
-        _Z: 0
-        _W: 0
-        _Object: {fileID: 0}
+    _PersistentCalls: []
   OnRespawn:
-    _PersistentCalls:
-    - _Target: {fileID: 6467321887924035160}
-      _MemberName: SetActive
-      _PersistentArguments:
-      - _Type: 1
-        _Int: 1
-        _String: 
-        _X: 0
-        _Y: 0
-        _Z: 0
-        _W: 0
-        _Object: {fileID: 0}
+    _PersistentCalls: []
   respawnTime: 2
   icon: {fileID: 788955492811463442}
+  Renderer: {fileID: 6467321887924035160}
+  Particles: {fileID: 1121606384961457644}
 --- !u!114 &8644047089235745693
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5422,6 +5403,58 @@ MonoBehaviour:
   offset: {x: 0, y: 0, z: 0}
   flip: 0
   manual: 0
+--- !u!114 &7861864120282727156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5703545671763799581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <IsNested>k__BackingField: 0
+  WasActiveDuringEdit: 0
+  WasActiveDuringEdit_Set1: 1
+  <ComponentIndex>k__BackingField: 0
+  <PredictedSpawn>k__BackingField: {fileID: 0}
+  <PredictedOwner>k__BackingField: {fileID: 0}
+  NetworkBehaviours: []
+  InitializedParentNetworkBehaviour: {fileID: 0}
+  InitializedNestedNetworkObjects: []
+  RuntimeParentNetworkBehaviour: {fileID: 0}
+  RuntimeChildNetworkBehaviours: []
+  _isNetworked: 1
+  _isSpawnable: 1
+  _isGlobal: 0
+  _initializeOrder: 0
+  _preventDespawnOnDisconnect: 0
+  _defaultDespawnType: 0
+  NetworkObserver: {fileID: 0}
+  _enablePrediction: 0
+  _predictionType: 0
+  _graphicalObject: {fileID: 0}
+  _detachGraphicalObject: 0
+  _enableStateForwarding: 1
+  _networkTransform: {fileID: 0}
+  _ownerInterpolation: 1
+  _ownerSmoothedProperties: 255
+  _adaptiveInterpolation: 3
+  _spectatorSmoothedProperties: 255
+  _spectatorInterpolation: 2
+  _enableTeleport: 0
+  _teleportThreshold: 1
+  <PrefabId>k__BackingField: 65535
+  <SpawnableCollectionId>k__BackingField: 0
+  <AssetPathHash>k__BackingField: 3577104012650159952
+  <SceneId>k__BackingField: 0
+  SerializedTransformProperties:
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    Scale: {x: 0, y: 0, z: 0}
+    IsValid: 0
 --- !u!1 &6467321887924035160
 GameObject:
   m_ObjectHideFlags: 0

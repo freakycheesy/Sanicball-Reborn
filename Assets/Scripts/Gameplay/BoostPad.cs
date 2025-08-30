@@ -1,4 +1,5 @@
-﻿using Sanicball;
+﻿using FishNet.Object;
+using Sanicball;
 using UnityEngine;
 
 namespace Sanicball.Gameplay
@@ -29,7 +30,7 @@ namespace Sanicball.Gameplay
             }
             speedRampRenderer.materials[1].SetTextureOffset("_MainTex", new Vector2(0f, rampoffset));
         }
-
+        [Server]
         private void OnTriggerEnter(Collider other)
         {
             var bc = other.GetComponent<Ball>();

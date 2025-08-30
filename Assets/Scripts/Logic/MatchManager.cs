@@ -429,9 +429,10 @@ namespace Sanicball.Logic
 
             loadingStage = false;
             loadingLobby = true;
-            SceneLoadData data = new SceneLoadData(lobbyScene.RuntimeKey.ToString());
-            data.Options.Addressables = false;
+            SceneLoadData data = new SceneLoadData((string)lobbyScene.RuntimeKey);
+            data.Options.Addressables = true;
             data.ReplaceScenes = ReplaceOption.All;
+            data.PreferredActiveScene = new(new((string)lobbyScene.RuntimeKey));
             InstanceFinder.SceneManager.LoadGlobalScenes(data);
         }
         [Server]
