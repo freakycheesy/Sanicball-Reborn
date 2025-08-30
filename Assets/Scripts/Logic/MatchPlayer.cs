@@ -26,7 +26,6 @@ namespace Sanicball.Logic
     {
         private NetworkConnection clientGuid;
         private ControlType ctrlType;
-        private double latestMovementTimestamp = int.MinValue;
 
         public MatchPlayer(NetworkConnection clientGuid, ControlType ctrlType, int initialCharacterId)
         {

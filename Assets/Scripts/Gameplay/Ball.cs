@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using FishNet.CodeGenerating;
 using FishNet.Object;
+using FishNet.Object.Prediction;
 using FishNet.Object.Synchronizing;
 using Sanicball.Data;
 using SanicballCore;
@@ -67,6 +69,7 @@ namespace Sanicball.Gameplay
         [SerializeField]
         private SpeedFire speedFire;
 
+        public ParticleSystem DeathParticles;
         public DriftySmoke Smoke { get { return smoke; } }
         public OmniCamera Camera { get { return camera; } }
         public PivotCamera OldCamera { get { return oldCamera; } }
@@ -94,7 +97,7 @@ namespace Sanicball.Gameplay
         public BallType Type { get { return type.Value; } }
         public ControlType CtrlType { get { return ctrlType.Value; } }
         public int CharacterId { get { return characterId.Value; } }
-
+        public static List<Ball> Balls = new List<Ball>();
         [Header("Subcategories")]
         [SerializeField]
         private BallPrefabs prefabs;
@@ -103,6 +106,8 @@ namespace Sanicball.Gameplay
 
         //State
         public BallStats characterStats;
+        public bool overrideStats;
+        public BallStats overridenCharacterStats;
         public bool canMove = true;
         public BallControlInput input;
         public bool grounded = false;
@@ -127,25 +132,32 @@ namespace Sanicball.Gameplay
         public event System.EventHandler RespawnRequested;
         public event System.EventHandler<CameraCreationArgs> CameraCreated;
 
-        [ServerRpc]
+        [ServerRpc(RunLocally = true)]
         public void Jump()
         {
             if (grounded && CanMove)
             {
                 rb.AddForce(Up * characterStats.jumpHeight, ForceMode.Impulse);
-                if (sounds.Jump != null)
-                {
-                    sounds.Jump.Play();
-                }
+                JumpRpc();
                 grounded = false;
             }
         }
-        
+
+        [ObserversRpc]
+        private void JumpRpc()
+        {
+            if (sounds.Jump != null)
+            {
+                sounds.Jump.Play();
+            }
+        }
+
         [ServerRpc]
         public void RequestRespawn()
         {
             if (RespawnRequested != null)
                 RespawnRequested(this, System.EventArgs.Empty);
+            CreateDeathParticles();
         }
 
         public void Init(BallType type, ControlType ctrlType, int characterId, string nickname)
@@ -156,14 +168,16 @@ namespace Sanicball.Gameplay
             this.nickname.Value = nickname;
         }
 
-        [ServerRpc]
+        [ServerRpc(RunLocally = true)]
         public void UpdateInput(Vector3 direction, bool brake)
         {
-            
+            DirectionVector = direction;
+            Brake = brake;
         }
 
         private void Start()
         {
+            Balls.Add(this);
             Up = Vector3.up;
 
             //Set up drifty smoke
@@ -284,9 +298,14 @@ namespace Sanicball.Gameplay
             }
             characterStats = c.stats;
         }
-
+        private bool _overridenCharacterStatsSet = false;
         private void FixedUpdate()
         {
+            if (overrideStats && !_overridenCharacterStatsSet)
+            {
+                characterStats = overridenCharacterStats;
+                _overridenCharacterStatsSet = characterStats == overridenCharacterStats;
+            }
             if (CanMove)
             {
                 //If grounded use torque
@@ -297,7 +316,7 @@ namespace Sanicball.Gameplay
                 //If not use both
                 if (!grounded)
                 {
-                    rb.AddForce((Quaternion.Euler(0, -90, 0) * DirectionVector) * characterStats.airSpeed);
+                    rb.AddForce(Quaternion.Euler(0, -90, 0) * DirectionVector * characterStats.airSpeed);
                 }
             }
 
@@ -327,7 +346,7 @@ namespace Sanicball.Gameplay
             //Rolling sounds
             if (grounded)
             {
-                if(!rb) if (!TryGetComponent(out rb)) return;
+                if (!rb) if (!TryGetComponent(out rb)) return;
                 float rollSpd = Mathf.Clamp(rb.angularVelocity.magnitude / 230, 0, 16);
                 float vel = (-128f + rb.linearVelocity.magnitude) / 256; //Start at 128 fph, end at 256
 
@@ -424,6 +443,17 @@ namespace Sanicball.Gameplay
         {
             //TODO: Create a special version of the particle system for Super Sanic that has a cloud of pot leaves instead. No, really.
             Instantiate(prefabs.RemovalParticles, transform.position, transform.rotation);
+        }
+
+        void OnDestroy()
+        {
+            Balls.Remove(this);
+            CreateDeathParticles();
+        }
+
+        private void CreateDeathParticles()
+        {
+            Instantiate(prefabs.DeathParticles, transform.position, Quaternion.identity);
         }
     }
 }

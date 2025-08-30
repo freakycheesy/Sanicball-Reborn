@@ -1,4 +1,5 @@
-﻿using Sanicball.Data;
+﻿using FishNet.Connection;
+using Sanicball.Data;
 using Sanicball.Gameplay;
 using SanicballCore;
 using UnityEngine;
@@ -20,11 +21,11 @@ namespace Sanicball.Logic
         [SerializeField]
         private LayerMask ballSpawningMask = new LayerMask();
 
-        public Ball SpawnBall(int position, BallType ballType, ControlType ctrlType, int character, string nickname)
+        public Ball SpawnBall(int position, BallType ballType, ControlType ctrlType, int character, string nickname, NetworkConnection guid)
         {
             float characterSize = ActiveData.Characters[character].ballSize;
 
-            return SpawnBall(GetSpawnPoint(position, characterSize / 2f), transform.rotation, ballType, ctrlType, character, nickname);
+            return SpawnBall(GetSpawnPoint(position, characterSize / 2f), transform.rotation, ballType, ctrlType, character, nickname, guid);
         }
 
         public Vector3 GetSpawnPoint(int position, float offsetY)

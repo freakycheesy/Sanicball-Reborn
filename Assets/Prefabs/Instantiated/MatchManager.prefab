@@ -53,4 +53,18 @@ MonoBehaviour:
     type: 3}
   markerPrefab: {fileID: 11459252, guid: 4beca760f831c984e9f5e1b517aff2c2, type: 3}
   clients: []
+  players: []
+  lobbyTimerOn: 0
+  lobbyTimer: 3
+  autoStartTimerOn: 0
+  autoStartTimer: 0
+  inLobby: 0
+  loadingLobby: 0
+  loadingStage: 0
+  joiningRaceInProgress: 0
+  showSettingsOnLobbyLoad: 0
+  activeChat: {fileID: 0}
+  netUpdateTimer: 0
   matchSettingJson: 
+  LobbyPrefab: {fileID: 448877648311160589, guid: ed98061f2d8f96a4ab2f9b6ee44226ad,
+    type: 3}

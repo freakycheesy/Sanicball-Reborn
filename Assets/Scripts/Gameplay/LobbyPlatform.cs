@@ -4,36 +4,39 @@ namespace Sanicball.Gameplay
 {
     public class LobbyPlatform : MonoBehaviour
     {
-        public float moveDistance = 2f;
-        public float moveTime = 0.5f;
-
-        private float currentPos = 0f; //1 = lowered, 0 = raised
-
-        private Vector3 basePos;
+        public ConfigurableJoint joint;
+        public Vector3 lowerPos = new(0, 1f, 0);
+        public float baseDelay = 0.5f;
+        private JointDrive yDrive;
 
         public void Activate()
         {
-            currentPos = 1f;
+            joint.targetPosition = lowerPos;
+            Invoke(nameof(GoToBase), baseDelay);
+        }
+
+        private void GoToBase()
+        {
+            float offset = 0.001f;
+            joint.targetPosition = new Vector3(offset, offset, offset);
+            joint.yDrive = yDrive;
         }
 
         private void Start()
         {
-            basePos = transform.position;
+            if (!TryGetComponent(out joint)) { Debug.LogError("No Config Joint"); return; }
+            joint.targetPosition = lowerPos;
+            yDrive = joint.yDrive;
         }
 
-        private void Update()
+        private void OnCollisionEnter(Collision collision)
         {
-            if (currentPos > 0f)
-            {
-                currentPos = Mathf.Max(currentPos - (Time.deltaTime / moveTime), 0);
-            }
-            var smoothPos = Mathf.SmoothStep(0f, 1f, currentPos);
-            transform.position = basePos + new Vector3(0, -moveDistance * smoothPos, 0);
-
-            //For debugging
-            /*if (Input.GetKeyDown(KeyCode.L)) {
-                Activate();
-            }*/
+            if (collision.transform.position.y > transform.position.y) return;
+            joint.targetPosition = lowerPos * 6;
+            var drive = yDrive;
+            drive.positionSpring *= 6;
+            joint.yDrive = drive;
+            Invoke(nameof(GoToBase), baseDelay);
         }
     }
 }

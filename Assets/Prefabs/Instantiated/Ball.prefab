@@ -534,9 +534,9 @@ GameObject:
   m_Layer: 11
   m_Name: Ball
   m_TagString: Untagged
-  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 2800000, guid: a36d51c63d3cb384b846f2301089d233, type: 3}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 65
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &452612
 Transform:
@@ -598,12 +598,20 @@ MonoBehaviour:
     oldCamera: {fileID: 11400000, guid: 395e30509a198fc4fb2aac437f95e4c0, type: 3}
     removalParticles: {fileID: 19835562, guid: e8c684b001602cc4295dfd027bb84014, type: 3}
     speedFire: {fileID: 11405568, guid: 05801caa43fa986428513178add4eac3, type: 3}
+    DeathParticles: {fileID: 8794280333411727947, guid: 271791f023ca7f34caaacc3ae18e9158,
+      type: 3}
   sounds:
     jump: {fileID: 8245922}
     roll: {fileID: 8294728}
     speedNoise: {fileID: 8295400}
     brake: {fileID: 8236126}
   characterStats:
+    rollSpeed: 100
+    airSpeed: 15
+    jumpHeight: 14
+    grip: 0
+  overrideStats: 0
+  overridenCharacterStats:
     rollSpeed: 100
     airSpeed: 15
     jumpHeight: 14
@@ -754,7 +762,7 @@ MonoBehaviour:
   NetworkObserver: {fileID: 0}
   _enablePrediction: 1
   _predictionType: 0
-  _graphicalObject: {fileID: 0}
+  _graphicalObject: {fileID: 5310445466271812368}
   _detachGraphicalObject: 1
   _enableStateForwarding: 1
   _networkTransform: {fileID: 0}

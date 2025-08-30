@@ -1,4 +1,6 @@
-﻿using Sanicball.Data;
+﻿using FishNet;
+using FishNet.Connection;
+using Sanicball.Data;
 using Sanicball.Gameplay;
 using SanicballCore;
 using UnityEngine;
@@ -10,7 +12,7 @@ namespace Sanicball.Logic
         [SerializeField]
         private LobbyPlatform lobbyPlatform = null;
 
-        public Ball SpawnBall(PlayerType playerType, ControlType ctrlType, int character, string nickname)
+        public Ball SpawnBall(PlayerType playerType, ControlType ctrlType, int character, string nickname, NetworkConnection connection)
         {
             if (lobbyPlatform)
             {
@@ -20,8 +22,8 @@ namespace Sanicball.Logic
             {
                 Debug.LogError("LobbyBallSpawner has no lobby platform assigned");
             }
-
-            return SpawnBall(transform.position, transform.rotation, BallType.LobbyPlayer, ctrlType, character, nickname);
+            var ball = SpawnBall(transform.position, transform.rotation, BallType.LobbyPlayer, ctrlType, character, nickname, connection);
+            return ball;
         }
 
         private void OnDrawGizmos()

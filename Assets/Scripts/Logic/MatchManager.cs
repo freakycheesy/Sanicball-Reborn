@@ -158,7 +158,7 @@ namespace Sanicball.Logic
 
         public void RequestReadyChange(ControlType ctrlType, bool ready)
         {
-            LobbyScript.Instance.ChangedReadyRpc(myGuid, ctrlType, ready);
+            LobbyScript.Instance.ChangedReadyServerRpc(myGuid, ctrlType, ready);
         }
 
         public void RequestLoadLobby()
@@ -286,6 +286,7 @@ namespace Sanicball.Logic
 
         public void JoinLobby(string ip)
         {
+            Instance.showSettingsOnLobbyLoad = false;
             InstanceFinder.TransportManager.Transport.SetClientAddress(ip);
             InstanceFinder.ClientManager.StartConnection();
         }
@@ -356,6 +357,7 @@ namespace Sanicball.Logic
             }
             Instance = this;
         }
+        public LobbyScript LobbyPrefab;
         public void Start()
         {
             if (Instance != this) return;
@@ -365,16 +367,13 @@ namespace Sanicball.Logic
             //A messenger should be created by now! Time to create some message listeners
             var messenger = InstanceFinder.ClientManager;
 
-            messenger.OnAuthenticated += () =>
+            InstanceFinder.ServerManager.OnServerConnectionState += (state) =>
             {
-                myGuid = LobbyScript.Instance.LocalConnection;
-                SendClientJoinedMessage();
+                if (state.ConnectionState.IsStartedOrStarting())
+                {
+                    InstanceFinder.ServerManager.Spawn(Instantiate(LobbyPrefab.gameObject));
+                }
             };
-        }
-
-        void SendClientJoinedMessage()
-        {
-            LobbyScript.Instance.ClientJoinRpc(myGuid, ActiveData.GameSettings.nickname);
         }
 
         public void LocalChatMessageSent(string from, string text)
@@ -477,7 +476,6 @@ namespace Sanicball.Logic
 
         #region Scene changing / race loading
 
-        [Server]
         public void GoToLobby()
         {
             if (inLobby) return;
@@ -490,7 +488,6 @@ namespace Sanicball.Logic
             InstanceFinder.SceneManager.LoadGlobalScenes(data);
         }
 
-        [Server]
         public void GoToStage()
         {
             CurrentStage = ActiveData.GetStageByBarcode(currentSettings.StageBarcode);
@@ -562,7 +559,8 @@ namespace Sanicball.Logic
 
         public IEnumerator QuitMatchInternal(string reason)
         {
-            UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(menuScene);
+            InstanceFinder.TransportManager.Transport.StopConnection(true);
+            InstanceFinder.TransportManager.Transport.StopConnection(false);
 
             if (reason != null)
             {
@@ -572,7 +570,7 @@ namespace Sanicball.Logic
                 FindAnyObjectByType<UI.PopupDisconnected>().Reason = reason;
             }
 
-            Destroy(gameObject);
+            UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(menuScene);
         }
 
         #endregion Scene changing / race loading
@@ -588,7 +586,7 @@ namespace Sanicball.Logic
 
             string name = clients.First(a => a.Guid == player.ClientGuid).Name + " (" + GameInput.GetControlTypeName(player.CtrlType) + ")";
 
-            player.BallObject = spawner.SpawnBall(PlayerType.Normal, (player.ClientGuid == myGuid) ? player.CtrlType : ControlType.None, player.CharacterId, name);
+            player.BallObject = spawner.SpawnBall(PlayerType.Normal, (player.ClientGuid == myGuid) ? player.CtrlType : ControlType.None, player.CharacterId, name, player.ClientGuid);
 
             if (player.ClientGuid != myGuid)
             {

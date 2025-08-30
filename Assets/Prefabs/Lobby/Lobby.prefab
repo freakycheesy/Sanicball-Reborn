@@ -76,7 +76,7 @@ MonoBehaviour:
   _isGlobal: 1
   _initializeOrder: -128
   _preventDespawnOnDisconnect: 1
-  _defaultDespawnType: 1
+  _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0

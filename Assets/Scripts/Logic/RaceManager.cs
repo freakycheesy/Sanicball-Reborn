@@ -3,6 +3,7 @@ using System.Linq;
 using FishNet;
 using FishNet.Connection;
 using FishNet.Managing;
+using FishNet.Object;
 using FishNet.Transporting;
 using Sanicball.Data;
 using Sanicball.Gameplay;
@@ -206,7 +207,7 @@ namespace Sanicball.Logic
                     BallType.Player,
                     local ? matchPlayer.CtrlType : ControlType.None,
                     matchPlayer.CharacterId,
-                    name + " (" + GameInput.GetControlTypeName(matchPlayer.CtrlType) + ")"
+                    name + " (" + GameInput.GetControlTypeName(matchPlayer.CtrlType) + ")", matchPlayer.ClientGuid
                     );
 
                 //Create race player
@@ -230,6 +231,7 @@ namespace Sanicball.Logic
                         ControlType.None,
                         i,
                         "AI #" + i
+                        , InstanceFinder.ClientManager.Connection
                         );
                     aiBall.CanMove = false;
 

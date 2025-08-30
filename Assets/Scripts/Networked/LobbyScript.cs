@@ -5,18 +5,27 @@ using FishNet.Connection;
 using Sanicball.Logic;
 using System.ComponentModel;
 using System;
+using GameKit.Dependencies.Utilities.Types;
+using Sanicball.Data;
 
 public class LobbyScript : NetworkBehaviour
 {
      public static LobbyScript Instance;
-     
-     public override void OnStartNetwork()
-     {
-          base.OnStartNetwork();
+
+    void Awake()
+    {
           Instance = this;
      }
 
-     [ObserversRpc]
+     public override void OnStartClient()
+     {
+          base.OnStartClient();
+          MatchManager.Instance.myGuid = Instance.LocalConnection;
+          ClientJoinRpc(MatchManager.Instance.myGuid, ActiveData.GameSettings.nickname);
+     }
+
+
+     [ObserversRpc(ExcludeServer = false)]
      public void ChangeSettingsRpc(MatchSettings settings)
      {
           MatchManager.Instance.CurrentSettings = settings;
@@ -27,7 +36,9 @@ public class LobbyScript : NetworkBehaviour
      [ServerRpc(RequireOwnership = false)]
      public void ClientJoinRpc(NetworkConnection conn, string nickname)
      {
-          MatchManager.Instance.clients.Add(new MatchClient(conn, nickname));
+          var matchClient = new MatchClient(conn, nickname);
+          if (MatchManager.Instance.Clients.Contains(matchClient)) return;
+          MatchManager.Instance.clients.Add(matchClient);
           Debug.Log("New client " + nickname);
      }
 
@@ -60,12 +71,18 @@ public class LobbyScript : NetworkBehaviour
      }
 
      [ServerRpc(RequireOwnership = false)]
-     public void ChangedReadyRpc(NetworkConnection myGuid, ControlType ctrlType, bool ready)
+     public void ChangedReadyServerRpc(NetworkConnection myGuid, ControlType ctrlType, bool ready)
+    {
+          ChangedReadyRpc(myGuid, ctrlType, ready);
+    }
+
+     [ObserversRpc(ExcludeServer = false)]
+    private void ChangedReadyRpc(NetworkConnection myGuid, ControlType ctrlType, bool ready)
      {
           MatchManager.Instance.ChangedReadyCallback(myGuid, ctrlType, ready);
      }
 
-     [ObserversRpc(ExcludeServer = false)]
+    [ObserversRpc(ExcludeServer = false)]
      public void LoadRaceRpc()
      {
           MatchManager.Instance.LoadRaceCallback();
@@ -95,15 +112,15 @@ public class LobbyScript : NetworkBehaviour
           MatchManager.Instance.ChatCallback(from, text);
      }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void DoneRacingRpc(NetworkConnection clientGuid, ControlType ctrlType, double raceTimer, bool v)
-    {
-        RaceManager.Instance.DoneRacingCallback(clientGuid, ctrlType, raceTimer, v);
-    }
+     [ServerRpc(RequireOwnership = false)]
+     public void DoneRacingRpc(NetworkConnection clientGuid, ControlType ctrlType, double raceTimer, bool v)
+     {
+          RaceManager.Instance.DoneRacingCallback(clientGuid, ctrlType, raceTimer, v);
+     }
 
      [ServerRpc(RequireOwnership = false)]
-    public void CheckpointPassedMessage(NetworkConnection clientGuid, ControlType ctrlType, float lapTime)
-    {
+     public void CheckpointPassedMessage(NetworkConnection clientGuid, ControlType ctrlType, float lapTime)
+     {
           RacePlayer.Instance.CheckpointPassedHandler(clientGuid, ctrlType, lapTime);
-    }
+     }
 }
