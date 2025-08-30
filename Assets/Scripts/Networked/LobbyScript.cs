@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System;
 using GameKit.Dependencies.Utilities.Types;
 using Sanicball.Data;
+using System.Collections;
 
 public class LobbyScript : NetworkBehaviour
 {
@@ -96,9 +97,10 @@ public class LobbyScript : NetworkBehaviour
      }
 
      [ServerRpc(RequireOwnership = false, RunLocally = true)]
-     public void StartRaceRpc()
+     public void ReadyUpRaceRpc(NetworkConnection myGuid, ControlType ctrlType)
      {
-          RaceManager.Instance.StartRaceCallback();
+          Debug.Log("Ready Up");
+          RaceManager.Instance.ReadyUpRace(myGuid, ctrlType);
      }
 
      [ServerRpc(RequireOwnership = false, RunLocally = true)]
@@ -119,13 +121,13 @@ public class LobbyScript : NetworkBehaviour
           MatchManager.Instance.ChatCallback(from, text);
      }
 
-     [ServerRpc(RequireOwnership = false, RunLocally = true)]
+     [TargetRpc]
      public void DoneRacingRpc(NetworkConnection clientGuid, ControlType ctrlType, double raceTimer, bool v)
      {
           RaceManager.Instance.DoneRacingCallback(clientGuid, ctrlType, raceTimer, v);
      }
 
-     [ServerRpc(RequireOwnership = false, RunLocally = true)]
+     [TargetRpc]
      public void CheckpointPassedMessage(NetworkConnection clientGuid, ControlType ctrlType, float lapTime)
      {
           RacePlayer.Instance.CheckpointPassedHandler(clientGuid, ctrlType, lapTime);

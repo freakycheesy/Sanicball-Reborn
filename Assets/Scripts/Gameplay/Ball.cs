@@ -173,10 +173,12 @@ namespace Sanicball.Gameplay
             Brake = brake;
         }
 
-        private void Start()
+        public override void OnStartClient()
         {
+            base.OnStartNetwork();
             Balls.Add(this);
             Up = Vector3.up;
+            if (!IsOwner) GetComponentInChildren<AudioListener>().enabled = false;
 
             //Set up drifty smoke
             smoke = Instantiate(prefabs.Smoke);

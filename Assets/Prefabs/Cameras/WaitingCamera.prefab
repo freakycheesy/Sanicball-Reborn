@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 12473154}
   - component: {fileID: 11449898}
   - component: {fileID: 9206540858771531008}
+  - component: {fileID: 6414574207697773161}
   m_Layer: 0
   m_Name: WaitingCamera
   m_TagString: MainCamera
@@ -150,3 +151,11 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!81 &6414574207697773161
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168092}
+  m_Enabled: 1

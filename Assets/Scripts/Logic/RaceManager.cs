@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FishNet;
 using FishNet.Connection;
@@ -40,7 +41,7 @@ namespace Sanicball.Logic
 
         //Race state
         public List<RacePlayer> players = new List<RacePlayer>();
-        public RaceState currentState = RaceState.None;
+        public RaceState currentState = RaceState.Waiting;
 
         //Fields set in Init()
         public MatchSettings settings;
@@ -92,16 +93,13 @@ namespace Sanicball.Logic
                         activeWaitingCam = Instantiate(waitingCamPrefab);
                         activeWaitingUI = Instantiate(waitingUIPrefab);
                         activeWaitingUI.StageNameToShow = ActiveData.GetStageByBarcode(settings.StageBarcode).name;
-                        if (matchManager.OnlineMode)
+                        if (joinedWhileRaceInProgress)
                         {
-                            if (joinedWhileRaceInProgress)
-                            {
-                                activeWaitingUI.InfoToShow = "Waiting for race to end.";
-                            }
-                            else
-                            {
-                                activeWaitingUI.InfoToShow = "Waiting for other players...";
-                            }
+                            activeWaitingUI.InfoToShow = "Waiting for race to end.";
+                        }
+                        else
+                        {
+                            activeWaitingUI.InfoToShow = "Waiting for other players...";
                         }
 
                         break;
@@ -151,11 +149,11 @@ namespace Sanicball.Logic
             CurrentState = RaceState.Racing;
         }
 
+        [Server]
         public void Init(MatchSettings settings, MatchManager matchManager, bool raceIsInProgress)
         {
             this.settings = settings;
             this.matchManager = matchManager;
-            var messenger = InstanceFinder.ClientManager;
 
             if (raceIsInProgress)
             {
@@ -164,7 +162,7 @@ namespace Sanicball.Logic
                 CreateBallObjects();
             }
         }
-
+        [Server]
         public void StartRaceCallback()
         {
             countdownOffset = InstanceFinder.TimeManager.RoundTripTime;
@@ -219,8 +217,7 @@ namespace Sanicball.Logic
                 nextBallPosition++;
             }
 
-            if (!matchManager.OnlineMode)
-            {
+
                 //Create all AI balls (In local play only)
                 for (int i = 0; i < settings.AICount; i++)
                 {
@@ -242,7 +239,6 @@ namespace Sanicball.Logic
 
                     nextBallPosition++;
                 }
-            }
 
             int nextLocalPlayerIndex = 0;
             foreach (RacePlayer p in players.Where(a => a.CtrlType != ControlType.None))
@@ -323,8 +319,6 @@ namespace Sanicball.Logic
         }
         public void Start()
         {
-            var messenger = InstanceFinder.ClientManager;
-
             if (joinedWhileRaceInProgress)
             {
                 CurrentState = RaceState.Racing;
@@ -338,10 +332,13 @@ namespace Sanicball.Logic
                 CurrentState = RaceState.Waiting;
             }
 
-            //In online mode, send a RaceStartMessage as soon as the track is loaded (which is now)
-            if (matchManager.OnlineMode)
+            //LobbyScript.Instance.StartRaceRpc();
+            foreach (var p in MatchManager.Instance.Players)
             {
-                LobbyScript.Instance.StartRaceRpc();
+                if (LobbyScript.Instance.LocalConnection == p.ClientGuid)
+                {
+                    LobbyScript.Instance.ReadyUpRaceRpc(p.ClientGuid, p.CtrlType);
+                }
             }
         }
 
@@ -349,19 +346,12 @@ namespace Sanicball.Logic
         {
             var messenger = InstanceFinder.ClientManager;
 
-            //In offline mode, send a RaceStartMessage once Space (Or A on any joystick) is pressed
-            if (!matchManager.OnlineMode && CurrentState == RaceState.Waiting && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton0)))
-            {
-                LobbyScript.Instance.StartRaceRpc();
-            }
-
             //Increment the race timer if it's been started
             if (raceTimerOn)
             {
                 raceTimer += Time.deltaTime;
                 foreach (var p in players) p.UpdateTimer(Time.deltaTime);
             }
-
             //Order player list by position
             players = players.OrderByDescending(a => a.CalculateRaceProgress()).ToList();
             for (int i = 0; i < players.Count; i++)
@@ -379,6 +369,22 @@ namespace Sanicball.Logic
             {
                 p.Destroy();
             }
+        }
+
+        [Server]
+        public void ReadyUpRace(NetworkConnection myGuid, ControlType ctrlType)
+        {
+            var players = MatchManager.Instance.players.FindAll(x => x.ClientGuid == myGuid);
+            foreach (var player in players)
+            {
+                player.ReadyToRace = true;
+            }
+            var canStartRace = true;
+            foreach (var player in MatchManager.Instance.players)
+            {
+                if (!player.ReadyToRace) canStartRace = false;
+            }
+            if (canStartRace) Invoke(nameof(StartRaceCallback), 3);
         }
 
         #endregion Unity event functions

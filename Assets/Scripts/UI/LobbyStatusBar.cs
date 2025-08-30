@@ -26,12 +26,6 @@ namespace Sanicball.UI
         {
             manager = MatchManager.Instance;
 
-            //Self destruct if not in online mode
-            if (!manager.OnlineMode)
-            {
-                Destroy(gameObject);
-                return;
-            }
             UpdateText();
         }
 

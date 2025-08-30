@@ -99,9 +99,6 @@ namespace Sanicball.Logic
         public UI.Chat activeChat;
 
         //Timer used for syncing realtime stuff in online
-        public float netUpdateTimer = 0;
-        public const int NET_UPDATES_PER_SECOND = 40;
-
         #region Properties
         /// <summary>
         /// Contains all clients connected to the game. In offline matches this will always only contain one client.
@@ -308,7 +305,7 @@ namespace Sanicball.Logic
         {
             if (Instance != this) return;
             Instance = this;
-            UnityEngine.SceneManagement.SceneManager.sceneLoaded += (_, _) => OnLevelHasLoaded();
+            InstanceFinder.SceneManager.OnLoadEnd += (_) => OnLevelHasLoaded();
             DontDestroyOnLoad(gameObject);
             //A messenger should be created by now! Time to create some message listeners
             var messenger = InstanceFinder.ClientManager;
@@ -337,7 +334,6 @@ namespace Sanicball.Logic
                     }
                 }
         */
-        public bool OnlineMode => true;
         public void Update()
         {
             var messenger = InstanceFinder.ClientManager;
@@ -372,27 +368,6 @@ namespace Sanicball.Logic
             if (autoStartTimerOn && inLobby)
             {
                 autoStartTimer = Mathf.Max(0, autoStartTimer - Time.deltaTime);
-            }
-
-            if (OnlineMode)
-            {
-                netUpdateTimer -= Time.deltaTime;
-
-                if (netUpdateTimer <= 0)
-                {
-                    netUpdateTimer = 1f / NET_UPDATES_PER_SECOND;
-
-                    //Send local player positions to other clients
-                    /*
-                    foreach (MatchPlayer player in players)
-                    {
-                        if (player.ClientGuid == myGuid && player.BallObject)
-                        {
-                            ((OnlineMatchMessenger)messenger).SendPlayerMovement(player);
-                        }
-                    }
-                    */
-                }
             }
         }
 
