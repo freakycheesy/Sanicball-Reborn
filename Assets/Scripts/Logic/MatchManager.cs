@@ -8,7 +8,6 @@ using FishNet.Connection;
 using FishNet.Managing.Scened;
 using FishNet.Object;
 using FishNet.Transporting;
-using GameKit.Dependencies.Utilities.Types;
 using Newtonsoft.Json;
 using Sanicball.Data;
 using Sanicball.UI;
@@ -18,6 +17,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
+using SceneManager = UnityEngine.SceneManagement.SceneManager;
 
 namespace Sanicball.Logic
 {
@@ -286,14 +286,19 @@ namespace Sanicball.Logic
 
         public void LeaveLobby()
         {
-            if (InstanceFinder.IsClientStarted) InstanceFinder.ClientManager.StopConnection();
-            if (InstanceFinder.IsServerStarted) InstanceFinder.ServerManager.StopConnection(true);
+            inLobby = false;
+            loadingLobby = false;
+            Debug.Log("Stopping Client");
+            InstanceFinder.TransportManager.Transport.StopConnection(false);
+            Debug.Log("Stopping Server");
+            InstanceFinder.TransportManager.Transport.StopConnection(true);
+            Destroy(this.gameObject);
         }
 
         #endregion Match initializing
         void Awake()
         {
-            if (Instance != null && Instance != this)
+            if (Instance != null)
             {
                 Destroy(gameObject);
                 return;
@@ -305,7 +310,7 @@ namespace Sanicball.Logic
         {
             if (Instance != this) return;
             Instance = this;
-            InstanceFinder.SceneManager.OnLoadEnd += (_) => OnLevelHasLoaded();
+            InstanceFinder.SceneManager.OnLoadEnd += OnLevelHasLoaded;
             DontDestroyOnLoad(gameObject);
             //A messenger should be created by now! Time to create some message listeners
             var messenger = InstanceFinder.ClientManager;
@@ -404,11 +409,8 @@ namespace Sanicball.Logic
 
             loadingStage = false;
             loadingLobby = true;
-            SceneLoadData data = new SceneLoadData((string)lobbyScene.RuntimeKey);
-            data.Options.Addressables = true;
-            data.ReplaceScenes = ReplaceOption.All;
-            data.PreferredActiveScene = new(new((string)lobbyScene.RuntimeKey));
-            InstanceFinder.SceneManager.LoadGlobalScenes(data);
+            if(BootstrapSceneManager.currentScene != null) BootstrapSceneManager.ReplaceCurrentScene(lobbyScene.RuntimeKey);
+            else BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
         }
         [Server]
         public void GoToStage()
@@ -429,7 +431,7 @@ namespace Sanicball.Logic
         public static StageInfo CurrentStage;
 
         //Check if we were loading the lobby or the race
-        public void OnLevelHasLoaded()
+        public void OnLevelHasLoaded(SceneLoadEndEventArgs end)
         {
             if (loadingLobby)
             {

@@ -210,4 +210,4 @@ MonoBehaviour:
   _sceneProcessor: {fileID: 1207883465951028559}
   _lightProbeUpdating: 0
   _moveClientObjects: 0
-  _setActiveScene: 1
+  _setActiveScene: 0

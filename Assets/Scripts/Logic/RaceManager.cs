@@ -384,7 +384,7 @@ namespace Sanicball.Logic
             {
                 if (!player.ReadyToRace) canStartRace = false;
             }
-            if (canStartRace) Invoke(nameof(StartRaceCallback), 3);
+            if (canStartRace) Invoke(nameof(StartRaceCallback), 8);
         }
 
         #endregion Unity event functions

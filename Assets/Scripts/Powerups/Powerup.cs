@@ -18,18 +18,27 @@ namespace Sanicball.Powerups
         public GameObject Renderer;
         public ParticleSystem Particles;
 
-        void Start()
+        public override void OnStartServer()
         {
+            base.OnStartServer();
             RandomisePowerup();
         }
 
+        [Server]
         private void RandomisePowerup()
         {
             if (ActiveData.Powerups.Count <= 0) return;
-            containedPowerup = ActiveData.Powerups[Random.Range(0, ActiveData.Powerups.Count - 1)];
+            var i = Random.Range(0, ActiveData.Powerups.Count - 1);
+            containedPowerup = ActiveData.Powerups[i];
             icon.sprite = containedPowerup.icon;
+            RandomisePowerupRpc(i);
         }
 
+        [ObserversRpc]
+        private void RandomisePowerupRpc(int i)
+        {
+            icon.sprite = ActiveData.Powerups[i].icon;
+        }
 
         [Server]
         void OnTriggerEnter(Collider other)

@@ -175,10 +175,9 @@ namespace Sanicball.Gameplay
 
         public override void OnStartClient()
         {
-            base.OnStartNetwork();
+            base.OnStartClient();
             Balls.Add(this);
             Up = Vector3.up;
-            if (!IsOwner) GetComponentInChildren<AudioListener>().enabled = false;
 
             //Set up drifty smoke
             smoke = Instantiate(prefabs.Smoke);
@@ -255,15 +254,22 @@ namespace Sanicball.Gameplay
                     cam.AddBall(this);
                 }
             }
-            if ((Type == BallType.Player || Type == BallType.LobbyPlayer) && CtrlType != ControlType.None)
+            if (IsOwner)
             {
-                //Create input component
-                input = gameObject.AddComponent<BallControlInput>();
+                if ((Type == BallType.Player || Type == BallType.LobbyPlayer) && CtrlType != ControlType.None)
+                {
+                    //Create input component
+                    input = gameObject.AddComponent<BallControlInput>();
+                }
+                if (Type == BallType.AI)
+                {
+                    //Create AI component
+                    gameObject.AddComponent<BallControlAI>();
+                }
             }
-            if (Type == BallType.AI)
+            else
             {
-                //Create AI component
-                gameObject.AddComponent<BallControlAI>();
+                GetComponentInChildren<AudioListener>().enabled = false;
             }
         }
         public Renderer Renderer;

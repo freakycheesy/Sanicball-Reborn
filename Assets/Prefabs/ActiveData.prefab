@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 449212}
   - component: {fileID: 11452216}
+  - component: {fileID: 5680854990140197777}
   m_Layer: 0
   m_Name: ActiveData
   m_TagString: Untagged
@@ -58,3 +59,15 @@ MonoBehaviour:
     name: Bangarang
     resource: {fileID: 8300000, guid: 44aeddca0c186224090a76d97139eaa4, type: 3}
   eSportsPrefab: {fileID: 11400000, guid: f55190f64bbb0c349bcd0f128756a753, type: 3}
+--- !u!114 &5680854990140197777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbfe1a61558da314987b91dd375b8acf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -4,6 +4,7 @@ using System.Linq;
 using FishNet;
 using FishNet.Managing;
 using FishNet.Managing.Scened;
+using FishNet.Object;
 using Newtonsoft.Json;
 using Sanicball.Logic;
 using Sanicball.Powerups;
@@ -51,7 +52,6 @@ namespace Sanicball.Data
         #endregion Fields
 
         #region Properties
-
         public static GameSettings GameSettings { get { return Instance.gameSettings; } }
         public static KeybindCollection Keybinds { get { return Instance.keybinds; } }
         public static MatchSettings MatchSettings = MatchSettings.CreateDefault();
@@ -115,7 +115,7 @@ namespace Sanicball.Data
             MusicPlayer.Playlist.AddRange(pallet.Playlist);
             Characters.AddRange(pallet.Avatars);
             Powerups.AddRange(pallet.Powerups);
-            
+
             Debug.Log($"Loaded Pallet: ({pallet.Author}.{pallet.name})");
         }
         public static bool TryGetStageByBarcode(string barcode, out StageInfo stage)
@@ -144,15 +144,11 @@ namespace Sanicball.Data
 
         public static void LoadLevel(StageInfo level, LoadSceneMode mode = LoadSceneMode.Single)
         {
-            SceneLoadData data = new SceneLoadData((string)level.scene.RuntimeKey);
-            data.Options.Addressables = true;
-            data.PreferredActiveScene = new(new((string)level.scene.RuntimeKey));
-            data.ReplaceScenes = ReplaceOption.All;
-            InstanceFinder.SceneManager.LoadGlobalScenes(data);
+            BootstrapSceneManager.ReplaceCurrentScene(level.scene.RuntimeKey);
             //level.LoadSceneAsync(mode);
             //Addressables.LoadSceneAsync(level, mode);
         }
-        
+
         private void OnEnable()
         {
             LoadAll();
