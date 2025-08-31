@@ -41,10 +41,16 @@ namespace Sanicball.UI
         private float visibleTime = 0;
 
         public event System.Action<string, string> MessageSent;
-
+        public static Chat Instance;
         private void Start()
         {
+            if (Instance)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
             DontDestroyOnLoad(gameObject);
+            Instance = this;
             canvasGroup = GetComponent<CanvasGroup>();
             canvasGroup.alpha = 0;
         }
@@ -61,7 +67,7 @@ namespace Sanicball.UI
                 }
             }
 
-            if (es.currentSelectedGameObject == messageInputField.gameObject)
+            if(es) if (es.currentSelectedGameObject == messageInputField.gameObject)
             {
                 visibleTime = MAX_VISIBLE_TIME;
                 if (Input.GetKeyDown(KeyCode.Return))

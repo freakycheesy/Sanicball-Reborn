@@ -104,7 +104,7 @@ namespace Sanicball
             m.triangles = tris.ToArray();
             m.uv = uv.ToArray();
             m.RecalculateNormals();
-            meshFilter.sharedMesh = m;
+            meshFilter.mesh = m;
         }
     }
 }

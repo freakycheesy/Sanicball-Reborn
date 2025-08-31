@@ -21,7 +21,7 @@ public class BootstrapSceneManager : MonoBehaviour
         currentScene = args.QueueData.SceneLoadData.SceneLookupDatas[0];
         if (SceneManager.GetActiveScene().name.Contains("Moved") && SceneManager.GetActiveScene().name.Contains("Objects"))
         {
-            SceneManager.SetActiveScene(SceneManager.GetSceneAt(1));
+            if(SceneManager.GetSceneAt(1) != null) SceneManager.SetActiveScene(SceneManager.GetSceneAt(1));
         }
     }
     public static SceneLookupData currentScene = new();

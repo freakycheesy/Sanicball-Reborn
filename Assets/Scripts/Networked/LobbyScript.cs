@@ -33,7 +33,7 @@ public class LobbyScript : NetworkBehaviour
      }
 
 
-     [ServerRpc(RequireOwnership = false, RunLocally = true)]
+     [ObserversRpc(ExcludeServer = false, RunLocally = true)]
      public void ChangeSettingsRpc(MatchSettings settings)
      {
           MatchManager.Instance.CurrentSettings = settings;

@@ -14,7 +14,7 @@ namespace Sanicball.UI
             if (activePopup != null)
             {
                 //Closing old popup
-                activePopup.Close();
+                activePopup?.Close();
                 groupDisabledOnPopup.interactable = true;
             }
             //Opening new popup
@@ -29,7 +29,7 @@ namespace Sanicball.UI
 
         public void CloseActivePopup()
         {
-            activePopup.Close();
+            activePopup?.Close();
             activePopup = null;
             groupDisabledOnPopup.interactable = true;
         }
@@ -37,10 +37,6 @@ namespace Sanicball.UI
         private void Start()
         {
             Instance = this;
-        }
-
-        private void Update()
-        {
         }
     }
 }

@@ -17,11 +17,7 @@ namespace Sanicball.UI
         [SerializeField]
         private InputField nameInput;
         [SerializeField]
-        private InputField portInput;
-        [SerializeField]
         private Toggle isPublicInput;
-        [SerializeField]
-        private Text portOutput;
         [SerializeField]
         private UI.Popup connectingPopupPrefab = null;
         [SerializeField]
@@ -31,31 +27,14 @@ namespace Sanicball.UI
             popupHandler = PopupHandler.Instance;
         }
 
-        public void Create(){
-            StartCoroutine(PopupParser());
-        }
-
-        public IEnumerator PopupParser()
+        public void Create()
         {
-            int maxPlayers;
-            int.TryParse(maxPlayersInput.text, out maxPlayers);
-            ushort port;
-            ushort.TryParse(portInput.text, out port);
-            portOutput.text = "";
-            if(port < 1024) {
-                portOutput.text = "Port must be at least 1024.";
-                yield break;
-            }else if(port > 49151) {
-                portOutput.text = "Port must be at most 49151.";
-                yield break;
-            }
-            MatchManager.Instance.CreateLobby();
-
             if (popupHandler != null)
             {
                 popupHandler.OpenPopup(connectingPopupPrefab);
                 PopupConnecting.ShowMessage("Creating Server...");
             }
+            MatchManager.CreateLobby();
         }
     }
 }

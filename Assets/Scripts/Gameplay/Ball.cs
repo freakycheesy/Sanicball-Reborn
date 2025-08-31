@@ -191,7 +191,7 @@ namespace Sanicball.Gameplay
             rb.maxAngularVelocity = 1000f;
 
             //Set object name
-            gameObject.name = type.ToString() + " - " + nickname;
+            gameObject.name = type.Value.ToString() + " - " + nickname.Value;
 
             //Set character
             if (CharacterId >= 0 && CharacterId < ActiveData.Characters.Count)
@@ -313,17 +313,17 @@ namespace Sanicball.Gameplay
                 characterStats = overridenCharacterStats;
                 _overridenCharacterStatsSet = characterStats == overridenCharacterStats;
             }
-            if (CanMove)
+            if (CanMove && rb)
             {
                 //If grounded use torque
                 if (DirectionVector != Vector3.zero)
                 {
-                    rb.AddTorque(DirectionVector * characterStats.rollSpeed);
+                    rb?.AddTorque(DirectionVector * characterStats.rollSpeed);
                 }
                 //If not use both
                 if (!grounded)
                 {
-                    rb.AddForce(Quaternion.Euler(0, -90, 0) * DirectionVector * characterStats.airSpeed);
+                    rb?.AddForce(Quaternion.Euler(0, -90, 0) * DirectionVector * characterStats.airSpeed);
                 }
             }
 
@@ -351,9 +351,8 @@ namespace Sanicball.Gameplay
         private void Update()
         {
             //Rolling sounds
-            if (grounded)
+            if (grounded && rb)
             {
-                if (!rb) if (!TryGetComponent(out rb)) return;
                 float rollSpd = Mathf.Clamp(rb.angularVelocity.magnitude / 230, 0, 16);
                 float vel = (-128f + rb.linearVelocity.magnitude) / 256; //Start at 128 fph, end at 256
 
@@ -412,6 +411,7 @@ namespace Sanicball.Gameplay
             }
         }
 
+        [Server]
         private void OnTriggerEnter(Collider other)
         {
             var c = other.GetComponent<Checkpoint>();

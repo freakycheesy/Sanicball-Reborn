@@ -260,24 +260,24 @@ namespace Sanicball.Logic
             CreateLobby();
         }
 
-        public void CreateLobby()
+        public static void CreateLobby()
         {
             Instance.currentSettings = ActiveData.MatchSettings;
-            InstanceFinder.ServerManager.StartConnection(25000);
+            InstanceFinder.ServerManager.StartConnection();
             InstanceFinder.ServerManager.OnServerConnectionState += (state) =>
             {
-                if (state.ConnectionState.IsStartedOrStarting() && InstanceFinder.ServerManager.Started)
+                if (state.ConnectionState.IsStartedOrStarting() || InstanceFinder.ServerManager.Started)
                 {
                     Instance.showSettingsOnLobbyLoad = true;
                     Instance.GoToLobby();
-                    activeChat = Instantiate(chatPrefab);
-                    activeChat.MessageSent += LocalChatMessageSent;
+                    Instance.activeChat = Instantiate(Instance.chatPrefab);
+                    Instance.activeChat.MessageSent += Instance.LocalChatMessageSent;
                     InstanceFinder.ClientManager.StartConnection();
                 }
             };
         }
 
-        public void JoinLobby(string ip)
+        public static void JoinLobby(string ip)
         {
             Instance.showSettingsOnLobbyLoad = false;
             InstanceFinder.TransportManager.Transport.SetClientAddress(ip);
