@@ -94,12 +94,16 @@ namespace Sanicball.Data
         public static void FindPallets()
         {
             PalletHandle = Addressables.LoadAssetsAsync<SanicPallet>("mod", LoadPalletCallback);
-            PalletHandle.Completed += (_) => { MatchSettings = MatchSettings.CreateDefault(); Stages.ForEach(AddToSceneProcessor); Debug.Log("Completed Loading Pallet!"); };
+            PalletHandle.Completed += PalletCompleted;
         }
 
-        private static void AddToSceneProcessor(StageInfo info)
+        private static void PalletCompleted(AsyncOperationHandle<IList<SanicPallet>> _)
         {
-            AddressableNetworkManager.AddressableManager.CompiledAddressableReferences.Add((string)info.scene.RuntimeKey, info.scene);
+            MatchSettings = MatchSettings.CreateDefault(); foreach (var info in Stages)
+            {
+                AddressableNetworkManager.AddressableManager.CompiledAddressableReferences.Add((string)info.scene.RuntimeKey, info.scene);
+            }
+            Debug.Log("Completed Loading Pallet!");
         }
 
         public static void LoadPalletCallback(SanicPallet pallet)

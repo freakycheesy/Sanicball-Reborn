@@ -14,7 +14,7 @@ namespace Mirror
     public class AddressableNetworkManager : NetworkManager
     {
 
-        public SerializedDictionary<string, AssetReference> CompiledAddressableReferences;
+        public SerializedDictionary<string, AssetReference> CompiledAddressableReferences = new();
 
         [Tooltip("List of scene references")]
         public List<AssetReference> SceneRefs = new();
