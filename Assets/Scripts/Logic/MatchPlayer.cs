@@ -23,17 +23,17 @@ namespace Sanicball.Logic
     [Serializable]
     public class MatchPlayer
     {
-        private NetworkConnectionToClient clientGuid;
+        private int connectionId;
         private ControlType ctrlType;
 
-        public MatchPlayer(NetworkConnectionToClient clientGuid, ControlType ctrlType, int initialCharacterId)
+        public MatchPlayer(int clientGuid, ControlType ctrlType, int initialCharacterId)
         {
-            this.clientGuid = clientGuid;
+            this.connectionId = clientGuid;
             this.ctrlType = ctrlType;
             CharacterId = initialCharacterId;
         }
 
-        public NetworkConnectionToClient ClientGuid { get { return clientGuid; } }
+        public int ConnectionId { get { return connectionId; } }
         public ControlType CtrlType { get { return ctrlType; } }
         public int CharacterId { get; set; }
         public Gameplay.Ball BallObject { get; set; }

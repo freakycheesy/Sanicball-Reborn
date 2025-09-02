@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,7 @@ namespace SanicballCore
         WeightedRandom // Most chance for normal, small chance for odd, smaller chance for hyper
     }
 
+    [Serializable]
     public struct MatchSettings
     {
         [Newtonsoft.Json.JsonProperty]
@@ -44,7 +46,7 @@ namespace SanicballCore
 
         public string StageBarcode { get; set; }
         public int Laps { get; set; }
-        public bool PowerupsEnabled{get; set; }
+        public bool PowerupsEnabled { get; set; }
         public int AICount { get; set; }
         public AISkillLevel AISkill { get; set; }
         public Dictionary<string, int> Aliases { get; set; }
@@ -54,7 +56,7 @@ namespace SanicballCore
         public int AutoReturnTime { get; set; }
         public float VoteRatio { get; set; }
         public StageRotationMode StageRotationMode { get; set; }
-		public AllowedTiers AllowedTiers { get; set; }
+        public AllowedTiers AllowedTiers { get; set; }
         public TierRotationMode TierRotationMode { get; set; }
         public int DisqualificationTime { get; set; }
 
@@ -77,7 +79,7 @@ namespace SanicballCore
                 AutoReturnTime = 15,
                 VoteRatio = 1f,
                 StageRotationMode = StageRotationMode.None,
-				AllowedTiers = AllowedTiers.All,
+                AllowedTiers = AllowedTiers.All,
                 TierRotationMode = TierRotationMode.None,
                 DisqualificationTime = 120,
                 Aliases = new Dictionary<string, int>()

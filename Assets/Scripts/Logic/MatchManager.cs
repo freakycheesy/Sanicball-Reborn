@@ -111,7 +111,7 @@ namespace Sanicball.Logic
         /// </summary>
         public MatchSettings CurrentSettings { get { return currentSettings; } set { currentSettings = value; } }
 
-        public NetworkConnection LocalClientGuid { get { return myGuid; } }
+        public int LocalClientGuid { get { return myGuid.connectionId; } }
 
         public bool AutoStartTimerOn { get { return autoStartTimerOn; } }
         public float AutoStartTimer { get { return autoStartTimer; } }
@@ -127,52 +127,54 @@ namespace Sanicball.Logic
         public void RequestSettingsChange(MatchSettings newSettings)
         {
             SettingsChangedMessage message = new(newSettings);
-            NetworkClient.Send<SettingsChangedMessage>(message);
+            NetworkClient.Send(message);
         }
 
         public void RequestPlayerJoin(ControlType ctrlType, int initialCharacter)
         {
-            LobbyScript.Instance.PlayerJoinRpc( ctrlType, initialCharacter);
+            NetworkClient.Send<PlayerJoinedMessage>(new(myGuid.connectionId, ctrlType, initialCharacter));
         }
 
         public void RequestPlayerLeave(ControlType ctrlType)
         {
-            LobbyScript.Instance.PlayerLeaveRpc( ctrlType);
+            NetworkClient.Send<PlayerLeftMessage>(new(myGuid.connectionId, ctrlType));
         }
 
         public void RequestCharacterChange(ControlType ctrlType, int newCharacter)
         {
-            LobbyScript.Instance.CharacterChangedRpc(ctrlType, newCharacter);
+            NetworkClient.Send<CharacterChangedMessage>(new(myGuid.connectionId, ctrlType, newCharacter));
         }
 
         public void RequestReadyChange(ControlType ctrlType, bool ready)
         {
-            LobbyScript.Instance.ChangedReadyServerRpc( ctrlType, ready);
+            NetworkClient.Send<ChangedReadyMessage>(new(myGuid.connectionId, ctrlType, ready));
         }
 
         public void RequestLoadLobby()
         {
-            LobbyScript.Instance.LoadLobbyRpc();
+            NetworkServer.SendToAll<LoadLobbyMessage>(new());
         }
 
         #endregion State changing methods
 
         #region Match message callbacks
 
-        public void ClientLeftCallback(NetworkConnection guid)
+        public void ClientLeftCallback(ClientLeftMessage message)
         {
             //Remove all players added by this client
-            List<MatchPlayer> playersToRemove = players.Where(a => a.ClientGuid == guid).ToList();
+            List<MatchPlayer> playersToRemove = players.Where(a => a.ConnectionId == message.ConnectionID).ToList();
             foreach (MatchPlayer player in playersToRemove)
             {
-                PlayerLeftCallback(player.ClientGuid, player.CtrlType);
+                PlayerLeftCallback(new(player.ConnectionId, player.CtrlType));
             }
             //Remove the client
-            clients.RemoveAll(a => a.Guid == guid);
+            clients.RemoveAll(a => a.ConnectionId == message.ConnectionID);
         }
-        public void PlayerLeftCallback(NetworkConnection guid, ControlType type)
+        public void PlayerLeftCallback(PlayerLeftMessage message)
         {
-            var player = players.FirstOrDefault(a => a.ClientGuid == guid && a.CtrlType == type);
+            int guid = message.ConnectionID;
+            ControlType type = message.CtrlType;
+            var player = players.FirstOrDefault(a => a.ConnectionId == guid && a.CtrlType == type);
             if (player != null)
             {
                 players.Remove(player);
@@ -180,32 +182,32 @@ namespace Sanicball.Logic
                 if (player.BallObject)
                 {
                     player.BallObject.CreateRemovalParticles();
-                    Destroy(player.BallObject.gameObject);
+                    NetworkServer.Destroy(player.BallObject.gameObject);
                 }
 
                 if (MatchPlayerRemoved != null)
-                    MatchPlayerRemoved(this, new MatchPlayerEventArgs(player, guid == myGuid)); //TODO: determine if removed player was local
+                    MatchPlayerRemoved(this, new MatchPlayerEventArgs(player, guid == myGuid.connectionId)); //TODO: determine if removed player was local
             }
         }
 
-        public void CharacterChangedCallback(NetworkConnection myGuid, ControlType ctrlType, int newCharacter)
+        public void CharacterChangedCallback(CharacterChangedMessage message)
         {
             if (!inLobby)
             {
                 Debug.LogError("Cannot set character outside of lobby!");
             }
 
-            var player = players.FirstOrDefault(a => a.ClientGuid == myGuid && a.CtrlType == ctrlType);
+            var player = players.FirstOrDefault(a => a.ConnectionId == message.ConnectionID && a.CtrlType == message.CtrlType);
             if (player != null)
             {
-                player.CharacterId = newCharacter;
+                player.CharacterId = message.NewCharacter;
                 SpawnLobbyBall(player);
             }
         }
 
         public void ChangedReadyCallback(ChangedReadyMessage message)
         {
-            var player = Instance.players.FirstOrDefault(a => a.ClientGuid.connectionId == message.ConnectionID && a.CtrlType == message.CtrlType);
+            var player = Instance.players.FirstOrDefault(a => a.ConnectionId == message.ConnectionID && a.CtrlType == message.CtrlType);
             if (player != null)
             {
                 player.ReadyToRace = !player.ReadyToRace;
@@ -230,10 +232,10 @@ namespace Sanicball.Logic
             CameraFade.StartAlphaFade(Color.black, false, 0.3f, 0.05f, GoToStage);
         }
 
-        public void ChatCallback(string from, string text)
+        public void ChatCallback(ChatMessage message)
         {
             if (activeChat)
-                activeChat.ShowMessage(from, text);
+                activeChat.ShowMessage(message.From, message.Text);
         }
 
         public void LoadLobbyCallback()
@@ -300,13 +302,51 @@ namespace Sanicball.Logic
         {
             NetworkClient.RegisterHandler<AutoStartTimerMessage>(AutoStartTimerCallback);
             NetworkClient.RegisterHandler<ChangedReadyMessage>(ChangedReadyCallback);
+            NetworkClient.RegisterHandler<CharacterChangedMessage>(CharacterChangedCallback);
+            NetworkClient.RegisterHandler<ChatMessage>(ChatCallback);
+            NetworkServer.RegisterHandler<SettingsChangedMessage>((_, a)=>SettingsChangedCallback(a));
+            NetworkClient.RegisterHandler<ClientJoinedMessage>(ClientJoinedCallback);
+            NetworkClient.RegisterHandler<ClientLeftMessage>(ClientLeftCallback);
+            NetworkClient.RegisterHandler<PlayerJoinedMessage>(PlayerJoinedCallback);
+            NetworkClient.RegisterHandler<PlayerLeftMessage>(PlayerLeftCallback);
+            NetworkServer.RegisterHandler<LoadRaceMessage>((_, _)=>LoadRaceCallback());
+            NetworkServer.RegisterHandler<LoadLobbyMessage>((_, _) => LoadLobbyCallback());
+        }
 
+        private void PlayerJoinedCallback(PlayerJoinedMessage message)
+        {
+            var p = new MatchPlayer(message.ConnectionID, message.CtrlType, message.InitialCharacter);
+            MatchManager.Instance.players.Add(p);
+
+            if (MatchManager.Instance.inLobby)
+            {
+                MatchManager.Instance.SpawnLobbyBall(p);
+            }
+
+            MatchManager.Instance.StopLobbyTimer();
+
+            MatchManager.Instance.MatchPlayerAdded(this, new MatchPlayerEventArgs(p, message.ConnectionID == MatchManager.Instance.myGuid.connectionId));
+        }
+
+        private void ClientJoinedCallback(ClientJoinedMessage message)
+        {
+            var matchClient = new MatchClient(message.ConnectionID, message.ClientName);
+            if (MatchManager.Instance.Clients.Contains(matchClient)) return;
+            MatchManager.Instance.clients.Add(matchClient);
+            Debug.Log("New client " + message.ClientName);
+        }
+
+        private void SettingsChangedCallback(SettingsChangedMessage message)
+        {
+            Instance.CurrentSettings = message.NewMatchSettings;
+            Debug.Log("Settings changed");
+            Instance.MatchSettingsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void LocalChatMessageSent(string from, string text)
         {
-            MatchClient myClient = clients.FirstOrDefault(a => a.Guid == myGuid);
-            ChatCallback(from, text);
+            MatchClient myClient = clients.FirstOrDefault(a => a.ConnectionId == myGuid.connectionId);
+            ChatCallback(new(from, ChatMessageType.User, text));
         }
         /*
                 public void OnlinePlayerMovement(object sender, PlayerMovementArgs e)
@@ -345,7 +385,7 @@ namespace Sanicball.Logic
                 //LoadRaceMessages don't need to be sent in online mode - the server will ignore it anyway.
                 if (lobbyTimer <= 0)
                 {
-                    LobbyScript.Instance.LoadRaceRpc();
+                    NetworkServer.SendToAll<LoadRaceMessage>(new());
                 }
             }
 
@@ -427,10 +467,6 @@ namespace Sanicball.Logic
             {
                 camera.renderPostProcessing = true;
             }
-            if (NetworkServer.active)
-            {
-                NetworkServer.Spawn(Instantiate(LobbyPrefab).gameObject);
-            }
         }
 
         //Initiate the lobby after loading lobby scene
@@ -492,11 +528,11 @@ namespace Sanicball.Logic
                 Destroy(player.BallObject.gameObject);
             }
 
-            string name = clients.First(a => a.Guid == player.ClientGuid).Name + " (" + GameInput.GetControlTypeName(player.CtrlType) + ")";
+            string name = clients.First(a => a.ConnectionId == player.ConnectionId).Name + " (" + GameInput.GetControlTypeName(player.CtrlType) + ")";
+            NetworkServer.connections.TryGetValue(player.ConnectionId, out var conn);
+            player.BallObject = spawner.SpawnBall(PlayerType.Normal, (player.ConnectionId == myGuid.connectionId) ? player.CtrlType : ControlType.None, player.CharacterId, name, conn);
 
-            player.BallObject = spawner.SpawnBall(PlayerType.Normal, (player.ClientGuid == myGuid) ? player.CtrlType : ControlType.None, player.CharacterId, name, player.ClientGuid);
-
-            if (player.ClientGuid != myGuid)
+            if (player.ConnectionId != myGuid.connectionId)
             {
                 Marker marker = Instantiate(markerPrefab);
                 marker.transform.SetParent(LobbyReferences.Active.MarkerContainer, false);

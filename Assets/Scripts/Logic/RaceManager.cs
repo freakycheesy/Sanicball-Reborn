@@ -6,6 +6,7 @@ using Sanicball.Data;
 using Sanicball.Gameplay;
 using Sanicball.UI;
 using SanicballCore;
+using SanicballCore.MatchMessages;
 using UnityEngine;
 
 namespace Sanicball.Logic
@@ -114,7 +115,7 @@ namespace Sanicball.Logic
                         CreateBallObjects();
 
                         //If there are no local players, create a spectator camera
-                        if (!matchManager.Players.Any(a => a.ClientGuid == matchManager.LocalClientGuid))
+                        if (!matchManager.Players.Any(a => a.ConnectionId == matchManager.LocalClientGuid))
                         {
                             var specView = Instantiate(spectatorViewPrefab);
                             specView.TargetManager = this;
@@ -165,13 +166,14 @@ namespace Sanicball.Logic
             CurrentState = RaceState.Countdown;
         }
 
-        public void ClientLeftCallback(NetworkConnection guid)
+        public void ClientLeftCallback(ClientLeftMessage message)
         {
+            int guid = message.ConnectionID;
             //Find and remove all RacePlayers associated with players from this client
             //TODO: Find some way to still have the player in the race, although disabled - so that players leaving while finished don't just disappear
             foreach (RacePlayer racePlayer in players.ToList())
             {
-                if (racePlayer.AssociatedMatchPlayer != null && racePlayer.AssociatedMatchPlayer.ClientGuid == guid)
+                if (racePlayer.AssociatedMatchPlayer != null && racePlayer.AssociatedMatchPlayer.ConnectionId == guid)
                 {
                     racePlayer.Destroy();
                     players.Remove(racePlayer);
@@ -185,23 +187,24 @@ namespace Sanicball.Logic
             RaceBallSpawner ballSpawner = StageReferences.Active.spawnPoint;
 
             //Enable lap records if there is only one local player.
-            bool enableLapRecords = matchManager.Players.Count(a => a.ClientGuid == matchManager.LocalClientGuid) == 1;
+            bool enableLapRecords = matchManager.Players.Count(a => a.ConnectionId == matchManager.LocalClientGuid) == 1;
 
             //Create all player balls
             for (int i = 0; i < matchManager.Players.Count; i++)
             {
                 var matchPlayer = matchManager.Players[i];
 
-                bool local = matchPlayer.ClientGuid == matchManager.LocalClientGuid;
+                bool local = matchPlayer.ConnectionId == matchManager.LocalClientGuid;
 
                 //Create ball
-                string name = matchManager.Clients.FirstOrDefault(a => a.Guid == matchPlayer.ClientGuid).Name;
+                string name = matchManager.Clients.FirstOrDefault(a => a.ConnectionId == matchPlayer.ConnectionId).Name;
+                NetworkServer.connections.TryGetValue(matchPlayer.ConnectionId, out var conn);
                 matchPlayer.BallObject = ballSpawner.SpawnBall(
                     nextBallPosition,
                     BallType.Player,
                     local ? matchPlayer.CtrlType : ControlType.None,
                     matchPlayer.CharacterId,
-                    name + " (" + GameInput.GetControlTypeName(matchPlayer.CtrlType) + ")", matchPlayer.ClientGuid
+                    name + " (" + GameInput.GetControlTypeName(matchPlayer.CtrlType) + ")", conn
                     );
 
                 //Create race player
@@ -224,7 +227,7 @@ namespace Sanicball.Logic
                     ControlType.None,
                     i,
                     "AI #" + i
-                    , LobbyScript.Instance.connectionToClient
+                    , NetworkServer.localConnection
                         );
                     aiBall.CanMove = false;
 
@@ -269,10 +272,12 @@ namespace Sanicball.Logic
 
                 if (rp.AssociatedMatchPlayer != null)
                 {
-                    if (rp.AssociatedMatchPlayer.ClientGuid == matchManager.LocalClientGuid)
+                    if (rp.AssociatedMatchPlayer.ConnectionId == matchManager.LocalClientGuid)
                     {
                         //For local player balls, send a DoneRacingMessage.
-                        LobbyScript.Instance.DoneRacingRpc(rp.AssociatedMatchPlayer.ClientGuid, rp.AssociatedMatchPlayer.CtrlType, raceTimer, false);
+                        DoneRacingMessage message = new(rp.AssociatedMatchPlayer.ConnectionId, rp.AssociatedMatchPlayer.CtrlType, raceTimer, false);
+                        NetworkServer.SendToAll<DoneRacingMessage>(message);
+                        //LobbyScript.Instance.DoneRacingRpc(rp.AssociatedMatchPlayer.ClientGuid, rp.AssociatedMatchPlayer.CtrlType, raceTimer, false);
                     }
                     //For remote player balls, do nothing.
                 }
@@ -284,10 +289,13 @@ namespace Sanicball.Logic
             }
         }
 
-        public void DoneRacingCallback(NetworkConnection clientGuid, ControlType ctrlType, double raceTimer, bool vl)
+        public void DoneRacingCallback(DoneRacingMessage message)
         {
+            var ctrlType = message.CtrlType;
+            var raceTimer = message.RaceTime;
+            var vl = message.Disqualified;
             RacePlayer rp = players.FirstOrDefault(a => a.AssociatedMatchPlayer != null
-            && a.AssociatedMatchPlayer.ClientGuid == clientGuid
+            && a.AssociatedMatchPlayer.ConnectionId == message.ConnectionID
             && a.AssociatedMatchPlayer.CtrlType == ctrlType);
 
             DoneRacingInner(rp, raceTimer, vl);
@@ -330,9 +338,10 @@ namespace Sanicball.Logic
             //LobbyScript.Instance.StartRaceRpc();
             foreach (var p in MatchManager.Instance.Players)
             {
-                if (LobbyScript.Instance.connectionToClient == p.ClientGuid)
+                if (MatchManager.Instance.LocalClientGuid == p.ConnectionId)
                 {
-                    LobbyScript.Instance.ReadyUpRaceRpc(p.CtrlType);
+                    NetworkClient.Send<ReadyUpRaceMessage>(new(p.ConnectionId, p.CtrlType));
+                    //LobbyScript.Instance.ReadyUpRaceRpc(p.CtrlType);
                 }
             }
         }
@@ -363,10 +372,23 @@ namespace Sanicball.Logic
             }
         }
 
+
+        public struct ReadyUpRaceMessage : NetworkMessage {
+            public int myGuid;
+            public ControlType ctrlType;
+
+            public ReadyUpRaceMessage(int myGuid, ControlType ctrlType)
+            {
+                this.myGuid = myGuid;
+                this.ctrlType = ctrlType;
+            }
+
+        }
+
         [Server]
-        public void ReadyUpRace(NetworkConnection myGuid, ControlType ctrlType)
+        public void ReadyUpRace(ReadyUpRaceMessage message)
         {
-            var players = MatchManager.Instance.players.FindAll(x => x.ClientGuid == myGuid);
+            var players = MatchManager.Instance.players.FindAll(x => x.ConnectionId == message.myGuid);
             foreach (var player in players)
             {
                 player.ReadyToRace = true;

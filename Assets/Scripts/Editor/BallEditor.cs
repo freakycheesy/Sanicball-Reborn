@@ -17,7 +17,7 @@ public class BallEditor : Editor
         }
         if (GUILayout.Button("Spawn On Network"))
         {
-            NetworkServer.Spawn(myBall.netIdentity.gameObject, LobbyScript.Instance.connectionToClient);
+            NetworkServer.Spawn(myBall.netIdentity.gameObject, NetworkServer.localConnection);
         }
     }
 }

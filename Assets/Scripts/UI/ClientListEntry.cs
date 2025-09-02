@@ -18,7 +18,7 @@ namespace Sanicball.UI
         {
             nameField.text = client.Name;
 
-            List<MatchPlayer> players = manager.Players.Where(a => a.ClientGuid == client.Guid).ToList();
+            List<MatchPlayer> players = manager.Players.Where(a => a.CharacterId == client.ConnectionId).ToList();
             int playersTotal = players.Count();
             int playersReady = players.Count(a => a.ReadyToRace);
 

@@ -31,7 +31,7 @@ namespace Sanicball.UI
                 //Create local player panels for players already in the game
                 foreach (var p in manager.Players)
                 {
-                    if (p.ClientGuid == manager.LocalClientGuid && p.CtrlType != ControlType.None)
+                    if (p.ConnectionId == manager.LocalClientGuid && p.CtrlType != ControlType.None)
                     {
                         var panel = CreatePanelForControlType(p.CtrlType, true);
                         panel.AssignedPlayer = p;

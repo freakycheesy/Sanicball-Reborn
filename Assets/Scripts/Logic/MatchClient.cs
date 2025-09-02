@@ -10,12 +10,12 @@ namespace Sanicball.Logic
     [Serializable]
     public struct MatchClient
     {
-        public NetworkConnection Guid { get; private set; }
+        public int ConnectionId { get; private set; }
         public string Name { get; private set; }
 
-        public MatchClient(NetworkConnection guid,string name)
+        public MatchClient(int guid,string name)
         {
-            Guid = guid;
+            ConnectionId = guid;
             Name = name;
         }
     }

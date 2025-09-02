@@ -4,6 +4,7 @@ using Mirror;
 using Sanicball.Data;
 using Sanicball.Gameplay;
 using SanicballCore;
+using SanicballCore.MatchMessages;
 using UnityEngine;
 
 namespace Sanicball.Logic
@@ -180,7 +181,7 @@ namespace Sanicball.Logic
                         //Send a match message for local players
                         waitingForCheckpointMessage = true;
                         Instance = this;
-                        LobbyScript.Instance.CheckpointPassedMessage( associatedMatchPlayer.ClientGuid, ball.CtrlType, lapTime);
+                        NetworkClient.Send<CheckpointPassedMessage>(new(associatedMatchPlayer.ConnectionId, associatedMatchPlayer.CtrlType, lapTime));
                     }
                 }
                 else if (ball.Type == BallType.AI)
@@ -191,18 +192,18 @@ namespace Sanicball.Logic
             }
         }
         public static RacePlayer Instance { get; private set; }
-        public void CheckpointPassedHandler(NetworkConnection clientGuid, ControlType ctrlType, float lapTime)
+        public void CheckpointPassedHandler(CheckpointPassedMessage message)
         {
-            if (associatedMatchPlayer != null && clientGuid == associatedMatchPlayer.ClientGuid && ctrlType == associatedMatchPlayer.CtrlType)
+            if (associatedMatchPlayer != null && message.ConnectionID == associatedMatchPlayer.ConnectionId && message.CtrlType == associatedMatchPlayer.CtrlType)
             {
                 PassNextCheckpoint(lapTime);
                 waitingForCheckpointMessage = false;
             }
         }
 
-        public void RaceTimeoutHandler(NetworkConnection clientGuid, ControlType ctrlType, float lapTime)
+        public void RaceTimeoutHandler(RaceTimeoutMessage message)
         {
-            if (associatedMatchPlayer != null && clientGuid == associatedMatchPlayer.ClientGuid && ctrlType == associatedMatchPlayer.CtrlType)
+            if (associatedMatchPlayer != null && message.ConnectionID == associatedMatchPlayer.ConnectionId && message.CtrlType == associatedMatchPlayer.CtrlType)
             {
                 timeout = lapTime - (float)NetworkTime.rtt;
             }
