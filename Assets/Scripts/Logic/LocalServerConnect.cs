@@ -15,7 +15,7 @@ public class LocalServerConnect : MonoBehaviour {
 	}
 
 	public void Connect(string serverIp, ushort port = 25000){
-		MatchManager.JoinLobby(serverIp);
+		MatchManager.Instance.JoinLobby(serverIp);
 	}
 
 	private bool Ping(string ip, int port){

@@ -58,7 +58,7 @@ namespace Sanicball.Logic
         public List<MatchClient> clients = new List<MatchClient>();
 
         //Holds the guid of the local client, to check if messages are directed at it.
-        public NetworkConnectionToClient myGuid;
+        public NetworkConnectionToClient myGuid => NetworkServer.localConnection;
 
         //List of all players - players are seperate from clients because each client can have
         //up to 4 players playing in splitscreen.
@@ -258,31 +258,26 @@ namespace Sanicball.Logic
             CreateLobby();
         }
 
-        public static void CreateLobby()
+        public void CreateLobby()
         {
-            Instance.currentSettings = ActiveData.MatchSettings;
             NetworkManager.singleton?.StartHost();
         }
 
-        public static void JoinLobby(string ip)
+        public void JoinLobby(string ip)
         {
-            Instance.showSettingsOnLobbyLoad = false;
             NetworkManager.singleton.networkAddress = ip;
             NetworkManager.singleton?.StartClient();
         }
 
-        public static void LeaveLobby()
+        public void LeaveLobby()
         {
-            Instance.inLobby = false;
-            Instance.loadingLobby = false;
             NetworkManager.singleton?.StopHost();
-            Destroy(Instance.gameObject);
         }
 
         #endregion Match initializing
         void Awake()
         {
-            if (Instance != null)
+            if (!Instance)
             {
                 Destroy(gameObject);
                 return;
@@ -291,7 +286,6 @@ namespace Sanicball.Logic
         }
         public void Start()
         {
-            if (Instance != this) return;
             Instance = this;
             SceneManager.sceneLoaded += OnLevelHasLoaded;
             DontDestroyOnLoad(gameObject);

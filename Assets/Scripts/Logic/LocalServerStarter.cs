@@ -9,6 +9,6 @@ public class LocalServerStarter : MonoBehaviour
 {
 	public void StartServer()
 	{
-		MatchManager.CreateLobby();
+		MatchManager.Instance.CreateLobby();
 	}
 }
