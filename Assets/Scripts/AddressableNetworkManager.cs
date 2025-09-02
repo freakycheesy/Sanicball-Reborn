@@ -91,22 +91,41 @@ namespace Scenes
             return proc.CompiledAddressableReferences.ContainsKey(sceneName.ToLower());
         }
 
-        public override void Sere(string sceneName, LoadSceneParameters parameters)
+        public override void ServerChangeScene(string sceneName)
+        {
+            ServerChangeScene(sceneName, LoadSceneMode.Single);
+        }
+
+        private string ServerChangeScene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
         {
             sceneName = Path.GetFileNameWithoutExtension(sceneName);
 
             // Try get reference
             if (!CompiledAddressableReferences.TryGetValue(sceneName, out AssetReference sceneReference))
                 throw new ArgumentException($"Scene with name: {sceneName} is not registered in AddressableSceneProcessor!", nameof(sceneName));
+            NetworkServer.SetAllClientsNotReady();
+            networkSceneName = sceneName;
 
-            // load scene with Addressables
-            //  =>  only the static method takes in LoadSceneParameters
-            AsyncOperationHandle<SceneInstance> loadHandle = Addressables.LoadSceneAsync(sceneReference, parameters, false);
+            NetworkServer.isLoadingScene = true;
+            AsyncOperationHandle<SceneInstance> loadHandle = Addressables.LoadSceneAsync(sceneReference, mode, false);
 
+            if (NetworkServer.active)
+            {
+                // notify all clients about the new scene
+                NetworkServer.SendToAll(new SceneMessage
+                {
+                    sceneName = sceneName
+                });
+            }
+
+            startPositionIndex = 0;
+            startPositions.Clear();
             // And register this handle in systems
             _loadingAsyncOperations.Add(loadHandle);
             _currentAsyncOperation = loadHandle;
+            return sceneName;
         }
+
 
         public override void BeginUnloadAsync(Scene scene)
         {
