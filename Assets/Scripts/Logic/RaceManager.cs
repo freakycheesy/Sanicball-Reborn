@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FishNet;
-using FishNet.Connection;
-using FishNet.Managing;
-using FishNet.Object;
-using FishNet.Transporting;
+using Mirror;
 using Sanicball.Data;
 using Sanicball.Gameplay;
 using Sanicball.UI;
@@ -165,7 +161,7 @@ namespace Sanicball.Logic
         [Server]
         public void StartRaceCallback()
         {
-            countdownOffset = InstanceFinder.TimeManager.RoundTripTime;
+            countdownOffset = (float)NetworkTime.rtt;
             CurrentState = RaceState.Countdown;
         }
 
@@ -221,14 +217,14 @@ namespace Sanicball.Logic
                 //Create all AI balls (In local play only)
                 for (int i = 0; i < settings.AICount; i++)
                 {
-                    //Create ball
-                    var aiBall = ballSpawner.SpawnBall(
-                        nextBallPosition,
-                        BallType.AI,
-                        ControlType.None,
-                        i,
-                        "AI #" + i
-                        , InstanceFinder.ClientManager.Connection
+                //Create ball
+                var aiBall = ballSpawner.SpawnBall(
+                    nextBallPosition,
+                    BallType.AI,
+                    ControlType.None,
+                    i,
+                    "AI #" + i
+                    , LobbyScript.Instance.connectionToClient
                         );
                     aiBall.CanMove = false;
 
@@ -266,7 +262,6 @@ namespace Sanicball.Logic
         {
             //Every time a player passes the finish line, check if it's done
             var rp = (RacePlayer)sender;
-            var messenger = InstanceFinder.ClientManager;
 
             if (rp.FinishReport == null && rp.Lap > settings.Laps)
             {
@@ -335,7 +330,7 @@ namespace Sanicball.Logic
             //LobbyScript.Instance.StartRaceRpc();
             foreach (var p in MatchManager.Instance.Players)
             {
-                if (LobbyScript.Instance.LocalConnection == p.ClientGuid)
+                if (LobbyScript.Instance.connectionToClient == p.ClientGuid)
                 {
                     LobbyScript.Instance.ReadyUpRaceRpc(p.ClientGuid, p.CtrlType);
                 }
@@ -344,8 +339,6 @@ namespace Sanicball.Logic
 
         public void Update()
         {
-            var messenger = InstanceFinder.ClientManager;
-
             //Increment the race timer if it's been started
             if (raceTimerOn)
             {
@@ -360,7 +353,6 @@ namespace Sanicball.Logic
 
         public void OnDestroy()
         {
-            var messenger = InstanceFinder.ClientManager;
             //ALL listeners created in Init() should be removed from the messenger here
             //Otherwise the race manager won't get destroyed properly
 

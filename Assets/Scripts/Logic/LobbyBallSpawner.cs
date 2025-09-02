@@ -1,5 +1,4 @@
-﻿using FishNet;
-using FishNet.Connection;
+﻿using Mirror;
 using Sanicball.Data;
 using Sanicball.Gameplay;
 using SanicballCore;

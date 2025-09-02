@@ -5,7 +5,7 @@ using System.Linq;
 using SanicballCore;
 using UnityEngine;
 using Sanicball.Data;
-using FishNet.Connection;
+using Mirror;
 
 namespace Sanicball.Logic
 {
@@ -24,17 +24,17 @@ namespace Sanicball.Logic
     [Serializable]
     public class MatchPlayer
     {
-        private NetworkConnection clientGuid;
+        private NetworkConnectionToClient clientGuid;
         private ControlType ctrlType;
 
-        public MatchPlayer(NetworkConnection clientGuid, ControlType ctrlType, int initialCharacterId)
+        public MatchPlayer(NetworkConnectionToClient clientGuid, ControlType ctrlType, int initialCharacterId)
         {
             this.clientGuid = clientGuid;
             this.ctrlType = ctrlType;
             CharacterId = initialCharacterId;
         }
 
-        public NetworkConnection ClientGuid { get { return clientGuid; } }
+        public NetworkConnectionToClient ClientGuid { get { return clientGuid; } }
         public ControlType CtrlType { get { return ctrlType; } }
         public int CharacterId { get; set; }
         public Gameplay.Ball BallObject { get; set; }

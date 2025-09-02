@@ -2,7 +2,6 @@
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using GameKit.Dependencies.Utilities.Types;
 using Sanicball.Data;
 
 namespace Sanicball.UI

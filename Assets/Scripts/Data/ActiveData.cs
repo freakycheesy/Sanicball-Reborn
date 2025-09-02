@@ -1,15 +1,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using FishNet;
-using FishNet.Managing;
-using FishNet.Managing.Scened;
-using FishNet.Object;
+using Mirror;
 using Newtonsoft.Json;
 using Sanicball.Logic;
 using Sanicball.Powerups;
 using SanicballCore;
-using Scenes;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Audio;
@@ -103,8 +99,7 @@ namespace Sanicball.Data
 
         private static void AddToSceneProcessor(StageInfo info)
         {
-            var processor = FindAnyObjectByType<AddressableSceneProcessor>();
-            processor.CompiledAddressableReferences.Add((string)info.scene.RuntimeKey, info.scene);
+            AddressableNetworkManager.AddressableManager.CompiledAddressableReferences.Add((string)info.scene.RuntimeKey, info.scene);
         }
 
         public static void LoadPalletCallback(SanicPallet pallet)
@@ -144,7 +139,7 @@ namespace Sanicball.Data
 
         public static void LoadLevel(StageInfo level, LoadSceneMode mode = LoadSceneMode.Single)
         {
-            BootstrapSceneManager.ReplaceCurrentScene(level.scene.RuntimeKey);
+            BootstrapSceneManager.LoadScene(level.scene.RuntimeKey);
             //level.LoadSceneAsync(mode);
             //Addressables.LoadSceneAsync(level, mode);
         }

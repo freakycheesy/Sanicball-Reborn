@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Linq;
-using FishNet;
-using FishNet.Connection;
-using FishNet.Managing;
-using FishNet.Transporting;
+using Mirror;
 using Sanicball.Data;
 using Sanicball.Gameplay;
 using SanicballCore;
@@ -103,7 +100,6 @@ namespace Sanicball.Logic
         {
             sr = StageReferences.Active;
 
-            var matchMessenger = InstanceFinder.ClientManager;
             this.associatedMatchPlayer = associatedMatchPlayer;
 
             lap = 1;
@@ -175,7 +171,6 @@ namespace Sanicball.Logic
 
         public void Ball_CheckpointPassed(object sender, CheckpointPassArgs e)
         {
-            var matchMessenger = InstanceFinder.ClientManager;
             if (e.CheckpointPassed == nextCheckpoint)
             {
                 if (ball.Type == BallType.Player && ball.CtrlType != ControlType.None)
@@ -209,7 +204,7 @@ namespace Sanicball.Logic
         {
             if (associatedMatchPlayer != null && clientGuid == associatedMatchPlayer.ClientGuid && ctrlType == associatedMatchPlayer.CtrlType)
             {
-                timeout = lapTime - InstanceFinder.NetworkManager.TimeManager.RoundTripTime;
+                timeout = lapTime - (float)NetworkTime.rtt;
             }
         }
 

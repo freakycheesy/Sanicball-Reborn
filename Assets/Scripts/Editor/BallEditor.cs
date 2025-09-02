@@ -1,4 +1,4 @@
-using FishNet;
+using Mirror;
 using Sanicball.Gameplay;
 using UnityEditor;
 using UnityEngine;
@@ -17,7 +17,7 @@ public class BallEditor : Editor
         }
         if (GUILayout.Button("Spawn On Network"))
         {
-            InstanceFinder.NetworkManager.ServerManager.Spawn(myBall.NetworkObject, InstanceFinder.ClientManager.Connection);
+            NetworkServer.Spawn(myBall.netIdentity.gameObject, LobbyScript.Instance.connectionToClient);
         }
     }
 }

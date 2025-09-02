@@ -1,8 +1,4 @@
-﻿using FishNet;
-using FishNet.Authenticating;
-using FishNet.Connection;
-using FishNet.Managing;
-using FishNet.Managing.Client;
+﻿using Mirror;
 using Sanicball.UI;
 using SanicballCore;
 using UnityEngine;
@@ -35,7 +31,7 @@ namespace Sanicball.Logic
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 popupHandler.CloseActivePopup();
-                InstanceFinder.ClientManager.Connection.Disconnect(true);
+                NetworkManager.singleton.StopHost();
             }
         }
 

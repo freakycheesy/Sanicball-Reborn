@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using FishNet.CodeGenerating;
-using FishNet.Object;
-using FishNet.Object.Prediction;
-using FishNet.Object.Synchronizing;
+using Mirror;
 using Sanicball.Data;
 using SanicballCore;
 using UnityEngine;
@@ -82,20 +79,20 @@ namespace Sanicball.Gameplay
         //These are set using Init() when balls are instantiated
         //But you can set them from the editor to quickly test out a track
         [Header("Initial stats")]
-        [SerializeField, AllowMutableSyncType]
-        private SyncVar<BallType> type;
-        [SerializeField, AllowMutableSyncType]
-        private SyncVar<ControlType> ctrlType;
-        [SerializeField, AllowMutableSyncType]
-        private SyncVar<int> characterId;
-        [SerializeField, AllowMutableSyncType]
-        private SyncVar<string> nickname;
+        [SerializeField, SyncVar]
+        private BallType type;
+        [SerializeField, SyncVar]
+        private ControlType ctrlType;
+        [SerializeField, SyncVar]
+        private int characterId;
+        [SerializeField, SyncVar]
+        private string nickname;
         [SerializeField]
         private GameObject hatPrefab;
 
-        public BallType Type { get { return type.Value; } }
-        public ControlType CtrlType { get { return ctrlType.Value; } }
-        public int CharacterId { get { return characterId.Value; } }
+        public BallType Type { get { return type; } }
+        public ControlType CtrlType { get { return ctrlType; } }
+        public int CharacterId { get { return characterId; } }
         public static List<Ball> Balls = new List<Ball>();
         [Header("Subcategories")]
         [SerializeField]
@@ -120,7 +117,7 @@ namespace Sanicball.Gameplay
         public Vector3 DirectionVector { get; set; }
         public Vector3 Up { get; set; }
         public bool Brake { get; set; }
-        public string Nickname { get { return nickname.Value; } }
+        public string Nickname { get { return nickname; } }
 
         //Component caches
         [HideInInspector] public Rigidbody rb;
@@ -131,7 +128,7 @@ namespace Sanicball.Gameplay
         public event System.EventHandler RespawnRequested;
         public event System.EventHandler<CameraCreationArgs> CameraCreated;
 
-        [ServerRpc(RunLocally = true)]
+        [Command]
         public void Jump()
         {
             if (grounded && CanMove)
@@ -142,7 +139,7 @@ namespace Sanicball.Gameplay
             }
         }
 
-        [ObserversRpc]
+        [ClientRpc]
         private void JumpRpc()
         {
             if (sounds.Jump != null)
@@ -151,7 +148,7 @@ namespace Sanicball.Gameplay
             }
         }
 
-        [ServerRpc]
+        [Command]
         public void RequestRespawn()
         {
             if (RespawnRequested != null)
@@ -160,13 +157,13 @@ namespace Sanicball.Gameplay
 
         public void Init(BallType type, ControlType ctrlType, int characterId, string nickname)
         {
-            this.type.Value = type;
-            this.ctrlType.Value = ctrlType;
-            this.characterId.Value = characterId;
-            this.nickname.Value = nickname;
+            this.type = type;
+            this.ctrlType = ctrlType;
+            this.characterId = characterId;
+            this.nickname = nickname;
         }
 
-        [ServerRpc(RunLocally = true)]
+        [Command]
         public void UpdateInput(Vector3 direction, bool brake)
         {
             DirectionVector = direction;
@@ -191,7 +188,7 @@ namespace Sanicball.Gameplay
             rb.maxAngularVelocity = 1000f;
 
             //Set object name
-            gameObject.name = type.Value.ToString() + " - " + nickname.Value;
+            gameObject.name = type.ToString() + " - " + nickname;
 
             //Set character
             if (CharacterId >= 0 && CharacterId < ActiveData.Characters.Count)
@@ -223,23 +220,23 @@ namespace Sanicball.Gameplay
             }
 
             //Create objects and components based on ball type
-            if (type.Value == BallType.Player)
+            if (type == BallType.Player)
             {
-                if (ctrlType.Value != ControlType.None)
+                if (ctrlType != ControlType.None)
                 {
                     IBallCamera camera;
                     //Create camera
                     if (ActiveData.GameSettings.useOldControls)
                     {
                         camera = Instantiate(prefabs.OldCamera);
-                        ((PivotCamera)camera).UseMouse = ctrlType.Value == ControlType.Keyboard;
+                        ((PivotCamera)camera).UseMouse = ctrlType == ControlType.Keyboard;
                     }
                     else
                     {
                         camera = Instantiate(prefabs.Camera);
                     }
                     camera.Target = rb;
-                    camera.CtrlType = ctrlType.Value;
+                    camera.CtrlType = ctrlType;
 
                     if (CameraCreated != null)
                         CameraCreated(this, new CameraCreationArgs(camera));
@@ -254,7 +251,7 @@ namespace Sanicball.Gameplay
                     cam.AddBall(this);
                 }
             }
-            if (IsOwner)
+            if (isLocalPlayer)
             {
                 if ((Type == BallType.Player || Type == BallType.LobbyPlayer) && CtrlType != ControlType.None)
                 {

@@ -3,16 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using FishNet;
-using FishNet.Connection;
-using FishNet.Managing.Scened;
-using FishNet.Object;
-using FishNet.Transporting;
+using Mirror;
 using Newtonsoft.Json;
 using Sanicball.Data;
 using Sanicball.UI;
 using SanicballCore;
-using Scenes;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Rendering.Universal;
@@ -62,7 +57,7 @@ namespace Sanicball.Logic
         public List<MatchClient> clients = new List<MatchClient>();
 
         //Holds the guid of the local client, to check if messages are directed at it.
-        public NetworkConnection myGuid;
+        public NetworkConnectionToClient myGuid;
 
         //List of all players - players are seperate from clients because each client can have
         //up to 4 players playing in splitscreen.
@@ -248,7 +243,7 @@ namespace Sanicball.Logic
         public void AutoStartTimerCallback(bool Enabled)
         {
             autoStartTimerOn = Enabled;
-            autoStartTimer = currentSettings.AutoStartTime - InstanceFinder.TimeManager.RoundTripTime;
+            autoStartTimer = currentSettings.AutoStartTime - (float)NetworkTime.rtt;
         }
 
         #endregion Match message callbacks
@@ -263,35 +258,21 @@ namespace Sanicball.Logic
         public static void CreateLobby()
         {
             Instance.currentSettings = ActiveData.MatchSettings;
-            InstanceFinder.ServerManager.StartConnection();
-            InstanceFinder.ServerManager.OnServerConnectionState += (state) =>
-            {
-                if (state.ConnectionState.IsStartedOrStarting() || InstanceFinder.ServerManager.Started)
-                {
-                    Instance.showSettingsOnLobbyLoad = true;
-                    Instance.GoToLobby();
-                    Instance.activeChat = Instantiate(Instance.chatPrefab);
-                    Instance.activeChat.MessageSent += Instance.LocalChatMessageSent;
-                    InstanceFinder.ClientManager.StartConnection();
-                }
-            };
+            AddressableNetworkManager.AddressableManager.StartHost();
         }
 
         public static void JoinLobby(string ip)
         {
             Instance.showSettingsOnLobbyLoad = false;
-            InstanceFinder.TransportManager.Transport.SetClientAddress(ip);
-            InstanceFinder.ClientManager.StartConnection();
+            AddressableNetworkManager.AddressableManager.networkAddress = ip;
+            AddressableNetworkManager.AddressableManager.StartHost();
         }
 
         public void LeaveLobby()
         {
             inLobby = false;
             loadingLobby = false;
-            Debug.Log("Stopping Client");
-            InstanceFinder.TransportManager.Transport.StopConnection(false);
-            Debug.Log("Stopping Server");
-            InstanceFinder.TransportManager.Transport.StopConnection(true);
+            NetworkManager.singleton.StopHost();
             Destroy(this.gameObject);
         }
 
@@ -310,18 +291,8 @@ namespace Sanicball.Logic
         {
             if (Instance != this) return;
             Instance = this;
-            InstanceFinder.SceneManager.OnLoadEnd += OnLevelHasLoaded;
+            SceneManager.sceneLoaded += OnLevelHasLoaded;
             DontDestroyOnLoad(gameObject);
-            //A messenger should be created by now! Time to create some message listeners
-            var messenger = InstanceFinder.ClientManager;
-
-            InstanceFinder.ServerManager.OnServerConnectionState += (state) =>
-            {
-                if (InstanceFinder.IsServerStarted)
-                {
-                    InstanceFinder.ServerManager.Spawn(Instantiate(LobbyPrefab.gameObject));
-                }
-            };
         }
 
         public void LocalChatMessageSent(string from, string text)
@@ -341,7 +312,7 @@ namespace Sanicball.Logic
         */
         public void Update()
         {
-            var messenger = InstanceFinder.ClientManager;
+            //var messenger = InstanceFinder.ClientManager;
             matchSettingJson = JsonConvert.SerializeObject(currentSettings);
             //Pausing/unpausing
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7))
@@ -409,7 +380,7 @@ namespace Sanicball.Logic
 
             loadingStage = false;
             loadingLobby = true;
-            if(BootstrapSceneManager.currentScene != null) BootstrapSceneManager.ReplaceCurrentScene(lobbyScene.RuntimeKey);
+            if(BootstrapSceneManager.currentScene.Scene != null) BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
             else BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
         }
         [Server]
@@ -431,7 +402,7 @@ namespace Sanicball.Logic
         public static StageInfo CurrentStage;
 
         //Check if we were loading the lobby or the race
-        public void OnLevelHasLoaded(SceneLoadEndEventArgs end)
+        public void OnLevelHasLoaded(Scene scene, LoadSceneMode mode)
         {
             if (loadingLobby)
             {

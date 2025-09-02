@@ -1,39 +1,29 @@
 using UnityEngine;
-using FishNet.Object;
 using SanicballCore;
-using FishNet.Connection;
 using Sanicball.Logic;
-using System.ComponentModel;
 using System;
-using GameKit.Dependencies.Utilities.Types;
 using Sanicball.Data;
-using System.Collections;
+using Mirror;
 
 public class LobbyScript : NetworkBehaviour
 {
      public static LobbyScript Instance;
 
-    public override void OnStartNetwork()
-    {
-          base.OnStartNetwork();
+     public override void OnStartClient()
+     {
+          base.OnStartClient();
           if (Instance)
           {
-               Despawn(NetworkObject, DespawnType.Destroy);
+               NetworkServer.Destroy(netIdentity.gameObject);
                Destroy(this.gameObject);
                return;
           }
           Instance = this;
-     }
-
-     public override void OnStartClient()
-     {
-          base.OnStartClient();
-          MatchManager.Instance.myGuid = Instance.LocalConnection;
+          MatchManager.Instance.myGuid = Instance.connectionToClient;
           ClientJoinRpc(MatchManager.Instance.myGuid, ActiveData.GameSettings.nickname);
      }
 
-
-     [ObserversRpc(ExcludeServer = false, RunLocally = true)]
+     [ClientRpc(includeOwner = true)]
      public void ChangeSettingsRpc(MatchSettings settings)
      {
           MatchManager.Instance.CurrentSettings = settings;
@@ -41,8 +31,8 @@ public class LobbyScript : NetworkBehaviour
           MatchManager.Instance.MatchSettingsChanged?.Invoke(this, EventArgs.Empty);
      }
 
-     [ServerRpc(RequireOwnership = false, RunLocally = true)]
-     public void ClientJoinRpc(NetworkConnection conn, string nickname)
+     [Command(requiresAuthority = false)]
+     public void ClientJoinRpc(NetworkConnectionToClient conn, string nickname)
      {
           var matchClient = new MatchClient(conn, nickname);
           if (MatchManager.Instance.Clients.Contains(matchClient)) return;
@@ -50,8 +40,8 @@ public class LobbyScript : NetworkBehaviour
           Debug.Log("New client " + nickname);
      }
 
-     [ServerRpc(RequireOwnership = false, RunLocally = true)]
-     public void PlayerJoinRpc(NetworkConnection conn, ControlType type, int characterId)
+     [Command(requiresAuthority = false)]
+     public void PlayerJoinRpc(NetworkConnectionToClient conn, ControlType type, int characterId)
      {
           var p = new MatchPlayer(conn, type, characterId);
           MatchManager.Instance.players.Add(p);
@@ -66,69 +56,69 @@ public class LobbyScript : NetworkBehaviour
           MatchManager.Instance.MatchPlayerAdded(this, new MatchPlayerEventArgs(p, conn == MatchManager.Instance.myGuid));
      }
 
-     [ServerRpc(RequireOwnership = false, RunLocally = true)]
-     public void PlayerLeaveRpc(NetworkConnection conn, ControlType type)
+     [Command(requiresAuthority = false)]
+     public void PlayerLeaveRpc(NetworkConnectionToClient conn, ControlType type)
      {
           MatchManager.Instance.PlayerLeftCallback(conn, type);
      }
 
-     [ServerRpc(RequireOwnership = false, RunLocally = true)]
-     public void CharacterChangedRpc(NetworkConnection myGuid, ControlType ctrlType, int newCharacter)
+     [Command(requiresAuthority = false)]
+     public void CharacterChangedRpc(NetworkConnectionToClient myGuid, ControlType ctrlType, int newCharacter)
      {
           MatchManager.Instance.CharacterChangedCallback(myGuid, ctrlType, newCharacter);
      }
 
-     [ServerRpc(RequireOwnership = false, RunLocally = true)]
-     public void ChangedReadyServerRpc(NetworkConnection myGuid, ControlType ctrlType, bool ready)
+     [Command(requiresAuthority = false)]
+     public void ChangedReadyServerRpc(NetworkConnectionToClient myGuid, ControlType ctrlType, bool ready)
     {
           ChangedReadyRpc(myGuid, ctrlType, ready);
     }
 
-     [ObserversRpc(ExcludeServer = false)]
-     private void ChangedReadyRpc(NetworkConnection myGuid, ControlType ctrlType, bool ready)
+     [Command(requiresAuthority = false)]
+     private void ChangedReadyRpc(NetworkConnectionToClient myGuid, ControlType ctrlType, bool ready)
      {
           MatchManager.Instance.ChangedReadyCallback(myGuid, ctrlType);
      }
 
-     [ServerRpc(RequireOwnership = false, RunLocally = true)]
+     [Command(requiresAuthority = false)]
      public void LoadRaceRpc()
      {
           MatchManager.Instance.LoadRaceCallback();
      }
 
-     [ServerRpc(RequireOwnership = false, RunLocally = true)]
-     public void ReadyUpRaceRpc(NetworkConnection myGuid, ControlType ctrlType)
+     [Command(requiresAuthority = false)]
+     public void ReadyUpRaceRpc(NetworkConnectionToClient myGuid, ControlType ctrlType)
      {
           Debug.Log("Ready Up");
           RaceManager.Instance.ReadyUpRace(myGuid, ctrlType);
      }
 
-     [ServerRpc(RequireOwnership = false, RunLocally = true)]
+     [Command(requiresAuthority = false)]
      public void LoadLobbyRpc()
      {
           MatchManager.Instance.LoadLobbyCallback();
      }
 
-     [ServerRpc(RequireOwnership = false, RunLocally = true)]
+     [Command(requiresAuthority = false)]
      public void ChatMessageServerRpc(string from, string text)
      {
           ChatMessageRpc(from, text);
      }
 
-     [ServerRpc(RequireOwnership = false, RunLocally = true)]
+     [Command(requiresAuthority = false)]
      public void ChatMessageRpc(string from, string text)
      {
           MatchManager.Instance.ChatCallback(from, text);
      }
 
      [TargetRpc]
-     public void DoneRacingRpc(NetworkConnection clientGuid, ControlType ctrlType, double raceTimer, bool v)
+     public void DoneRacingRpc(NetworkConnectionToClient clientGuid, ControlType ctrlType, double raceTimer, bool v)
      {
           RaceManager.Instance.DoneRacingCallback(clientGuid, ctrlType, raceTimer, v);
      }
 
      [TargetRpc]
-     public void CheckpointPassedMessage(NetworkConnection clientGuid, ControlType ctrlType, float lapTime)
+     public void CheckpointPassedMessage(NetworkConnectionToClient clientGuid, ControlType ctrlType, float lapTime)
      {
           RacePlayer.Instance.CheckpointPassedHandler(clientGuid, ctrlType, lapTime);
      }

@@ -1,5 +1,5 @@
 using System;
-using FishNet.Broadcast;
+using Mirror;
 using Newtonsoft.Json;
 using Unity.Mathematics;
 using UnityEngine;
@@ -7,7 +7,7 @@ using UnityEngine;
 namespace SanicballCore
 {
     [JsonObject, Serializable]
-    public struct ZaLobbyInfo : IBroadcast
+    public struct ZaLobbyInfo : NetworkMessage
     {
         [Header("Realtime Info")]
         public int Players;

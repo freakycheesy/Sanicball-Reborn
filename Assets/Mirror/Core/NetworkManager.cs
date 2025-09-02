@@ -847,7 +847,7 @@ namespace Mirror
         // to prevent AddPlayer message after loading/unloading additive scenes
         SceneOperation clientSceneOperation = SceneOperation.Normal;
 
-        internal void ClientChangeScene(string newSceneName, SceneOperation sceneOperation = SceneOperation.Normal, bool customHandling = false)
+        protected virtual void ClientChangeScene(string newSceneName, SceneOperation sceneOperation = SceneOperation.Normal, bool customHandling = false)
         {
             if (string.IsNullOrWhiteSpace(newSceneName))
             {

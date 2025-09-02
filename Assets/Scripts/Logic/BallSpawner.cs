@@ -1,5 +1,4 @@
-﻿using FishNet;
-using FishNet.Connection;
+﻿using Mirror;
 using Sanicball.Gameplay;
 using SanicballCore;
 using UnityEngine;
@@ -16,7 +15,7 @@ namespace Sanicball.Logic
         {
             var ball = Instantiate(ballPrefab, position, rotation);
             ball.Init(ballType, ctrlType, character, nickname);
-            InstanceFinder.ServerManager.Spawn(ball.NetworkObject, connection);
+            NetworkServer.Spawn(ball.netIdentity.gameObject, connection as NetworkConnectionToClient);
             return ball;
         }
     }

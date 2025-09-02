@@ -4,8 +4,6 @@ using UnityEngine;
 using Sanicball.UI;
 using Sanicball.Logic;
 using System.Net.Sockets;
-using FishNet.Managing;
-using FishNet.Transporting;
 
 public class LocalServerConnect : MonoBehaviour {
 	

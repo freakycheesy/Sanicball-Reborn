@@ -837,10 +837,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _onStartServerCalled: 0
+  _onStartClientCalled: 0
   <IsNested>k__BackingField: 0
   WasActiveDuringEdit: 0
   WasActiveDuringEdit_Set1: 1
   <ComponentIndex>k__BackingField: 0
+  <ObjectId>k__BackingField: 65535
+  <IsDeinitializing>k__BackingField: 1
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
   NetworkBehaviours: []
@@ -854,7 +858,18 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
+  _disabledNetworkBehavioursInitialized: 0
+  _initializedValusSet: 0
   NetworkObserver: {fileID: 0}
+  ObserverAddedTick: 0
+  _networkObserverInitiliazed: 0
+  _renderersPopulated: 0
+  _lastClientHostVisibility: 0
+  _hashGrid: {fileID: 0}
+  _nextHashGridUpdateTime: 0
+  _isStatic: 0
+  _hashGridPosition: {x: 2147483647, y: 2147483647}
+  <IsObjectReconciling>k__BackingField: 0
   _enablePrediction: 0
   _predictionType: 0
   _graphicalObject: {fileID: 0}
@@ -868,6 +883,20 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
+  _predictionBehaviours: []
+  <IsDestroying>k__BackingField: 0
+  <IsClientInitialized>k__BackingField: 0
+  <IsServerInitialized>k__BackingField: 0
+  <NetworkManager>k__BackingField: {fileID: 0}
+  <ServerManager>k__BackingField: {fileID: 0}
+  <ClientManager>k__BackingField: {fileID: 0}
+  <ObserverManager>k__BackingField: {fileID: 0}
+  <TransportManager>k__BackingField: {fileID: 0}
+  <TimeManager>k__BackingField: {fileID: 0}
+  <SceneManager>k__BackingField: {fileID: 0}
+  <PredictionManager>k__BackingField: {fileID: 0}
+  <RollbackManager>k__BackingField: {fileID: 0}
+  _rpcLinkIndexes: []
   <PrefabId>k__BackingField: 65535
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 0
@@ -1648,6 +1677,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 7291701392559099199, guid: 2f743cb081f263848951baf59976b3e2,
+        type: 3}
+      propertyPath: sceneId
+      value: 1499269181
       objectReference: {fileID: 0}
     - target: {fileID: 7861864120282727156, guid: 2f743cb081f263848951baf59976b3e2,
         type: 3}
@@ -2504,6 +2538,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Testing
+      objectReference: {fileID: 0}
+    - target: {fileID: 9121939550611241894, guid: db66ef44507c05b4591c37bafd82f97c,
+        type: 3}
+      propertyPath: sceneId
+      value: 2275387391
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

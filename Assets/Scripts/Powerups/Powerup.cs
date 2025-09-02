@@ -1,4 +1,4 @@
-using FishNet.Object;
+using Mirror;
 using Sanicball.Data;
 using Sanicball.Gameplay;
 using UltEvents;
@@ -34,7 +34,7 @@ namespace Sanicball.Powerups
             RandomisePowerupRpc(i);
         }
 
-        [ObserversRpc]
+        [ClientRpc]
         private void RandomisePowerupRpc(int i)
         {
             icon.sprite = ActiveData.Powerups[i].icon;
@@ -55,7 +55,7 @@ namespace Sanicball.Powerups
                 }
         }
 
-        [ObserversRpc(ExcludeServer = false, ExcludeOwner = false)]
+        [ClientRpc(includeOwner = true)]
         public void PowerupRpc(bool enabled)
         {
             Renderer?.SetActive(enabled);

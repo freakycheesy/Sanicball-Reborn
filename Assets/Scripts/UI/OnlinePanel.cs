@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using FishNet;
-using FishNet.Managing;
-using FishNet.Transporting;
+using Mirror.Discovery;
 using Sanicball.Data;
 using Sanicball.Logic;
 using SanicballCore;
@@ -27,7 +25,7 @@ namespace Sanicball.UI
         //Stores server browser IPs, so they can be differentiated from LAN servers
         private List<string> serverBrowserIPs = new List<string>();
 
-        private FishNet.Discovery.NetworkDiscovery discoveryClient;
+        private NetworkDiscovery discoveryClient;
         private UnityWebRequest serverBrowserRequester;
         private DateTime latestLocalRefreshTime;
         private DateTime latestBrowserRefreshTime;
@@ -35,7 +33,7 @@ namespace Sanicball.UI
         public void RefreshServers()
         {
             serverBrowserIPs.Clear();
-            discoveryClient?.SearchForServers();
+            discoveryClient?.StartDiscovery();
 
 			//serverBrowserRequester = new UnityWebRequest(ActiveData.GameSettings.serverListURL);
 
@@ -53,57 +51,42 @@ namespace Sanicball.UI
         private void Awake()
         {
             errorField.enabled = false;
-            discoveryClient = FindAnyObjectByType<FishNet.Discovery.NetworkDiscovery>();
+            discoveryClient = FindAnyObjectByType<NetworkDiscovery>();
             if (!discoveryClient) return;
-            discoveryClient.SearchForServers();
-            discoveryClient.ServerFoundCallback += (msg) =>
+            discoveryClient.StartDiscovery();
+            discoveryClient.OnServerFound.AddListener(OnServerFound);
+        }
+
+        private void OnServerFound(ServerResponse msg)
+        {
+            ZaLobbyInfo lobbyInfo = new ZaLobbyInfo();
+            try
             {
-                ZaLobbyInfo lobbyInfo = new ZaLobbyInfo();
-                try
-                {
-                    lobbyInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<ZaLobbyInfo>(msg.ToString());
-                }
-                catch (Newtonsoft.Json.JsonException ex)
-                {
-                    Debug.LogError("Failed to deserialize info for a server: " + ex.Message);
-                }
+                lobbyInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<ZaLobbyInfo>(msg.ToString());
+            }
+            catch (Newtonsoft.Json.JsonException ex)
+            {
+                Debug.LogError("Failed to deserialize info for a server: " + ex.Message);
+            }
 
-                //double timeDiff = (DateTime.UtcNow - info.Timestamp).TotalMilliseconds;
-                bool isLocal = !serverBrowserIPs.Contains(msg.Address.ToString());
+            //double timeDiff = (DateTime.UtcNow - info.Timestamp).TotalMilliseconds;
+            bool isLocal = !serverBrowserIPs.Contains(msg.serverId.ToString());
 
-                DateTime timeToCompareTo = isLocal ? latestLocalRefreshTime : latestBrowserRefreshTime;
-                double timeDiff = (DateTime.Now - timeToCompareTo).TotalMilliseconds;
+            DateTime timeToCompareTo = isLocal ? latestLocalRefreshTime : latestBrowserRefreshTime;
+            double timeDiff = (DateTime.Now - timeToCompareTo).TotalMilliseconds;
 
-                var server = Instantiate(serverListItemPrefab);
-                server.transform.SetParent(targetServerListContainer, false);
-                server.Init(lobbyInfo, msg, (int)timeDiff, isLocal);
-                servers.Add(server);
-                RefreshNavigation();
+            var server = Instantiate(serverListItemPrefab);
+            server.transform.SetParent(targetServerListContainer, false);
+            server.Init(lobbyInfo, msg.EndPoint, (int)timeDiff, isLocal);
+            servers.Add(server);
+            RefreshNavigation();
 
-                serverCountField.text = servers.Count + (servers.Count == 1 ? " server" : " servers");
-            }; //Hack to make sure the callback is not null
-
-            InstanceFinder.ServerManager.OnServerConnectionState += StopDiscovery;
-
-            InstanceFinder.ClientManager.OnClientConnectionState += StopDiscovery;
+            serverCountField.text = servers.Count + (servers.Count == 1 ? " server" : " servers");
         }
 
         void OnDestroy()
         {
             if (!discoveryClient) return;
-            InstanceFinder.ServerManager.OnServerConnectionState -= StopDiscovery;
-
-            InstanceFinder.ClientManager.OnClientConnectionState -= StopDiscovery;
-        }
-
-        private void StopDiscovery(ServerConnectionStateArgs state)
-        {
-            discoveryClient.StopSearchingOrAdvertising();
-        }
-
-        private void StopDiscovery(ClientConnectionStateArgs state)
-        {
-            discoveryClient.StopSearchingOrAdvertising();
         }
 
         private void Update()

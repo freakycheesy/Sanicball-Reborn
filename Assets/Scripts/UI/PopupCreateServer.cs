@@ -5,8 +5,6 @@ using UnityEngine.UI;
 using System;
 using System.Threading;
 using System.Collections;
-using FishNet.Transporting;
-using FishNet.Managing;
 
 namespace Sanicball.UI
 {

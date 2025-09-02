@@ -1,9 +1,8 @@
-using System;
-using FishNet;
-using FishNet.Managing.Scened;
-using FishNet.Object;
+using Mirror;
 using UnityEngine;
-using SceneManager = UnityEngine.SceneManagement.SceneManager;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.ResourceProviders;
+
 public class BootstrapSceneManager : MonoBehaviour
 {
     void Awake()
@@ -11,11 +10,7 @@ public class BootstrapSceneManager : MonoBehaviour
         DontDestroyOnLoad(this);
     }
 
-    void Start()
-    {
-        InstanceFinder.SceneManager.OnLoadEnd += OnLoadEnd;
-    }
-
+    /*
     private static void OnLoadEnd(SceneLoadEndEventArgs args)
     {
         currentScene = args.QueueData.SceneLoadData.SceneLookupDatas[0];
@@ -24,38 +19,15 @@ public class BootstrapSceneManager : MonoBehaviour
             if(SceneManager.GetSceneAt(1) != null) SceneManager.SetActiveScene(SceneManager.GetSceneAt(1));
         }
     }
-    public static SceneLookupData currentScene = new();
+    */
+
+    public static SceneInstance currentScene => AddressableNetworkManager.loadingSceneAsync.Result;
 
     [Server]
     public static void LoadScene(object sceneKey)
     {
-        SceneLookupData sld = new((string)sceneKey);
-        SceneLoadData data = new SceneLoadData(sld)
-        {
-            MovedNetworkObjects = new NetworkObject[0],
-            ReplaceScenes = ReplaceOption.All,
-        };
-        InstanceFinder.SceneManager.LoadGlobalScenes(data);
+        if (sceneKey is AssetReference) sceneKey = ((AssetReference)sceneKey).RuntimeKey;
+        NetworkManager.singleton.ServerChangeScene((string)sceneKey);
     }
 
-    [Server]
-    public static void UnloadScene(object sceneKey)
-    {
-        SceneLookupData sld = new((string)sceneKey);
-        SceneUnloadData data = new SceneUnloadData(sld);
-        InstanceFinder.SceneManager.UnloadGlobalScenes(data);
-    }
-
-    [Server]
-    public static void ReplaceCurrentScene(object sceneKey)
-    {
-        UnloadCurrentScene();
-        LoadScene(sceneKey);
-    }
-
-    [Server]
-    public static void UnloadCurrentScene()
-    {
-        InstanceFinder.SceneManager.UnloadGlobalScenes(new(currentScene));
-    }
 }
