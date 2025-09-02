@@ -44,7 +44,7 @@ namespace Scenes
         [Tooltip("List of scene references")]
         public List<AssetReference> SceneRefs = new();
 
-        private void Awake()
+        public override void Awake()
         {
             CompiledAddressableReferences = new();
             for (int i = 0; i < SceneRefs.Count; i++)
@@ -69,23 +69,13 @@ namespace Scenes
             return null;
         }
 
-        public override void LoadStart(LoadQueueData queueData)
-        {
-            ResetProcessor();
-        }
-
-        public override void LoadEnd(LoadQueueData queueData)
-        {
-            ResetProcessor();
-        }
-
         /// <summary>
         /// Resets performed loading operations for a given load queue.
         /// </summary>
         private void ResetProcessor()
         {
             _currentAsyncOperation = default;
-            _loadingAsyncOperations.Clear();
+            loadingSceneAsync = null;
         }
 
         /// <summary>
@@ -95,13 +85,13 @@ namespace Scenes
         /// <returns></returns>
         public static bool IsValidScene(string sceneName)
         {
-            var proc = InstanceFinder.NetworkManager.GetComponent<AddressableSceneProcessor>();
+            var proc = NetworkManager.singleton as AddressableNetworkManager;
             if (proc == null) return false;
 
             return proc.CompiledAddressableReferences.ContainsKey(sceneName.ToLower());
         }
 
-        public override void BeginLoadAsync(string sceneName, LoadSceneParameters parameters)
+        public override void Sere(string sceneName, LoadSceneParameters parameters)
         {
             sceneName = Path.GetFileNameWithoutExtension(sceneName);
 
