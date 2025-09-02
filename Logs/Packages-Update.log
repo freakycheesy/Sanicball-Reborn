@@ -48,3 +48,19 @@ The following packages were updated:
   com.unity.addressables from version 2.4.6 to 2.6.0
   com.unity.collab-proxy from version 2.1.0 to 2.8.2
   com.unity.postprocessing from version 3.4.0 to 3.5.0
+
+=== Tue Sep  2 07:03:42 2025
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.nuget.newtonsoft-json from version 3.0.0 to 3.2.1
+
+=== Tue Sep  2 07:03:43 2025
+
+Packages were changed.
+Update Mode: mergeDefaultDependencies
+
+The following packages were added:
+  com.unity.nuget.newtonsoft-json@3.2.1

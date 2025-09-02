@@ -15,12 +15,6 @@ MonoBehaviour:
   m_GroupName: unused
   m_GUID: 152e4861979892847bd56a72d4e960c6
   m_SerializeEntries:
-  - m_GUID: 0d066166ea67f71429de1af8cf635915
-    m_Address: Assets/FishNet/Demos
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - unused
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 385f6386bc8958a439098aa5a25acb6d
     m_Address: TestingTrack
     m_ReadOnly: 0
