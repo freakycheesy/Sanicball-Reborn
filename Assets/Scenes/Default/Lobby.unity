@@ -11093,6 +11093,11 @@ PrefabInstance:
       propertyPath: immediateInit
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1737178884354448366, guid: 15c7ed3ff76289b4680e4b9f1f52fb22,
+        type: 3}
+      propertyPath: sceneId
+      value: 2916466218
+      objectReference: {fileID: 0}
     - target: {fileID: 7809343139817589689, guid: 15c7ed3ff76289b4680e4b9f1f52fb22,
         type: 3}
       propertyPath: <SceneId>k__BackingField

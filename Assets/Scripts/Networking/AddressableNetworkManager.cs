@@ -13,7 +13,7 @@ using UnityEngine.SceneManagement;
 namespace Mirror
 {
 
-    public class AddressableNetworkManager : AdditiveLevelsNetworkManager
+    public class AddressableNetworkManager : NetworkManager
     {
 
         public static SerializedDictionary<string, AssetReference> CompiledAddressableReferences = new();
@@ -52,9 +52,10 @@ namespace Mirror
             return sceneReference != null;
         }
 
-        public override void OnServerChangeScene(string newSceneKey)
+        public override void ServerChangeScene(string newSceneKey)
         {
-            //base.OnServerChangeScene(newSceneKey);
+            if (!TryGetSceneFromKey(newSceneKey, out var scene))
+                throw new ArgumentException($"Server Loading Scene Error");
             if (string.IsNullOrWhiteSpace(newSceneKey))
             {
                 Debug.LogError("ServerChangeScene empty scene name");
@@ -75,19 +76,19 @@ namespace Mirror
                 return;
             }
 
-            StartCoroutine(LoadServerAddressableScene(newSceneKey));
+            CurrentCoroutine ??= StartCoroutine(LoadServerAddressableScene(scene, newSceneKey));
         }
 
-        IEnumerator LoadServerAddressableScene(string newSceneKey)
+        private Coroutine CurrentCoroutine = null;
+
+        IEnumerator LoadServerAddressableScene(AssetReference scene, string newSceneRuntimeKey)
         {
             NetworkClient.isLoadingScene = true;
-            if (!TryGetSceneFromKey(newSceneKey, out var scene))
-                throw new ArgumentException($"Server Loading Scene Error");
 
             NetworkServer.SetAllClientsNotReady();
             networkSceneName = scene.SubObjectName;
             // Let server prepare for scene change
-            OnServerChangeScene(newSceneKey);
+            OnServerChangeScene(newSceneRuntimeKey);
             // set server flag to stop processing messages while changing scenes
             // it will be re-enabled in FinishLoadScene.
             NetworkServer.isLoadingScene = true;
@@ -100,7 +101,7 @@ namespace Mirror
                 // notify all clients about the new scene
                 NetworkServer.SendToAll(new SceneMessage
                 {
-                    sceneName = newSceneKey,
+                    sceneName = newSceneRuntimeKey,
                     customHandling = true,
                 });
             }
@@ -121,16 +122,17 @@ namespace Mirror
             if (customHandling)
             {
                 // Block processing of network messages
+                if (!TryGetSceneFromKey(newSceneKey, out var scene))
+                    throw new ArgumentException($"Client Loading Scene Error");
                 NetworkClient.isLoadingScene = true;
-                StartCoroutine(LoadClientAddressableScene(newSceneKey));
+                CurrentCoroutine ??= StartCoroutine(LoadClientAddressableScene(scene));
             }
         }
 
-        IEnumerator LoadClientAddressableScene(string newSceneKey)
-        {
+        IEnumerator LoadClientAddressableScene(AssetReference scene)
+        {     
             NetworkClient.isLoadingScene = true;
-            if (!TryGetSceneFromKey(newSceneKey, out var scene))
-                throw new ArgumentException($"Client Loading Scene Error");
+            
 
             var handle = Addressables.LoadSceneAsync(scene);
             yield return handle;
