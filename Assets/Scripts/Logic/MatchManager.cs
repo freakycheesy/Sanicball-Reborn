@@ -258,22 +258,22 @@ namespace Sanicball.Logic
         public static void CreateLobby()
         {
             Instance.currentSettings = ActiveData.MatchSettings;
-            AddressableNetworkManager.AddressableManager.StartHost();
+            NetworkManager.singleton?.StartHost();
         }
 
         public static void JoinLobby(string ip)
         {
             Instance.showSettingsOnLobbyLoad = false;
-            AddressableNetworkManager.AddressableManager.networkAddress = ip;
-            AddressableNetworkManager.AddressableManager.StartHost();
+            NetworkManager.singleton.networkAddress = ip;
+            NetworkManager.singleton?.StartClient();
         }
 
-        public void LeaveLobby()
+        public static void LeaveLobby()
         {
-            inLobby = false;
-            loadingLobby = false;
-            NetworkManager.singleton.StopHost();
-            Destroy(this.gameObject);
+            Instance.inLobby = false;
+            Instance.loadingLobby = false;
+            NetworkManager.singleton?.StopHost();
+            Destroy(Instance.gameObject);
         }
 
         #endregion Match initializing
@@ -380,8 +380,9 @@ namespace Sanicball.Logic
 
             loadingStage = false;
             loadingLobby = true;
-            if(BootstrapSceneManager.currentScene.Scene != null) BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
-            else BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
+            //if(BootstrapSceneManager.Scene != null) BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
+            //else
+                BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
         }
         [Server]
         public void GoToStage()

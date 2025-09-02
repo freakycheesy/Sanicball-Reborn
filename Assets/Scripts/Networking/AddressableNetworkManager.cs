@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Mirror.Examples.AdditiveLevels;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Rendering;
@@ -11,170 +13,149 @@ using UnityEngine.SceneManagement;
 namespace Mirror
 {
 
-    public class AddressableNetworkManager : NetworkManager
+    public class AddressableNetworkManager : AdditiveLevelsNetworkManager
     {
 
-        public SerializedDictionary<string, AssetReference> CompiledAddressableReferences = new();
+        public static SerializedDictionary<string, AssetReference> CompiledAddressableReferences = new();
 
         [Tooltip("List of scene references")]
         public List<AssetReference> SceneRefs = new();
         public static AddressableNetworkManager AddressableManager { get; private set; }
         public override void Awake()
         {
-            DontDestroyOnLoad(this.gameObject);
+            base.Awake();
+            DontDestroyOnLoad(gameObject);
             AddressableManager = this;
             CompiledAddressableReferences = new();
             for (int i = 0; i < SceneRefs.Count; i++)
                 CompiledAddressableReferences.Add((string)SceneRefs[i].RuntimeKey, SceneRefs[i]);
         }
 
-        public AssetReference GetSceneRefByName(string sceneName)
-        {
-            sceneName = Path.GetFileNameWithoutExtension(sceneName).ToLower();
-            CompiledAddressableReferences.TryGetValue(sceneName, out AssetReference assetReference);
-            return assetReference;
-        }
-
-        public AssetReference GetSceneRefByGuid(string guid)
-        {
-            foreach (var item in CompiledAddressableReferences)
-            {
-                if (item.Value.RuntimeKeyIsValid() && item.Value.RuntimeKey.ToString() == guid)
-                    return item.Value;
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Resets performed loading operations for a given load queue.
-        /// </summary>
-        private void ResetProcessor()
-        {
-            loadingSceneAsync.Release();
-        }
-
-        /// <summary>
-        /// Checks if we have a loadable scene in our compiled scene refs.
-        /// </summary>
-        /// <param name="sceneName"></param>
-        /// <returns></returns>
         public static bool IsValidScene(string sceneName)
         {
-            var proc = NetworkManager.singleton as AddressableNetworkManager;
-            if (proc == null) return false;
-
-            return proc.CompiledAddressableReferences.ContainsKey(sceneName.ToLower());
+            return CompiledAddressableReferences.ContainsKey(sceneName.ToLower());
+        }
+        public static void AddSceneReference(AssetReference sceneReference)
+        {
+            CompiledAddressableReferences.Add((string)sceneReference.RuntimeKey, sceneReference);
         }
 
-        public override void ServerChangeScene(string sceneName)
+        public static AssetReference GetSceneFromKey(string sceneRuntimekey)
         {
-            ServerChangeScene(sceneName, LoadSceneMode.Single);
+            if (!CompiledAddressableReferences.TryGetValue(sceneRuntimekey, out AssetReference sceneReference))
+                throw new ArgumentException($"Scene with key: {sceneRuntimekey} is not registered in AddressableNetworkManager!", nameof(sceneRuntimekey));
+            return sceneReference;
         }
-        public new static AsyncOperationHandle<SceneInstance> loadingSceneAsync;
-        private string ServerChangeScene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+        public static bool TryGetSceneFromKey(string sceneRuntimekey, out AssetReference sceneReference)
         {
-            sceneName = Path.GetFileNameWithoutExtension(sceneName);
+            sceneReference = GetSceneFromKey(sceneRuntimekey);
+            return sceneReference != null;
+        }
 
-            // Try get reference
-            if (!CompiledAddressableReferences.TryGetValue(sceneName, out AssetReference sceneReference))
-                throw new ArgumentException($"Scene with name: {sceneName} is not registered in AddressableSceneProcessor!", nameof(sceneName));
+        public override void OnServerChangeScene(string newSceneKey)
+        {
+            //base.OnServerChangeScene(newSceneKey);
+            if (string.IsNullOrWhiteSpace(newSceneKey))
+            {
+                Debug.LogError("ServerChangeScene empty scene name");
+                return;
+            }
+
+            if (NetworkServer.isLoadingScene && newSceneKey == networkSceneName)
+            {
+                Debug.LogError($"Scene change is already in progress for {newSceneKey}");
+                return;
+            }
+
+            // Throw error if called from client
+            // Allow changing scene while stopping the server
+            if (!NetworkServer.active && newSceneKey != offlineScene)
+            {
+                Debug.LogError("ServerChangeScene can only be called on an active server.");
+                return;
+            }
+
+            StartCoroutine(LoadServerAddressableScene(newSceneKey));
+        }
+
+        IEnumerator LoadServerAddressableScene(string newSceneKey)
+        {
+            NetworkClient.isLoadingScene = true;
+            if (!TryGetSceneFromKey(newSceneKey, out var scene))
+                throw new ArgumentException($"Server Loading Scene Error");
+
             NetworkServer.SetAllClientsNotReady();
-            networkSceneName = sceneName;
-
+            networkSceneName = scene.SubObjectName;
+            // Let server prepare for scene change
+            OnServerChangeScene(newSceneKey);
+            // set server flag to stop processing messages while changing scenes
+            // it will be re-enabled in FinishLoadScene.
             NetworkServer.isLoadingScene = true;
-            loadingSceneAsync = Addressables.LoadSceneAsync(sceneReference, mode, false);
-
+            var handle = Addressables.LoadSceneAsync(scene);
+            yield return handle;
+            // ServerChangeScene can be called when stopping the server
+            // when this happens the server is not active so does not need to tell clients about the change
             if (NetworkServer.active)
             {
                 // notify all clients about the new scene
                 NetworkServer.SendToAll(new SceneMessage
                 {
-                    sceneName = sceneName
+                    sceneName = newSceneKey,
+                    customHandling = true,
                 });
             }
 
             startPositionIndex = 0;
             startPositions.Clear();
-            return sceneName;
         }
 
-        protected override void ClientChangeScene(string newSceneName, SceneOperation sceneOperation = SceneOperation.Normal, bool customHandling = false)
+        public override void OnServerConnect(NetworkConnectionToClient conn)
         {
-            //base.ClientChangeScene(newSceneName, sceneOperation, customHandling);
-            if (string.IsNullOrWhiteSpace(newSceneName))
-            {
-                Debug.LogError("ClientChangeScene empty scene name");
-                return;
-            }
-
-            //Debug.Log($"ClientChangeScene newSceneName: {newSceneName} networkSceneName{networkSceneName}");
-
-            // Let client prepare for scene change
-            OnClientChangeScene(newSceneName, sceneOperation, customHandling);
-
-            // After calling OnClientChangeScene, exit if server since server is already doing
-            // the actual scene change, and we don't need to do it for the host client
-            if (NetworkServer.active)
-                return;
-
-            // set client flag to stop processing messages while loading scenes.
-            // otherwise we would process messages and then lose all the state
-            // as soon as the load is finishing, causing all kinds of bugs
-            // because of missing state.
-            // (client may be null after StopClient etc.)
-            // Debug.Log("ClientChangeScene: pausing handlers while scene is loading to avoid data loss after scene was loaded.");
-            NetworkClient.isLoadingScene = true;
-
-            // Cache sceneOperation so we know what was requested by the
-            // Scene message in OnClientChangeScene and OnClientSceneChanged
-            //clientSceneOperation = sceneOperation;
-
-            // scene handling will happen in overrides of OnClientChangeScene and/or OnClientSceneChanged
-            // Do not call FinishLoadScene here. Custom handler will assign loadingSceneAsync and we need
-            // to wait for that to finish. UpdateScene already checks for that to be not null and isDone.
-            if (customHandling)
-                return;
-            if (!CompiledAddressableReferences.TryGetValue(newSceneName, out AssetReference sceneReference))
-                throw new ArgumentException($"Scene with name: {newSceneName} is not registered in AddressableSceneProcessor!", nameof(newSceneName));
-            switch (sceneOperation)
-            {
-                case SceneOperation.Normal:
-                    loadingSceneAsync = Addressables.LoadSceneAsync(sceneReference);
-                    break;
-                case SceneOperation.LoadAdditive:
-                    // Ensure additive scene is not already loaded on client by name or path
-                    // since we don't know which was passed in the Scene message
-                    if (!IsValidScene(newSceneName))
-                        loadingSceneAsync = Addressables.LoadSceneAsync(sceneReference, LoadSceneMode.Additive);
-                    else
-                    {
-                        Debug.LogWarning($"Scene {newSceneName} is already loaded");
-
-                        // Reset the flag that we disabled before entering this switch
-                        NetworkClient.isLoadingScene = false;
-                    }
-                    break;
-                case SceneOperation.UnloadAdditive:
-                    // Ensure additive scene is actually loaded on client by name or path
-                    // since we don't know which was passed in the Scene message
-                    if (!IsValidScene(newSceneName))
-                        loadingSceneAsync = Addressables.UnloadSceneAsync(loadingSceneAsync.Result, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
-                    else
-                    {
-                        Debug.LogWarning($"Cannot unload {newSceneName} with UnloadAdditive operation");
-
-                        // Reset the flag that we disabled before entering this switch
-                        NetworkClient.isLoadingScene = false;
-                    }
-                    break;
-            }
-
-            // don't change the client's current networkSceneName when loading additive scene content
-            if (sceneOperation == SceneOperation.Normal)
-                networkSceneName = newSceneName;
+            // if client is remote, send 2nd scene message to load the Addressable Online scene
+            if (conn is LocalConnectionToClient == false)
+                conn.Send(new SceneMessage { sceneName = networkSceneName, customHandling = true });
         }
 
+        public override void OnClientChangeScene(string newSceneKey, SceneOperation sceneOperation, bool customHandling)
+        {
+            if (customHandling)
+            {
+                // Block processing of network messages
+                NetworkClient.isLoadingScene = true;
+                StartCoroutine(LoadClientAddressableScene(newSceneKey));
+            }
+        }
+
+        IEnumerator LoadClientAddressableScene(string newSceneKey)
+        {
+            NetworkClient.isLoadingScene = true;
+            if (!TryGetSceneFromKey(newSceneKey, out var scene))
+                throw new ArgumentException($"Client Loading Scene Error");
+
+            var handle = Addressables.LoadSceneAsync(scene);
+            yield return handle;
+
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                networkSceneName = scene.SubObjectName;
+                handle.Result.ActivateAsync();
+            }
+            else
+            {
+                // Enhanced error logging
+                Debug.LogError($"Failed to load Addressable scene: {scene.SubObjectName}");
+                Debug.LogError($"Status: {handle.Status}");
+
+                if (handle.OperationException != null)
+                {
+                    Debug.LogError($"Exception: {handle.OperationException}");
+                    Debug.LogError($"Stack Trace:\n{handle.OperationException.StackTrace}");
+                }
+            }
+
+            NetworkClient.isLoadingScene = false;
+            OnClientSceneChanged();
+        }
     }
 
 }

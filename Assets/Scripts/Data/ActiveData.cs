@@ -99,9 +99,10 @@ namespace Sanicball.Data
 
         private static void PalletCompleted(AsyncOperationHandle<IList<SanicPallet>> _)
         {
-            MatchSettings = MatchSettings.CreateDefault(); foreach (var info in Stages)
+            MatchSettings = MatchSettings.CreateDefault();
+            foreach (var info in Stages)
             {
-                AddressableNetworkManager.AddressableManager.CompiledAddressableReferences.Add((string)info.scene.RuntimeKey, info.scene);
+                AddressableNetworkManager.AddSceneReference(info.scene);
             }
             Debug.Log("Completed Loading Pallet!");
         }

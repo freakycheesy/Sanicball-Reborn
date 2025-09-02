@@ -21,8 +21,6 @@ public class BootstrapSceneManager : MonoBehaviour
     }
     */
 
-    public static SceneInstance currentScene => AddressableNetworkManager.loadingSceneAsync.Result;
-
     [Server]
     public static void LoadScene(object sceneKey)
     {

@@ -16,6 +16,7 @@ public class SanicNetworkManager : AddressableNetworkManager
 
     public override void Awake()
     {
+        base.Awake();
         DontDestroyOnLoad(this.gameObject);
     }
 
