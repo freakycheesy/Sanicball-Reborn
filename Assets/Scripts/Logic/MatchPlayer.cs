@@ -20,7 +20,6 @@ namespace Sanicball.Logic
             IsLocal = isLocal;
         }
     }
-
     [Serializable]
     public class MatchPlayer
     {

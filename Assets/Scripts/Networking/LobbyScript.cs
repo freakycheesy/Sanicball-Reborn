@@ -1,9 +1,10 @@
-using UnityEngine;
+/*using UnityEngine;
 using SanicballCore;
 using Sanicball.Logic;
 using System;
 using Sanicball.Data;
 using Mirror;
+using System.Linq;
 
 public class LobbyScript : NetworkBehaviour
 {
@@ -11,19 +12,25 @@ public class LobbyScript : NetworkBehaviour
 
      public override void OnStartClient()
      {
+          if (Instance != this) return;
           base.OnStartClient();
+          MatchManager.Instance.myGuid = Instance.connectionToClient;
+          ClientJoinRpc(ActiveData.GameSettings.nickname);
+     }
+
+    void Start()
+    {
           if (Instance)
           {
                NetworkServer.Destroy(netIdentity.gameObject);
                Destroy(this.gameObject);
                return;
           }
+          DontDestroyOnLoad(this.gameObject);
           Instance = this;
-          MatchManager.Instance.myGuid = Instance.connectionToClient;
-          ClientJoinRpc(MatchManager.Instance.myGuid, ActiveData.GameSettings.nickname);
      }
 
-     [ClientRpc(includeOwner = true)]
+    [ClientRpc(includeOwner = true)]
      public void ChangeSettingsRpc(MatchSettings settings)
      {
           MatchManager.Instance.CurrentSettings = settings;
@@ -32,18 +39,18 @@ public class LobbyScript : NetworkBehaviour
      }
 
      [Command(requiresAuthority = false)]
-     public void ClientJoinRpc(NetworkConnectionToClient conn, string nickname)
+     public void ClientJoinRpc(string nickname, NetworkConnectionToClient sender = null)
      {
-          var matchClient = new MatchClient(conn, nickname);
+          var matchClient = new MatchClient(sender, nickname);
           if (MatchManager.Instance.Clients.Contains(matchClient)) return;
           MatchManager.Instance.clients.Add(matchClient);
           Debug.Log("New client " + nickname);
      }
 
      [Command(requiresAuthority = false)]
-     public void PlayerJoinRpc(NetworkConnectionToClient conn, ControlType type, int characterId)
+     public void PlayerJoinRpc(ControlType type, int characterId, NetworkConnectionToClient sender = null)
      {
-          var p = new MatchPlayer(conn, type, characterId);
+          var p = new MatchPlayer(sender, type, characterId);
           MatchManager.Instance.players.Add(p);
 
           if (MatchManager.Instance.inLobby)
@@ -53,31 +60,33 @@ public class LobbyScript : NetworkBehaviour
 
           MatchManager.Instance.StopLobbyTimer();
 
-          MatchManager.Instance.MatchPlayerAdded(this, new MatchPlayerEventArgs(p, conn == MatchManager.Instance.myGuid));
+          MatchManager.Instance.MatchPlayerAdded(this, new MatchPlayerEventArgs(p, sender == MatchManager.Instance.myGuid));
      }
 
      [Command(requiresAuthority = false)]
-     public void PlayerLeaveRpc(NetworkConnectionToClient conn, ControlType type)
+     public void PlayerLeaveRpc(ControlType type, NetworkConnectionToClient sender = null)
      {
-          MatchManager.Instance.PlayerLeftCallback(conn, type);
+          MatchManager.Instance.PlayerLeftCallback(sender, type);
      }
 
      [Command(requiresAuthority = false)]
-     public void CharacterChangedRpc(NetworkConnectionToClient myGuid, ControlType ctrlType, int newCharacter)
+     public void CharacterChangedRpc(ControlType ctrlType, int newCharacter, NetworkConnectionToClient sender = null)
      {
-          MatchManager.Instance.CharacterChangedCallback(myGuid, ctrlType, newCharacter);
+          MatchManager.Instance.CharacterChangedCallback(sender, ctrlType, newCharacter);
      }
 
      [Command(requiresAuthority = false)]
-     public void ChangedReadyServerRpc(NetworkConnectionToClient myGuid, ControlType ctrlType, bool ready)
-    {
-          ChangedReadyRpc(myGuid, ctrlType, ready);
-    }
-
-     [Command(requiresAuthority = false)]
-     private void ChangedReadyRpc(NetworkConnectionToClient myGuid, ControlType ctrlType, bool ready)
+     public void ChangedReadyServerRpc(ControlType ctrlType, bool ready, NetworkConnectionToClient sender = null)
      {
-          MatchManager.Instance.ChangedReadyCallback(myGuid, ctrlType);
+          var player = MatchManager.Instance.players.FirstOrDefault(a => a.ClientGuid == sender && a.CtrlType == ctrlType);
+          if(player != null) ChangedReadyRpc(player.ClientGuid.connectionId, player.CtrlType);
+     }
+
+     [ClientRpc]
+     private void ChangedReadyRpc(int connectionId, ControlType ctrlType)
+     {
+          var player = MatchManager.Instance.players.FirstOrDefault(a => a.ClientGuid.connectionId == connectionId && a.CtrlType == ctrlType);
+          MatchManager.Instance.ChangedReadyCallback(player);
      }
 
      [Command(requiresAuthority = false)]
@@ -87,10 +96,10 @@ public class LobbyScript : NetworkBehaviour
      }
 
      [Command(requiresAuthority = false)]
-     public void ReadyUpRaceRpc(NetworkConnectionToClient myGuid, ControlType ctrlType)
+     public void ReadyUpRaceRpc(ControlType ctrlType, NetworkConnectionToClient sender = null)
      {
           Debug.Log("Ready Up");
-          RaceManager.Instance.ReadyUpRace(myGuid, ctrlType);
+          RaceManager.Instance.ReadyUpRace(sender, ctrlType);
      }
 
      [Command(requiresAuthority = false)]
@@ -123,3 +132,4 @@ public class LobbyScript : NetworkBehaviour
           RacePlayer.Instance.CheckpointPassedHandler(clientGuid, ctrlType, lapTime);
      }
 }
+*/

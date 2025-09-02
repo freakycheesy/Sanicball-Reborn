@@ -11,7 +11,7 @@ public class SanicNetworkManager : AddressableNetworkManager
         MatchManager.Instance.GoToLobby();
         MatchManager.Instance.activeChat = Instantiate(MatchManager.Instance.chatPrefab);
         MatchManager.Instance.activeChat.MessageSent += MatchManager.Instance.LocalChatMessageSent;
-        NetworkServer.Spawn(Instantiate(MatchManager.Instance.LobbyPrefab.gameObject));
+        //NetworkServer.Spawn(Instantiate(MatchManager.Instance.LobbyPrefab.gameObject));
     }
 
     public override void Awake()

@@ -332,7 +332,7 @@ namespace Sanicball.Logic
             {
                 if (LobbyScript.Instance.connectionToClient == p.ClientGuid)
                 {
-                    LobbyScript.Instance.ReadyUpRaceRpc(p.ClientGuid, p.CtrlType);
+                    LobbyScript.Instance.ReadyUpRaceRpc(p.CtrlType);
                 }
             }
         }

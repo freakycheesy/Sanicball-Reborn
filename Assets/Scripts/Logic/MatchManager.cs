@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Sanicball.Data;
 using Sanicball.UI;
 using SanicballCore;
+using SanicballCore.MatchMessages;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Rendering.Universal;
@@ -125,27 +126,28 @@ namespace Sanicball.Logic
         [Server]
         public void RequestSettingsChange(MatchSettings newSettings)
         {
-            LobbyScript.Instance.ChangeSettingsRpc(newSettings);
+            SettingsChangedMessage message = new(newSettings);
+            NetworkClient.Send<SettingsChangedMessage>(message);
         }
 
         public void RequestPlayerJoin(ControlType ctrlType, int initialCharacter)
         {
-            LobbyScript.Instance.PlayerJoinRpc(myGuid, ctrlType, initialCharacter);
+            LobbyScript.Instance.PlayerJoinRpc( ctrlType, initialCharacter);
         }
 
         public void RequestPlayerLeave(ControlType ctrlType)
         {
-            LobbyScript.Instance.PlayerLeaveRpc(myGuid, ctrlType);
+            LobbyScript.Instance.PlayerLeaveRpc( ctrlType);
         }
 
         public void RequestCharacterChange(ControlType ctrlType, int newCharacter)
         {
-            LobbyScript.Instance.CharacterChangedRpc(myGuid, ctrlType, newCharacter);
+            LobbyScript.Instance.CharacterChangedRpc(ctrlType, newCharacter);
         }
 
         public void RequestReadyChange(ControlType ctrlType, bool ready)
         {
-            LobbyScript.Instance.ChangedReadyServerRpc(myGuid, ctrlType, ready);
+            LobbyScript.Instance.ChangedReadyServerRpc( ctrlType, ready);
         }
 
         public void RequestLoadLobby()
@@ -201,25 +203,24 @@ namespace Sanicball.Logic
             }
         }
 
-        public void ChangedReadyCallback(NetworkConnection myGuid, ControlType ctrlType)
+        public void ChangedReadyCallback(ChangedReadyMessage message)
         {
-            var player = players.FirstOrDefault(a => a.ClientGuid == myGuid && a.CtrlType == ctrlType);
+            var player = Instance.players.FirstOrDefault(a => a.ClientGuid.connectionId == message.ConnectionID && a.CtrlType == message.CtrlType);
             if (player != null)
             {
                 player.ReadyToRace = !player.ReadyToRace;
-
-                //Check if all players are ready and start/stop lobby timer accordingly
-                var allReady = players.TrueForAll(a => a.ReadyToRace);
-                if (allReady && !lobbyTimerOn)
-                {
-                    Debug.Log("Start Lobby Timer");
-                    StartLobbyTimer(0);
-                }
-                if (!allReady && lobbyTimerOn)
-                {
-                    Debug.Log("Stop Lobby Timer");
-                    StopLobbyTimer();
-                }
+            }
+            //Check if all players are ready and start/stop lobby timer accordingly
+            var allReady = players.TrueForAll(a => a.ReadyToRace);
+            if (allReady && !lobbyTimerOn)
+            {
+                Debug.Log("Start Lobby Timer");
+                StartLobbyTimer(0);
+            }
+            if (!allReady && lobbyTimerOn)
+            {
+                Debug.Log("Stop Lobby Timer");
+                StopLobbyTimer();
             }
         }
 
@@ -240,9 +241,9 @@ namespace Sanicball.Logic
             GoToLobby();
         }
 
-        public void AutoStartTimerCallback(bool Enabled)
+        public void AutoStartTimerCallback(AutoStartTimerMessage message)
         {
-            autoStartTimerOn = Enabled;
+            autoStartTimerOn = message.Enabled;
             autoStartTimer = currentSettings.AutoStartTime - (float)NetworkTime.rtt;
         }
 
@@ -286,13 +287,20 @@ namespace Sanicball.Logic
             }
             Instance = this;
         }
-        public LobbyScript LobbyPrefab;
         public void Start()
         {
             if (Instance != this) return;
             Instance = this;
             SceneManager.sceneLoaded += OnLevelHasLoaded;
             DontDestroyOnLoad(gameObject);
+            RegisterNetworkMessages();
+        }
+
+        private void RegisterNetworkMessages()
+        {
+            NetworkClient.RegisterHandler<AutoStartTimerMessage>(AutoStartTimerCallback);
+            NetworkClient.RegisterHandler<ChangedReadyMessage>(ChangedReadyCallback);
+
         }
 
         public void LocalChatMessageSent(string from, string text)
@@ -418,6 +426,10 @@ namespace Sanicball.Logic
             foreach (var camera in Resources.FindObjectsOfTypeAll<UniversalAdditionalCameraData>())
             {
                 camera.renderPostProcessing = true;
+            }
+            if (NetworkServer.active)
+            {
+                NetworkServer.Spawn(Instantiate(LobbyPrefab).gameObject);
             }
         }
 
