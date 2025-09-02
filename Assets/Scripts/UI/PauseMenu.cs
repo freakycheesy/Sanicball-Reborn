@@ -42,7 +42,7 @@ namespace Sanicball.UI
                 Time.timeScale = 0;
                 AudioListener.pause = true;
             }
-            if (SceneManager.GetSceneAt(1).name == "Lobby")
+            if (SceneManager.GetActiveScene().name == "Lobby")
             {
                 contextSensitiveButtonLabel.text = "Change match settings";
                 contextSensitiveButton.onClick.AddListener(MatchSettings);

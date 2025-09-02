@@ -132,22 +132,22 @@ namespace Sanicball.Logic
 
         public void RequestPlayerJoin(ControlType ctrlType, int initialCharacter)
         {
-            NetworkClient.Send<PlayerJoinedMessage>(new(myGuid.connectionId, ctrlType, initialCharacter));
+            NetworkClient.Send<PlayerJoinedMessage>(new(LocalClientGuid, ctrlType, initialCharacter));
         }
 
         public void RequestPlayerLeave(ControlType ctrlType)
         {
-            NetworkClient.Send<PlayerLeftMessage>(new(myGuid.connectionId, ctrlType));
+            NetworkClient.Send<PlayerLeftMessage>(new(LocalClientGuid, ctrlType));
         }
 
         public void RequestCharacterChange(ControlType ctrlType, int newCharacter)
         {
-            NetworkClient.Send<CharacterChangedMessage>(new(myGuid.connectionId, ctrlType, newCharacter));
+            NetworkClient.Send<CharacterChangedMessage>(new(LocalClientGuid, ctrlType, newCharacter));
         }
 
         public void RequestReadyChange(ControlType ctrlType, bool ready)
         {
-            NetworkClient.Send<ChangedReadyMessage>(new(myGuid.connectionId, ctrlType, ready));
+            NetworkClient.Send<ChangedReadyMessage>(new(LocalClientGuid, ctrlType, ready));
         }
 
         public void RequestLoadLobby()
@@ -304,11 +304,11 @@ namespace Sanicball.Logic
             NetworkClient.RegisterHandler<ChangedReadyMessage>(ChangedReadyCallback);
             NetworkClient.RegisterHandler<CharacterChangedMessage>(CharacterChangedCallback);
             NetworkClient.RegisterHandler<ChatMessage>(ChatCallback);
-            NetworkServer.RegisterHandler<SettingsChangedMessage>((_, a)=>SettingsChangedCallback(a));
             NetworkClient.RegisterHandler<ClientJoinedMessage>(ClientJoinedCallback);
             NetworkClient.RegisterHandler<ClientLeftMessage>(ClientLeftCallback);
             NetworkClient.RegisterHandler<PlayerJoinedMessage>(PlayerJoinedCallback);
             NetworkClient.RegisterHandler<PlayerLeftMessage>(PlayerLeftCallback);
+            NetworkServer.RegisterHandler<SettingsChangedMessage>((_, a)=>SettingsChangedCallback(a));
             NetworkServer.RegisterHandler<LoadRaceMessage>((_, _)=>LoadRaceCallback());
             NetworkServer.RegisterHandler<LoadLobbyMessage>((_, _) => LoadLobbyCallback());
         }

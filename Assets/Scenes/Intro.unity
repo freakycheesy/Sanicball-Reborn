@@ -921,20 +921,37 @@ PrefabInstance:
       propertyPath: _sceneRefs.Array.data[0].m_EditorAssetChanged
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2231023705682993178, guid: 23e125f64a102ba47a65dfc21bf39f4d,
+        type: 3}
+      propertyPath: spawnPrefabs.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2231023705682993178, guid: 23e125f64a102ba47a65dfc21bf39f4d,
+        type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[3]'
+      value: 
+      objectReference: {fileID: 7068189530366096050, guid: d06988e3b629e2a4e99637a3a7f69091,
+        type: 3}
+    - target: {fileID: 2231023705682993178, guid: 23e125f64a102ba47a65dfc21bf39f4d,
+        type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[4]'
+      value: 
+      objectReference: {fileID: 5703545671763799581, guid: 2f743cb081f263848951baf59976b3e2,
+        type: 3}
     - target: {fileID: 6818551846960294037, guid: 23e125f64a102ba47a65dfc21bf39f4d,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 91.49519
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6818551846960294037, guid: 23e125f64a102ba47a65dfc21bf39f4d,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 33.6656
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6818551846960294037, guid: 23e125f64a102ba47a65dfc21bf39f4d,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -13.93357
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6818551846960294037, guid: 23e125f64a102ba47a65dfc21bf39f4d,
         type: 3}
