@@ -20,7 +20,7 @@ namespace Sanicball.Logic
     /// <summary>
     /// Manages game state - scenes, players, all that jazz
     /// </summary>
-    public class MatchManager : MonoBehaviour
+    public class MatchManager : NetworkBehaviour
     {
         #region Events
 
@@ -55,17 +55,14 @@ namespace Sanicball.Logic
         //List of all clients in the match. Only serves a purpose in online play.
         //In local play, this list will always only contain the local client.
         [SerializeField]
-        public List<MatchClient> clients = new List<MatchClient>();
-
-        //Holds the guid of the local client, to check if messages are directed at it.
-        public NetworkConnectionToClient myGuid => NetworkServer.localConnection;
+        public SyncList<MatchClient> clients = new SyncList<MatchClient>();
 
         //List of all players - players are seperate from clients because each client can have
         //up to 4 players playing in splitscreen.
-        public List<MatchPlayer> players = new List<MatchPlayer>();
+        public SyncList<MatchPlayer> players = new SyncList<MatchPlayer>();
 
         //These settings will be used when starting a race
-        [SerializeField] public MatchSettings currentSettings = MatchSettings.CreateDefault();
+        [SerializeField, SyncVar] public MatchSettings currentSettings = MatchSettings.CreateDefault();
 
         //Lobby countdown timer stuff
         public bool lobbyTimerOn = false;
@@ -99,19 +96,19 @@ namespace Sanicball.Logic
         /// <summary>
         /// Contains all clients connected to the game. In offline matches this will always only contain one client.
         /// </summary>
-        public ReadOnlyCollection<MatchClient> Clients { get { return clients.AsReadOnly(); } }
+        public ReadOnlyCollection<MatchClient> Clients { get { return clients.ToList().AsReadOnly(); } }
 
         /// <summary>
         /// Contains all players in the game, even ones from other clients in online races
         /// </summary>
-        public ReadOnlyCollection<MatchPlayer> Players { get { return players.AsReadOnly(); } }
+        public ReadOnlyCollection<MatchPlayer> Players { get { return players.ToList().AsReadOnly(); } }
 
         /// <summary>
         /// Current settings for this match. On remote clients, this is only used for showing settings on the UI.
         /// </summary>
         public MatchSettings CurrentSettings { get { return currentSettings; } set { currentSettings = value; } }
 
-        public int LocalClientGuid { get { return myGuid.connectionId; } }
+        public int LocalClientGuid { get { return connectionToClient.connectionId; } }
 
         public bool AutoStartTimerOn { get { return autoStartTimerOn; } }
         public float AutoStartTimer { get { return autoStartTimer; } }
@@ -186,7 +183,7 @@ namespace Sanicball.Logic
                 }
 
                 if (MatchPlayerRemoved != null)
-                    MatchPlayerRemoved(this, new MatchPlayerEventArgs(player, guid == myGuid.connectionId)); //TODO: determine if removed player was local
+                    MatchPlayerRemoved(this, new MatchPlayerEventArgs(player, guid == LocalClientGuid)); //TODO: determine if removed player was local
             }
         }
 
@@ -213,7 +210,7 @@ namespace Sanicball.Logic
                 player.ReadyToRace = !player.ReadyToRace;
             }
             //Check if all players are ready and start/stop lobby timer accordingly
-            var allReady = players.TrueForAll(a => a.ReadyToRace);
+            var allReady = players.ToList().TrueForAll(a => a.ReadyToRace);
             if (allReady && !lobbyTimerOn)
             {
                 Debug.Log("Start Lobby Timer");
@@ -250,46 +247,22 @@ namespace Sanicball.Logic
         }
 
         #endregion Match message callbacks
-
-        #region Match initializing
-
-        public void InitMatch()
-        {
-            CreateLobby();
-        }
-
-        public void CreateLobby()
-        {
-            NetworkManager.singleton?.StartHost();
-        }
-
-        public void JoinLobby(string ip)
-        {
-            NetworkManager.singleton.networkAddress = ip;
-            NetworkManager.singleton?.StartClient();
-        }
-
-        public void LeaveLobby()
-        {
-            NetworkManager.singleton?.StopHost();
-        }
-
-        #endregion Match initializing
-        void Awake()
+        void Start()
         {
             if (!Instance)
             {
-                Destroy(gameObject);
+                NetworkServer.Destroy(gameObject);
                 return;
             }
-            Instance = this;
-        }
-        public void Start()
-        {
             Instance = this;
             SceneManager.sceneLoaded += OnLevelHasLoaded;
             DontDestroyOnLoad(gameObject);
             RegisterNetworkMessages();
+        }
+        public override void OnStartClient()
+        {
+            Instance = this;
+            NetworkClient.Send<ClientJoinedMessage>(new(NetworkServer.localConnection.connectionId, ActiveData.GameSettings.nickname));
         }
 
         private void RegisterNetworkMessages()
@@ -319,7 +292,7 @@ namespace Sanicball.Logic
 
             MatchManager.Instance.StopLobbyTimer();
 
-            MatchManager.Instance.MatchPlayerAdded(this, new MatchPlayerEventArgs(p, message.ConnectionID == MatchManager.Instance.myGuid.connectionId));
+            MatchManager.Instance.MatchPlayerAdded(this, new MatchPlayerEventArgs(p, message.ConnectionID == LocalClientGuid));
         }
 
         private void ClientJoinedCallback(ClientJoinedMessage message)
@@ -339,7 +312,7 @@ namespace Sanicball.Logic
 
         public void LocalChatMessageSent(string from, string text)
         {
-            MatchClient myClient = clients.FirstOrDefault(a => a.ConnectionId == myGuid.connectionId);
+            MatchClient myClient = clients.FirstOrDefault(a => a.ConnectionId == LocalClientGuid);
             ChatCallback(new(from, ChatMessageType.User, text));
         }
         /*
@@ -498,7 +471,7 @@ namespace Sanicball.Logic
 
         public IEnumerator QuitMatchInternal(string reason)
         {
-            LeaveLobby();
+            SanicNetworkManager.LeaveLobby();
 
             if (reason != null)
             {
@@ -524,9 +497,9 @@ namespace Sanicball.Logic
 
             string name = clients.First(a => a.ConnectionId == player.ConnectionId).Name + " (" + GameInput.GetControlTypeName(player.CtrlType) + ")";
             NetworkServer.connections.TryGetValue(player.ConnectionId, out var conn);
-            player.BallObject = spawner.SpawnBall(PlayerType.Normal, (player.ConnectionId == myGuid.connectionId) ? player.CtrlType : ControlType.None, player.CharacterId, name, conn);
+            player.BallObject = spawner.SpawnBall(PlayerType.Normal, (player.ConnectionId == LocalClientGuid) ? player.CtrlType : ControlType.None, player.CharacterId, name, conn);
 
-            if (player.ConnectionId != myGuid.connectionId)
+            if (player.ConnectionId != LocalClientGuid)
             {
                 Marker marker = Instantiate(markerPrefab);
                 marker.transform.SetParent(LobbyReferences.Active.MarkerContainer, false);

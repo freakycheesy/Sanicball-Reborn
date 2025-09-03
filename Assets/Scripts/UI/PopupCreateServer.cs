@@ -32,7 +32,7 @@ namespace Sanicball.UI
                 popupHandler.OpenPopup(connectingPopupPrefab);
                 PopupConnecting.ShowMessage("Creating Server...");
             }
-            MatchManager.Instance.CreateLobby();
+            SanicNetworkManager.CreateLobby();
         }
     }
 }

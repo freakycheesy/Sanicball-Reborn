@@ -67,6 +67,7 @@ MonoBehaviour:
   - {fileID: 178192, guid: 15c7ed3ff76289b4680e4b9f1f52fb22, type: 3}
   - {fileID: 7381014494629819489, guid: ed98061f2d8f96a4ab2f9b6ee44226ad, type: 3}
   - {fileID: 178192, guid: 6c2cfccea64cadb4aa87be045849f214, type: 3}
+  - {fileID: 7068189530366096050, guid: d06988e3b629e2a4e99637a3a7f69091, type: 3}
   - {fileID: 5703545671763799581, guid: 2f743cb081f263848951baf59976b3e2, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
@@ -83,17 +84,20 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
-  SceneRefs:
-  - m_AssetGUID: 451586f28ff22a946b895ef0d457d0d9
+  offlineSceneReference:
+    m_AssetGUID: 451586f28ff22a946b895ef0d457d0d9
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
-  - m_AssetGUID: c1e00a02ec0c7304584fa323ef166aaf
+  onlineSceneReference:
+    m_AssetGUID: c1e00a02ec0c7304584fa323ef166aaf
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
-    m_EditorAssetChanged: 1
+    m_EditorAssetChanged: 0
+  SceneRefs: []
+  matchManagerPrefab: {fileID: 11456720, guid: fdb6e26d3a9dcac42af827fefb1aa46f, type: 3}
 --- !u!114 &232779417100486059
 MonoBehaviour:
   m_ObjectHideFlags: 0

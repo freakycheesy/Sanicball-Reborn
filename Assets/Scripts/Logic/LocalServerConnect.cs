@@ -15,7 +15,7 @@ public class LocalServerConnect : MonoBehaviour {
 	}
 
 	public void Connect(string serverIp, ushort port = 25000){
-		MatchManager.Instance.JoinLobby(serverIp);
+		SanicNetworkManager.JoinLobby(serverIp);
 	}
 
 	private bool Ping(string ip, int port){

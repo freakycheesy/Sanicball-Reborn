@@ -6,6 +6,7 @@ using SanicballCore;
 using UnityEngine;
 using Sanicball.Data;
 using Mirror;
+using Sanicball.Gameplay;
 
 namespace Sanicball.Logic
 {
@@ -26,17 +27,28 @@ namespace Sanicball.Logic
         private int connectionId;
         private ControlType ctrlType;
 
-        public MatchPlayer(int clientGuid, ControlType ctrlType, int initialCharacterId)
+        public MatchPlayer(int clientGuid, ControlType ctrlType, int initialCharacterId, Ball BallObject = null, bool ReadyToRace = false)
         {
             this.connectionId = clientGuid;
             this.ctrlType = ctrlType;
             CharacterId = initialCharacterId;
+            this.BallObject = BallObject;
+            this.ReadyToRace = ReadyToRace;
+        }
+
+        public MatchPlayer()
+        {
+            connectionId = 0;
+            ctrlType = ControlType.None;
+            CharacterId = 0;
+            BallObject = null;
+            ReadyToRace = false;
         }
 
         public int ConnectionId { get { return connectionId; } }
         public ControlType CtrlType { get { return ctrlType; } }
         public int CharacterId { get; set; }
-        public Gameplay.Ball BallObject { get; set; }
+        public Ball BallObject { get; set; }
         public bool ReadyToRace { get; set; }
 
 		public static MatchPlayer GetByBall(Gameplay.Ball referenceBall) {

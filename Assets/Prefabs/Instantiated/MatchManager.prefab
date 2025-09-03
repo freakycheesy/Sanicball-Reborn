@@ -10,12 +10,13 @@ GameObject:
   m_Component:
   - component: {fileID: 410042}
   - component: {fileID: 11456720}
+  - component: {fileID: 5468417585104895236}
   m_Layer: 0
   m_Name: MatchManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &410042
 Transform:
@@ -26,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 116384}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 673.6974, y: 367.21255, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -44,6 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d840ab754b706e64cac02c36439af403, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   menuScene:
     m_AssetGUID: 451586f28ff22a946b895ef0d457d0d9
     m_SubObjectName: 
@@ -62,8 +66,6 @@ MonoBehaviour:
   disconnectedPopupPrefab: {fileID: 11490040, guid: 11ce84fdcf53cfe47a5dae11b1a8076a,
     type: 3}
   markerPrefab: {fileID: 11459252, guid: 4beca760f831c984e9f5e1b517aff2c2, type: 3}
-  clients: []
-  players: []
   lobbyTimerOn: 0
   lobbyTimer: 3
   autoStartTimerOn: 0
@@ -74,7 +76,21 @@ MonoBehaviour:
   joiningRaceInProgress: 0
   showSettingsOnLobbyLoad: 0
   activeChat: {fileID: 0}
-  netUpdateTimer: 0
   matchSettingJson: 
-  LobbyPrefab: {fileID: 448877648311160589, guid: ed98061f2d8f96a4ab2f9b6ee44226ad,
-    type: 3}
+--- !u!114 &5468417585104895236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 116384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 2800826913
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0

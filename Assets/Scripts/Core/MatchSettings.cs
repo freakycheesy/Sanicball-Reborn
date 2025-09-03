@@ -46,7 +46,6 @@ namespace SanicballCore
 
         public string StageBarcode { get; set; }
         public int Laps { get; set; }
-        public bool PowerupsEnabled { get; set; }
         public int AICount { get; set; }
         public AISkillLevel AISkill { get; set; }
         public Dictionary<string, int> Aliases { get; set; }
@@ -84,6 +83,38 @@ namespace SanicballCore
                 DisqualificationTime = 120,
                 Aliases = new Dictionary<string, int>()
             };
+        }
+
+        public MatchSettings(string StageBarcode = "bk-tn.main.greenhillzone",
+                int Laps = 2,
+                int AICount = 0,
+                AISkillLevel AISkill = AISkillLevel.Average,
+                string aiCharacters = "1,2,3,4,5,6,7,8,9,10,11,12",
+
+                int AutoStartTime = 60,
+                int AutoStartMinPlayers = 2,
+                int AutoReturnTime = 15,
+                float VoteRatio = 1f,
+                StageRotationMode StageRotationMode = StageRotationMode.None,
+                AllowedTiers AllowedTiers = AllowedTiers.All,
+                TierRotationMode TierRotationMode = TierRotationMode.None,
+                int DisqualificationTime = 120)
+        {
+            this.StageBarcode = "bk-tn.main.greenhillzone";
+                this.Laps = 2;
+                this.AICount = 0;
+                this.AISkill = AISkillLevel.Average;
+            this.aiCharacters = "1,2,3,4,5,6,7,8,9,10,11,12";
+
+                 this.AutoStartTime = 60;
+                 this.AutoStartMinPlayers = 2;
+                 this.AutoReturnTime = 15;
+                 this.VoteRatio = 1f;
+                 this.StageRotationMode = StageRotationMode.None;
+                 this.AllowedTiers = AllowedTiers.All;
+                 this.TierRotationMode = TierRotationMode.None;
+                 this.DisqualificationTime = 120;
+                 this.Aliases = new Dictionary<string, int>();
         }
 
         /// <summary>

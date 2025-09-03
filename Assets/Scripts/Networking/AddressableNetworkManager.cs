@@ -1,21 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using Mirror.Examples.AdditiveLevels;
+using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Rendering;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.ResourceManagement.ResourceProviders;
-using UnityEngine.SceneManagement;
 
 namespace Mirror
 {
 
     public class AddressableNetworkManager : NetworkManager
     {
-
+        public AssetReference offlineSceneReference;
+        public AssetReference onlineSceneReference;
         public static SerializedDictionary<string, AssetReference> CompiledAddressableReferences = new();
 
         [Tooltip("List of scene references")]
@@ -29,6 +27,32 @@ namespace Mirror
             CompiledAddressableReferences = new();
             for (int i = 0; i < SceneRefs.Count; i++)
                 CompiledAddressableReferences.Add((string)SceneRefs[i].RuntimeKey, SceneRefs[i]);
+            AddSceneReference(offlineSceneReference);
+            AddSceneReference(onlineSceneReference);
+        }
+        protected bool IsServerOnlineSceneChangeNeeded() =>
+                    onlineSceneReference != null &&
+                    !Utils.IsSceneActive(onlineSceneReference.SubObjectName) &&
+                    onlineSceneReference != offlineSceneReference;
+        public override void OnStartServer()
+        {
+            base.OnStartServer();
+            if (IsServerOnlineSceneChangeNeeded())
+            {
+                ServerChangeScene(onlineSceneReference);
+            }
+        }
+
+
+        public void AddSceneToKey(AssetReference value, out string key)
+        {
+            key = string.Empty;
+            if (value == null) return;
+            key = (string)value.RuntimeKey;
+            if (!CompiledAddressableReferences.ContainsValue(value))
+            {
+                AddSceneReference(value);
+            }
         }
 
         public static bool IsValidScene(string sceneName)
@@ -51,7 +75,7 @@ namespace Mirror
             sceneReference = GetSceneFromKey(sceneRuntimekey);
             return sceneReference != null;
         }
-
+        public void ServerChangeScene(AssetReference newSceneReference) => ServerChangeScene((string)newSceneReference.RuntimeKey);
         public override void ServerChangeScene(string newSceneKey)
         {
             if (!TryGetSceneFromKey(newSceneKey, out var scene))
@@ -86,14 +110,15 @@ namespace Mirror
             NetworkClient.isLoadingScene = true;
 
             NetworkServer.SetAllClientsNotReady();
-            networkSceneName = scene.SubObjectName;
             // Let server prepare for scene change
             OnServerChangeScene(newSceneRuntimeKey);
             // set server flag to stop processing messages while changing scenes
             // it will be re-enabled in FinishLoadScene.
             NetworkServer.isLoadingScene = true;
             var handle = Addressables.LoadSceneAsync(scene);
+            networkSceneName = handle.Result.Scene.name;
             yield return handle;
+            networkSceneName = handle.Result.Scene.name;
             // ServerChangeScene can be called when stopping the server
             // when this happens the server is not active so does not need to tell clients about the change
             if (NetworkServer.active)
@@ -139,7 +164,7 @@ namespace Mirror
 
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
-                networkSceneName = scene.SubObjectName;
+                networkSceneName = handle.Result.Scene.name;
                 handle.Result.ActivateAsync();
             }
             else

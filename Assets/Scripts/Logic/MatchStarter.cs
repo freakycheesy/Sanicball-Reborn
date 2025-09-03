@@ -9,14 +9,11 @@ namespace Sanicball.Logic
     {
         public const string APP_ID = "Sanicball";
 
-        [SerializeField]
-        private MatchManager matchManagerPrefab = null;
-        [SerializeField]
-        private UI.Popup connectingPopupPrefab = null;
-        [SerializeField]
-        private UI.PopupHandler popupHandler = null;
+        public MatchManager matchManagerPrefab = null;
+        public UI.Popup connectingPopupPrefab = null;
+        public UI.PopupHandler popupHandler = null;
 
-        private UI.PopupConnecting activeConnectingPopup;
+        public UI.PopupConnecting activeConnectingPopup;
 
         //NetClient for when joining online matches
         public static MatchStarter Instance;
@@ -37,8 +34,7 @@ namespace Sanicball.Logic
 
         public void BeginLocalGame()
         {
-            MatchManager manager = Instantiate(matchManagerPrefab);
-            manager.InitMatch();
+            SanicNetworkManager.CreateLobby();
         }
 
         public void JoinOnlineGame(string ip = "127.0.0.1", ushort port = 25000)
@@ -48,7 +44,7 @@ namespace Sanicball.Logic
 
         public void JoinOnlineGame(ZaLobbyInfo lobbyInfo)
         {
-            MatchManager.Instance.JoinLobby(lobbyInfo.IP);
+            SanicNetworkManager.JoinLobby(lobbyInfo.IP);
 
             popupHandler.OpenPopup(connectingPopupPrefab);
 
@@ -58,8 +54,8 @@ namespace Sanicball.Logic
         //Called when succesfully connected to a server
         private void BeginOnlineGame(MatchState matchState)
         {
-            MatchManager manager = Instantiate(matchManagerPrefab);
-            manager.InitMatch();
+            //MatchManager manager = Instantiate(matchManagerPrefab);
+            SanicNetworkManager.CreateLobby();
         }
     }
 }

@@ -9,31 +9,27 @@ public class SanicNetworkManager : AddressableNetworkManager
     public override void OnStartServer()
     {
         base.OnStartServer();
-        MatchManager.Instance.currentSettings = ActiveData.MatchSettings;
-        MatchManager.Instance.showSettingsOnLobbyLoad = true;
-        MatchManager.Instance.GoToLobby();
-        MatchManager.Instance.activeChat = Instantiate(MatchManager.Instance.chatPrefab);
-        MatchManager.Instance.activeChat.MessageSent += MatchManager.Instance.LocalChatMessageSent;
-        //NetworkServer.Spawn(Instantiate(MatchManager.Instance.LobbyPrefab.gameObject));
     }
 
     public override void OnStartClient()
     {
         base.OnStartClient();
-        MatchManager.Instance.showSettingsOnLobbyLoad = false;
-
-        NetworkClient.Send<ClientJoinedMessage>(new(NetworkServer.localConnection.connectionId, ActiveData.GameSettings.nickname));
     }
 
-    public override void OnStopHost()
+    public static void CreateLobby()
     {
-        if (MatchManager.Instance)
-        {
-            MatchManager.Instance.inLobby = false;
-            MatchManager.Instance.loadingLobby = false;
-            Destroy(MatchManager.Instance.gameObject);
-        }
-        base.OnStopHost();
+        singleton?.StartHost();
+    }
+
+    public static void JoinLobby(string ip)
+    {
+        singleton.networkAddress = ip;
+        singleton?.StartClient();
+    }
+
+    public static void LeaveLobby()
+    {
+        singleton?.StopHost();
     }
 
     public override void Awake()
@@ -41,5 +37,6 @@ public class SanicNetworkManager : AddressableNetworkManager
         base.Awake();
         DontDestroyOnLoad(this.gameObject);
     }
+
 
 }

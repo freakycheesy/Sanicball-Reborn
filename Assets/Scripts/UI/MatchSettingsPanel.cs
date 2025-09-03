@@ -102,12 +102,6 @@ namespace Sanicball.UI
             UpdateUiFields();
         }
 
-        public void TogglePowerups()
-        {
-            tempSettings.PowerupsEnabled = !tempSettings.PowerupsEnabled;
-            UpdateUiFields();
-        }
-
         public void IncrementAICount()
         {
             if (tempSettings.AICount < 12)
