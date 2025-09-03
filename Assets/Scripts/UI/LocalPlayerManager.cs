@@ -39,7 +39,7 @@ namespace Sanicball.UI
                     }
                 }
 
-                manager.MatchPlayerAdded += Manager_MatchPlayerAdded;
+                MatchManager.MatchPlayerAdded += Manager_MatchPlayerAdded;
             }
             else
             {
@@ -65,11 +65,6 @@ namespace Sanicball.UI
                     CreatePanelForControlType(ctrlType, false);
                 }
             }
-        }
-
-        private void OnDestroy()
-        {
-            manager.MatchPlayerAdded -= Manager_MatchPlayerAdded;
         }
 
         private LocalPlayerPanel CreatePanelForControlType(ControlType ctrlType, bool alreadyJoined)

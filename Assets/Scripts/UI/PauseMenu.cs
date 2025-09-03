@@ -104,7 +104,7 @@ namespace Sanicball.UI
             }
             else
             {
-                Addressables.LoadSceneAsync(MatchManager.Instance.menuScene);
+                Addressables.LoadSceneAsync(AddressablesNetworkManager.AddressableManager.offlineSceneReference);
             }
         }
     }

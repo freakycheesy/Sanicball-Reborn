@@ -24,17 +24,15 @@ namespace Sanicball.Logic
     {
         #region Events
 
-        public EventHandler<MatchPlayerEventArgs> MatchPlayerAdded;
-        public EventHandler<MatchPlayerEventArgs> MatchPlayerRemoved;
-        public EventHandler MatchSettingsChanged;
+        public static EventHandler<MatchPlayerEventArgs> MatchPlayerAdded;
+        public static EventHandler<MatchPlayerEventArgs> MatchPlayerRemoved;
+        public static EventHandler MatchSettingsChanged;
 
         #endregion Events
 
         #region Exposed fields
 
         public static MatchManager Instance;
-        public SceneReference menuScene;
-        public SceneReference lobbyScene;
 
         //Prefabs
         [SerializeField]
@@ -124,6 +122,8 @@ namespace Sanicball.Logic
         public void RequestSettingsChange(MatchSettings newSettings)
         {
             SettingsChangedMessage message = new(newSettings);
+            Instance.CurrentSettings = newSettings;
+            MatchSettingsChanged?.Invoke(this, EventArgs.Empty);
             NetworkClient.Send(message);
         }
 
@@ -249,19 +249,32 @@ namespace Sanicball.Logic
         #endregion Match message callbacks
         void Start()
         {
-            if (!Instance)
-            {
-                NetworkServer.Destroy(gameObject);
-                return;
-            }
             Instance = this;
             SceneManager.sceneLoaded += OnLevelHasLoaded;
             DontDestroyOnLoad(gameObject);
             RegisterNetworkMessages();
+            activeChat = Instantiate(chatPrefab);
+            activeChat.MessageSent += LocalChatMessageSent;
+        }
+        public override void OnStopServer()
+        {
+            if (MatchManager.Instance)
+            {
+                MatchManager.Instance.inLobby = false;
+                MatchManager.Instance.loadingLobby = false;
+            }
+        }
+        public override void OnStartServer()
+        {
+            DontDestroyOnLoad(gameObject);
+            currentSettings = ActiveData.MatchSettings;
+            showSettingsOnLobbyLoad = true;
+            //manager.GoToLobby();
         }
         public override void OnStartClient()
         {
             Instance = this;
+            if (isClientOnly) MatchManager.Instance.showSettingsOnLobbyLoad = false;
             NetworkClient.Send<ClientJoinedMessage>(new(NetworkServer.localConnection.connectionId, ActiveData.GameSettings.nickname));
         }
 
@@ -292,7 +305,7 @@ namespace Sanicball.Logic
 
             MatchManager.Instance.StopLobbyTimer();
 
-            MatchManager.Instance.MatchPlayerAdded(this, new MatchPlayerEventArgs(p, message.ConnectionID == LocalClientGuid));
+            MatchManager.MatchPlayerAdded(this, new MatchPlayerEventArgs(p, message.ConnectionID == LocalClientGuid));
         }
 
         private void ClientJoinedCallback(ClientJoinedMessage message)
@@ -305,9 +318,8 @@ namespace Sanicball.Logic
 
         private void SettingsChangedCallback(SettingsChangedMessage message)
         {
-            Instance.CurrentSettings = message.NewMatchSettings;
             Debug.Log("Settings changed");
-            Instance.MatchSettingsChanged?.Invoke(this, EventArgs.Empty);
+            MatchSettingsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void LocalChatMessageSent(string from, string text)
@@ -397,7 +409,7 @@ namespace Sanicball.Logic
             loadingLobby = true;
             //if(BootstrapSceneManager.Scene != null) BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
             //else
-                BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
+                //BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
         }
         [Server]
         public void GoToStage()
@@ -481,7 +493,7 @@ namespace Sanicball.Logic
                 FindAnyObjectByType<UI.PopupDisconnected>().Reason = reason;
             }
 
-            Addressables.LoadSceneAsync(menuScene);
+            //Addressables.LoadSceneAsync(menuScene);
         }
 
         #endregion Scene changing / race loading

@@ -24,12 +24,11 @@ namespace Sanicball.UI
         [SerializeField]
         private Camera stageLayoutCamera = null;
 
-        private MatchManager manager;
+        private MatchManager manager => MatchManager.Instance;
 
         private void Start()
         {
-            manager = MatchManager.Instance;
-            manager.MatchSettingsChanged += Manager_MatchSettingsChanged;
+            MatchManager.MatchSettingsChanged += Manager_MatchSettingsChanged;
 
             //Invoke callback immediately to set initial settings
             Manager_MatchSettingsChanged(this, System.EventArgs.Empty);
@@ -64,11 +63,6 @@ namespace Sanicball.UI
                     stageLayoutCamera.transform.position = targetStageCamPos;
                 }
             }
-        }
-
-        private void OnDestroy()
-        {
-            manager.MatchSettingsChanged -= Manager_MatchSettingsChanged;
         }
     }
 }

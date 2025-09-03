@@ -4,7 +4,7 @@ using Sanicball.Logic;
 using SanicballCore.MatchMessages;
 using UnityEngine;
 
-public class SanicNetworkManager : AddressableNetworkManager
+public class SanicNetworkManager : AddressablesNetworkManager
 {
     public override void OnStartServer()
     {

@@ -10,7 +10,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 namespace Mirror
 {
 
-    public class AddressableNetworkManager : NetworkManager
+    public class AddressablesNetworkManager : NetworkManager
     {
         public AssetReference offlineSceneReference;
         public AssetReference onlineSceneReference;
@@ -18,7 +18,7 @@ namespace Mirror
 
         [Tooltip("List of scene references")]
         public List<AssetReference> SceneRefs = new();
-        public static AddressableNetworkManager AddressableManager { get; private set; }
+        public static AddressablesNetworkManager AddressableManager { get; private set; }
         public override void Awake()
         {
             base.Awake();
@@ -129,6 +129,7 @@ namespace Mirror
                     sceneName = newSceneRuntimeKey,
                     customHandling = true,
                 });
+                NetworkServer.SpawnObjects();
             }
 
             startPositionIndex = 0;

@@ -102,7 +102,7 @@ namespace Sanicball.Data
             MatchSettings = MatchSettings.CreateDefault();
             foreach (var info in Stages)
             {
-                AddressableNetworkManager.AddSceneReference(info.scene);
+                AddressablesNetworkManager.AddSceneReference(info.scene);
             }
             Debug.Log("Completed Loading Pallet!");
         }
