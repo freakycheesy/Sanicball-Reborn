@@ -51,8 +51,8 @@ MonoBehaviour:
   headlessStartMode: 0
   editorAutoStart: 0
   sendRate: 60
-  offlineScene: 
-  onlineScene: 
+  offlineScene: Assets/Scenes/Default/Menu.unity
+  onlineScene: Assets/Scenes/Default/Lobby.unity
   offlineSceneLoadDelay: 0
   transport: {fileID: 232779417100486059}
   networkAddress: localhost
@@ -60,8 +60,9 @@ MonoBehaviour:
   disconnectInactiveConnections: 1
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 0}
-  autoCreatePlayer: 0
+  playerPrefab: {fileID: 7764922561547274990, guid: 634242a426e67cd48bcc68e61f67b918,
+    type: 3}
+  autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs:
   - {fileID: 178192, guid: 15c7ed3ff76289b4680e4b9f1f52fb22, type: 3}
@@ -84,20 +85,7 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
-  offlineSceneReference:
-    m_AssetGUID: 451586f28ff22a946b895ef0d457d0d9
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_SubObjectGUID: 
-    m_EditorAssetChanged: 0
-  onlineSceneReference:
-    m_AssetGUID: c1e00a02ec0c7304584fa323ef166aaf
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_SubObjectGUID: 
-    m_EditorAssetChanged: 0
-  SceneRefs: []
-  matchManagerPrefab: {fileID: 11456720, guid: fdb6e26d3a9dcac42af827fefb1aa46f, type: 3}
+  debugGui: 0
 --- !u!114 &232779417100486059
 MonoBehaviour:
   m_ObjectHideFlags: 0

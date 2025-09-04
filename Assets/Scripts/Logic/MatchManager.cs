@@ -275,19 +275,20 @@ namespace Sanicball.Logic
         {
             Instance = this;
             if (isClientOnly) MatchManager.Instance.showSettingsOnLobbyLoad = false;
+            RegisterNetworkMessages();
             NetworkClient.Send<ClientJoinedMessage>(new(NetworkServer.localConnection.connectionId, ActiveData.GameSettings.nickname));
         }
 
         private void RegisterNetworkMessages()
         {
-            NetworkClient.RegisterHandler<AutoStartTimerMessage>(AutoStartTimerCallback);
-            NetworkClient.RegisterHandler<ChangedReadyMessage>(ChangedReadyCallback);
-            NetworkClient.RegisterHandler<CharacterChangedMessage>(CharacterChangedCallback);
-            NetworkClient.RegisterHandler<ChatMessage>(ChatCallback);
-            NetworkClient.RegisterHandler<ClientJoinedMessage>(ClientJoinedCallback);
-            NetworkClient.RegisterHandler<ClientLeftMessage>(ClientLeftCallback);
-            NetworkClient.RegisterHandler<PlayerJoinedMessage>(PlayerJoinedCallback);
-            NetworkClient.RegisterHandler<PlayerLeftMessage>(PlayerLeftCallback);
+            NetworkClient.RegisterHandler<AutoStartTimerMessage>(AutoStartTimerCallback, false);
+            NetworkClient.RegisterHandler<ChangedReadyMessage>(ChangedReadyCallback, false);
+            NetworkClient.RegisterHandler<CharacterChangedMessage>(CharacterChangedCallback, false);
+            NetworkClient.RegisterHandler<ChatMessage>(ChatCallback, false);
+            NetworkClient.RegisterHandler<ClientJoinedMessage>(ClientJoinedCallback, false);
+            NetworkClient.RegisterHandler<ClientLeftMessage>(ClientLeftCallback, false);
+            NetworkClient.RegisterHandler<PlayerJoinedMessage>(PlayerJoinedCallback, false);
+            NetworkClient.RegisterHandler<PlayerLeftMessage>(PlayerLeftCallback, false);
             NetworkServer.RegisterHandler<SettingsChangedMessage>((_, a)=>SettingsChangedCallback(a));
             NetworkServer.RegisterHandler<LoadRaceMessage>((_, _)=>LoadRaceCallback());
             NetworkServer.RegisterHandler<LoadLobbyMessage>((_, _) => LoadLobbyCallback());

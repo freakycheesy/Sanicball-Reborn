@@ -1,3 +1,4 @@
+using System;
 using Mirror;
 using Sanicball.Data;
 using Sanicball.Logic;
@@ -18,7 +19,15 @@ public class SanicNetworkManager : AddressablesNetworkManager
 
     public static void CreateLobby()
     {
-        singleton?.StartHost();
+        try
+        {
+            singleton?.StartHost();
+        }
+        catch (Exception e)
+        {
+            Debug.Log($"Trying to Join Client, Reason: {e}");
+            singleton?.StartClient();
+        }
     }
 
     public static void JoinLobby(string ip)
