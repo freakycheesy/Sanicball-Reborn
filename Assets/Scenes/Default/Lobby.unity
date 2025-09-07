@@ -857,7 +857,6 @@ MonoBehaviour:
   ballSpawner: {fileID: 1146614289}
   countdownField: {fileID: 1818452963}
   markerContainer: {fileID: 1120488725}
-  MatchManagerPrefab: {fileID: 11456720, guid: fdb6e26d3a9dcac42af827fefb1aa46f, type: 3}
 --- !u!114 &72687743
 MonoBehaviour:
   m_ObjectHideFlags: 0

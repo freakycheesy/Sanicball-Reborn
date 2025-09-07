@@ -22,7 +22,11 @@ namespace Sanicball.UI
 
         private MatchManager manager;
 
-        private void Start()
+        private void Awake()
+        {
+            MatchManager.MatchManagerSpawned += (_, _) => OnStart();
+        }
+        private void OnStart()
         {
             manager = MatchManager.Instance;
 
