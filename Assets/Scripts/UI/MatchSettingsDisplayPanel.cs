@@ -31,12 +31,12 @@ namespace Sanicball.UI
             MatchManager.MatchSettingsChanged += Manager_MatchSettingsChanged;
 
             //Invoke callback immediately to set initial settings
-            Manager_MatchSettingsChanged(this, System.EventArgs.Empty);
+            MatchManager.MatchManagerSpawned += (_, _)=>Manager_MatchSettingsChanged(this, System.EventArgs.Empty);
         }
 
         private void Manager_MatchSettingsChanged(object sender, System.EventArgs e)
         {
-            MatchSettings s = manager.CurrentSettings;
+            MatchSettings s = manager ? manager.CurrentSettings : MatchSettings.CreateDefault();
             var stageId = ActiveData.GetIndexFromStage(ActiveData.GetStageByBarcode(s.StageBarcode));
             targetStageCamPos = new Vector3(stageId * 50, stageLayoutCamera.transform.position.y, stageLayoutCamera.transform.position.z);
             stageName.text = ActiveData.Stages[stageId].name;

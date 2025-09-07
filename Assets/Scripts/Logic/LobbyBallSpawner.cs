@@ -11,7 +11,7 @@ namespace Sanicball.Logic
         [SerializeField]
         private LobbyPlatform lobbyPlatform = null;
 
-        public Ball SpawnBall(PlayerType playerType, ControlType ctrlType, int character, string nickname, NetworkConnection connection)
+        public Ball SpawnBall(ControlType ctrlType, int character, string nickname, NetworkConnectionToClient connection)
         {
             if (lobbyPlatform)
             {

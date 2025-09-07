@@ -11,11 +11,11 @@ namespace Sanicball.Logic
         [SerializeField]
         private Ball ballPrefab = null;
 
-        protected Ball SpawnBall(Vector3 position, Quaternion rotation, BallType ballType, ControlType ctrlType, int character, string nickname, NetworkConnection connection)
+        public virtual Ball SpawnBall(Vector3 position, Quaternion rotation, BallType ballType, ControlType ctrlType, int character, string nickname, NetworkConnectionToClient connection)
         {
             var ball = Instantiate(ballPrefab, position, rotation);
             ball.Init(ballType, ctrlType, character, nickname);
-            NetworkServer.Spawn(ball.netIdentity.gameObject, connection as NetworkConnectionToClient);
+            NetworkServer.Spawn(ball.netIdentity.gameObject, connection);
             return ball;
         }
     }

@@ -115,7 +115,7 @@ namespace Sanicball.Logic
                         CreateBallObjects();
 
                         //If there are no local players, create a spectator camera
-                        if (!matchManager.Players.Any(a => a.ConnectionId == matchManager.LocalClientGuid))
+                        if (!matchManager.Players.Any(a => a.ConnectionId == matchManager.connectionToClient.connectionId))
                         {
                             var specView = Instantiate(spectatorViewPrefab);
                             specView.TargetManager = this;
@@ -166,9 +166,9 @@ namespace Sanicball.Logic
             CurrentState = RaceState.Countdown;
         }
 
-        public void ClientLeftCallback(ClientLeftMessage message)
+        public void ClientLeftCallback(NetworkConnectionToClient conn, ClientLeftMessage message)
         {
-            int guid = message.ConnectionID;
+            int guid = conn.connectionId;
             //Find and remove all RacePlayers associated with players from this client
             //TODO: Find some way to still have the player in the race, although disabled - so that players leaving while finished don't just disappear
             foreach (RacePlayer racePlayer in players.ToList())
@@ -187,14 +187,14 @@ namespace Sanicball.Logic
             RaceBallSpawner ballSpawner = StageReferences.Active.spawnPoint;
 
             //Enable lap records if there is only one local player.
-            bool enableLapRecords = matchManager.Players.Count(a => a.ConnectionId == matchManager.LocalClientGuid) == 1;
+            bool enableLapRecords = matchManager.Players.Count(a => a.ConnectionId == matchManager.connectionToClient.connectionId) == 1;
 
             //Create all player balls
             for (int i = 0; i < matchManager.Players.Count; i++)
             {
                 var matchPlayer = matchManager.Players[i];
 
-                bool local = matchPlayer.ConnectionId == matchManager.LocalClientGuid;
+                bool local = matchPlayer.ConnectionId == matchManager.connectionToClient.connectionId;
 
                 //Create ball
                 string name = matchManager.Clients.FirstOrDefault(a => a.ConnectionId == matchPlayer.ConnectionId).Name;
@@ -272,7 +272,7 @@ namespace Sanicball.Logic
 
                 if (rp.AssociatedMatchPlayer != null)
                 {
-                    if (rp.AssociatedMatchPlayer.ConnectionId == matchManager.LocalClientGuid)
+                    if (rp.AssociatedMatchPlayer.ConnectionId == matchManager.connectionToClient.connectionId)
                     {
                         //For local player balls, send a DoneRacingMessage.
                         DoneRacingMessage message = new(rp.AssociatedMatchPlayer.ConnectionId, rp.AssociatedMatchPlayer.CtrlType, raceTimer, false);
@@ -338,7 +338,7 @@ namespace Sanicball.Logic
             //LobbyScript.Instance.StartRaceRpc();
             foreach (var p in MatchManager.Instance.Players)
             {
-                if (MatchManager.Instance.LocalClientGuid == p.ConnectionId)
+                if (MatchManager.Instance.connectionToClient.connectionId == p.ConnectionId)
                 {
                     NetworkClient.Send<ReadyUpRaceMessage>(new(p.ConnectionId, p.CtrlType));
                     //LobbyScript.Instance.ReadyUpRaceRpc(p.CtrlType);
@@ -388,13 +388,13 @@ namespace Sanicball.Logic
         [Server]
         public void ReadyUpRace(ReadyUpRaceMessage message)
         {
-            var players = MatchManager.Instance.players.FindAll(x => x.ConnectionId == message.myGuid);
+            var players = MatchManager.Instance.Players.FindAll(x => x.ConnectionId == message.myGuid);
             foreach (var player in players)
             {
                 player.ReadyToRace = true;
             }
             var canStartRace = true;
-            foreach (var player in MatchManager.Instance.players)
+            foreach (var player in MatchManager.Instance.Players)
             {
                 if (!player.ReadyToRace) canStartRace = false;
             }

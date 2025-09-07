@@ -21,8 +21,11 @@ namespace Sanicball.UI
         private const int maxPlayers = 4;
         private MatchManager manager;
         private List<ControlType> usedControls = new List<ControlType>();
-
-        private void Start()
+        void Awake()
+        {
+            MatchManager.MatchManagerSpawned += (_, _) => OnStart();
+        }
+        private void OnStart()
         {
             manager = MatchManager.Instance;
 
@@ -31,7 +34,7 @@ namespace Sanicball.UI
                 //Create local player panels for players already in the game
                 foreach (var p in manager.Players)
                 {
-                    if (p.ConnectionId == manager.LocalClientGuid && p.CtrlType != ControlType.None)
+                    if (p.ConnectionId == manager.connectionToClient.connectionId && p.CtrlType != ControlType.None)
                     {
                         var panel = CreatePanelForControlType(p.CtrlType, true);
                         panel.AssignedPlayer = p;
