@@ -21,8 +21,7 @@ namespace Sanicball.Data
 
         public List<RaceRecord> raceRecords = new List<RaceRecord>();
 
-        //Pseudo-singleton pattern - this field accesses the current instance.
-        private static ActiveData Instance;
+        public static ActiveData Instance;
 
         //This data is saved to a json file
         private GameSettings gameSettings = new GameSettings();
@@ -44,6 +43,8 @@ namespace Sanicball.Data
         private Song eSportsMusic;
         [SerializeField]
         private ESportMode eSportsPrefab;
+
+        public SceneReference LobbyScene;
 
         #endregion Fields
 

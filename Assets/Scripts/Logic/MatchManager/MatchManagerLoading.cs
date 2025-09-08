@@ -28,7 +28,7 @@ namespace Sanicball.Logic
 
             loadingStage = false;
             loadingLobby = true;
-            SanicNetworkManager.Singleton.ServerChangeScene(SanicNetworkManager.singleton.onlineScene);
+            BootstrapSceneManager.LoadScene(ActiveData.Instance.LobbyScene.RuntimeKey);
             //if(BootstrapSceneManager.Scene != null) BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
             //else
             //BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);

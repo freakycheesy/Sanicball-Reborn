@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 232779417100486059}
   - component: {fileID: 7777117685727935497}
   m_Layer: 0
-  m_Name: NetworkManager
+  m_Name: MultiplayerManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

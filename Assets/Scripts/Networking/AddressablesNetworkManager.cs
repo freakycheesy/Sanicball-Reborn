@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Cysharp.Threading.Tasks;
+using Unity.Android.Gradle;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Rendering;
@@ -16,8 +17,8 @@ namespace Mirror
     public class AddressablesNetworkManager : NetworkManager
     {
         public static new AddressablesNetworkManager singleton { get; private set; }
-
         public static new AsyncOperationHandle<SceneInstance> loadingSceneAsync;
+        public static Dictionary<string, object> loadedAddressables;
 
         /// <summary>
         /// Runs on both Server and Client
@@ -27,6 +28,17 @@ namespace Mirror
         {
             base.Awake();
             singleton = this;
+            var loadResourceLocationsHandle = Addressables.LoadResourceLocationsAsync(null);
+            foreach (var location in loadResourceLocationsHandle.Result)
+            {
+                var asset = Addressables.LoadAssetAsync<UnityEngine.Object>(location);
+                loadedAddressables.Add(asset.Result.name, location.PrimaryKey);
+                if (asset.Result is GameObject)
+                {
+                    var gameObject = asset.Result as GameObject;
+                    if (gameObject.GetComponent<NetworkIdentity>()) spawnPrefabs.Add(asset.Result as GameObject);
+                }
+            }
         }
 
         #region Unity Callbacks
@@ -134,8 +146,7 @@ namespace Mirror
                 return;
             }
 
-            var searchResult = Addressables.LoadResourceLocationsAsync(newSceneName, typeof(SceneInstance)).WaitForCompletion();
-            if (searchResult.Count <= 0)
+            if (!loadedAddressables.TryGetValue(newSceneName, out var scene))
             {
                 Debug.LogError($"Scene {newSceneName} does not exist in Addressables!");
                 return;
@@ -153,7 +164,7 @@ namespace Mirror
             NetworkServer.isLoadingScene = true;
 
             // loadingSceneAsync = SceneManager.LoadSceneAsync(newSceneName);
-            loadingSceneAsync = Addressables.LoadSceneAsync(newSceneName);
+            loadingSceneAsync = Addressables.LoadSceneAsync(scene);
 
             // ServerChangeScene can be called when stopping the server
             // when this happens the server is not active so does not need to tell clients about the change

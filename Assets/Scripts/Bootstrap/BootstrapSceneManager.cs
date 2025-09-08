@@ -25,7 +25,7 @@ public class BootstrapSceneManager : MonoBehaviour
     public static void LoadScene(object sceneKey)
     {
         if (sceneKey is AssetReference) sceneKey = ((AssetReference)sceneKey).RuntimeKey;
-        NetworkManager.singleton.ServerChangeScene((string)sceneKey);
+        AddressablesNetworkManager.singleton.ServerChangeScene((string)sceneKey);
     }
 
 }
