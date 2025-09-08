@@ -6,6 +6,7 @@ using Sanicball.Gameplay;
 using SanicballCore;
 using SanicballCore.MatchMessages;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Sanicball.Logic
 {
@@ -112,7 +113,7 @@ namespace Sanicball.Logic
             currentCheckpointPos = sr.checkpoints[0].transform.position;
             this.ball = ball;
 
-            ball.CameraCreated += (sender, e) =>
+            ball.CameraCreated += (e) =>
             {
                 ballCamera = e.CameraCreated;
                 ballCamera.SetDirection(sr.checkpoints[0].transform.rotation);
@@ -121,6 +122,8 @@ namespace Sanicball.Logic
             checkpointTimes = new float[StageReferences.Active.checkpoints.Count];
 
             SetNextCheckpoint();
+
+            NetworkServer.ReplaceHandler<CheckpointPassedMessage>(CheckpointPassedHandler);
         }
 
         public void StartRace()
@@ -170,7 +173,7 @@ namespace Sanicball.Logic
             return Lap + lapProg;
         }
 
-        public void Ball_CheckpointPassed(object sender, CheckpointPassArgs e)
+        public void Ball_CheckpointPassed(CheckpointPassArgs e)
         {
             if (e.CheckpointPassed == nextCheckpoint)
             {
@@ -230,14 +233,13 @@ namespace Sanicball.Logic
                 if (LapRecordsEnabled)
                 {
                     CharacterTier tier = ActiveData.Characters[Character].tier;
-                    string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-                    string stage = ActiveData.Stages.Where(a => a.scene.Asset.name.Equals(sceneName)).First().BARCODE;
+                    string sceneName = SceneManager.GetActiveScene().name;
 
                     ActiveData.RaceRecords.Add(new RaceRecord(
                         tier,
                         lapTime,
                         DateTime.Now,
-                        stage,
+                        sceneName,
                         Character,
                         checkpointTimes,
                         GameVersion.AS_FLOAT,
@@ -258,7 +260,7 @@ namespace Sanicball.Logic
             TrySetAITarget();
         }
 
-        public void Ball_RespawnRequested(object sender, EventArgs e)
+        public void Ball_RespawnRequested()
         {
             if (Respawned != null)
             {

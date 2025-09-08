@@ -25,6 +25,7 @@ namespace Sanicball.Logic
     public class MatchPlayer
     {
         private int connectionId;
+        [SerializeField]
         private ControlType ctrlType;
 
         public MatchPlayer(int clientGuid, ControlType ctrlType, int initialCharacterId, Ball BallObject = null, bool ReadyToRace = false)
@@ -52,10 +53,10 @@ namespace Sanicball.Logic
         public bool ReadyToRace { get; set; }
 
 		public static MatchPlayer GetByBall(Gameplay.Ball referenceBall) {
-			object[] gameobjects = Resources.FindObjectsOfTypeAll(typeof(GameObject));
-			foreach (object obj in gameobjects) {
-				//Debug.Log("Testing if Object "+((GameObject) obj).name+" has MatchPlayer.");
-				MatchPlayer player = ((GameObject) obj).GetComponent<MatchPlayer>();
+			var gameobjects = Resources.FindObjectsOfTypeAll<Ball>();
+			foreach (var obj in gameobjects) {
+                //Debug.Log("Testing if Object "+((GameObject) obj).name+" has MatchPlayer.");
+                MatchPlayer player = obj.GetComponent<MatchPlayer>();
 				if(player != null) {
 					//Debug.Log("Testing MatchPlayer with the referenceBall");
 					if(player.BallObject == referenceBall){

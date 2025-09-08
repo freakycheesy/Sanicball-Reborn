@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Mirror;
 using Sanicball.Data;
+using Sanicball.Logic;
 using SanicballCore;
 using UnityEngine;
 
@@ -121,12 +122,13 @@ namespace Sanicball.Gameplay
 
         //Component caches
         [HideInInspector] public Rigidbody rb;
+        [SerializeField] private bool IsTesting = false;
         public BallControlInput Input { get { return input; } }
 
         //Events
-        public event System.EventHandler<CheckpointPassArgs> CheckpointPassed;
-        public event System.EventHandler RespawnRequested;
-        public event System.EventHandler<CameraCreationArgs> CameraCreated;
+        public event Action<CheckpointPassArgs> CheckpointPassed;
+        public event Action RespawnRequested;
+        public event Action <CameraCreationArgs> CameraCreated;
 
         [Command]
         public void Jump()
@@ -152,7 +154,7 @@ namespace Sanicball.Gameplay
         public void RequestRespawn()
         {
             if (RespawnRequested != null)
-                RespawnRequested(this, System.EventArgs.Empty);
+                RespawnRequested?.Invoke();
         }
 
         public void Init(BallType type, ControlType ctrlType, int characterId, string nickname)
@@ -163,8 +165,13 @@ namespace Sanicball.Gameplay
             this.nickname = nickname;
         }
 
-        [Command]
         public void UpdateInput(Vector3 direction, bool brake)
+        {
+            if(authority) UpdateInputCmd(direction, brake);
+        }
+
+        [Command]
+        public void UpdateInputCmd(Vector3 direction, bool brake)
         {
             DirectionVector = direction;
             Brake = brake;
@@ -239,7 +246,7 @@ namespace Sanicball.Gameplay
                     camera.CtrlType = ctrlType;
 
                     if (CameraCreated != null)
-                        CameraCreated(this, new CameraCreationArgs(camera));
+                        CameraCreated.Invoke(new CameraCreationArgs(camera));
                 }
             }
             if (Type == BallType.LobbyPlayer)
@@ -251,22 +258,30 @@ namespace Sanicball.Gameplay
                     cam.AddBall(this);
                 }
             }
-            if (isLocalPlayer)
+
+            if (!authority)
             {
-                if ((Type == BallType.Player || Type == BallType.LobbyPlayer) && CtrlType != ControlType.None)
-                {
-                    //Create input component
-                    input = gameObject.AddComponent<BallControlInput>();
-                }
-                if (Type == BallType.AI)
-                {
-                    //Create AI component
-                    gameObject.AddComponent<BallControlAI>();
-                }
+                var ears = GetComponentInChildren<AudioListener>();
+                if (ears) ears.enabled = false;
             }
-            else
+        }
+        public override void OnStartServer()
+        {
+            base.OnStartServer();
+            if (IsTesting && MatchManager.Instance) NetworkServer.Destroy(this.gameObject);
+            if (Type == BallType.AI)
             {
-                GetComponentInChildren<AudioListener>().enabled = false;
+                //Create AI component
+                gameObject.AddComponent<BallControlAI>();
+            }
+        }
+        public override void OnStartAuthority()
+        {
+            base.OnStartAuthority();
+            if ((Type == BallType.Player || Type == BallType.LobbyPlayer) && CtrlType != ControlType.None)
+            {
+                //Create input component
+                input = gameObject.AddComponent<BallControlInput>();
             }
         }
         public Renderer Renderer;
@@ -416,11 +431,12 @@ namespace Sanicball.Gameplay
             if (c)
             {
                 if (CheckpointPassed != null)
-                    CheckpointPassed(this, new CheckpointPassArgs(c));
+                    CheckpointPassed?.Invoke(new CheckpointPassArgs(c));
             }
 
             if (other.GetComponent<TriggerRespawn>())
-                RequestRespawn();
+                if (RespawnRequested != null)
+                    RespawnRequested?.Invoke();
         }
 
         private void OnCollisionStay(Collision c)

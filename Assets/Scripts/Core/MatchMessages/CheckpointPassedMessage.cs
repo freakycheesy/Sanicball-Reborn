@@ -4,9 +4,9 @@ namespace SanicballCore.MatchMessages
 {
     public struct CheckpointPassedMessage : NetworkMessage
     {
-        public int ConnectionID { get; private set; }
-        public ControlType CtrlType { get; private set; }
-        public float LapTime { get; private set; }
+        public int ConnectionID;
+        public ControlType CtrlType;
+        public float LapTime;
 
         public CheckpointPassedMessage(int clientGuid, ControlType ctrlType, float lapTime)
         {

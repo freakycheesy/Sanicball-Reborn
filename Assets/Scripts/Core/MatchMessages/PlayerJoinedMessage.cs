@@ -4,8 +4,8 @@ namespace SanicballCore.MatchMessages
 {
     public struct PlayerJoinedMessage : NetworkMessage
     {
-        public ControlType CtrlType { get; private set; }
-        public int InitialCharacter { get; private set; }
+        public ControlType CtrlType ;
+        public int InitialCharacter ;
 
         public PlayerJoinedMessage(ControlType ctrlType, int initialCharacter)
         {

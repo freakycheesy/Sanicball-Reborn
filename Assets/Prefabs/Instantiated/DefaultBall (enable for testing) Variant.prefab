@@ -61,8 +61,44 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11410174, guid: 15c7ed3ff76289b4680e4b9f1f52fb22, type: 3}
+      propertyPath: Renderer
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11410174, guid: 15c7ed3ff76289b4680e4b9f1f52fb22, type: 3}
+      propertyPath: nickname
+      value: Spaghetti Man
+      objectReference: {fileID: 0}
+    - target: {fileID: 11410174, guid: 15c7ed3ff76289b4680e4b9f1f52fb22, type: 3}
+      propertyPath: IsTesting
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11410174, guid: 15c7ed3ff76289b4680e4b9f1f52fb22, type: 3}
+      propertyPath: characterId
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 11410174, guid: 15c7ed3ff76289b4680e4b9f1f52fb22, type: 3}
+      propertyPath: sounds.jump
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11410174, guid: 15c7ed3ff76289b4680e4b9f1f52fb22, type: 3}
+      propertyPath: sounds.roll
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11410174, guid: 15c7ed3ff76289b4680e4b9f1f52fb22, type: 3}
+      propertyPath: sounds.brake
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11410174, guid: 15c7ed3ff76289b4680e4b9f1f52fb22, type: 3}
+      propertyPath: TrailRenderer
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11410174, guid: 15c7ed3ff76289b4680e4b9f1f52fb22, type: 3}
       propertyPath: immediateInit
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11410174, guid: 15c7ed3ff76289b4680e4b9f1f52fb22, type: 3}
+      propertyPath: sounds.speedNoise
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1737178884354448366, guid: 15c7ed3ff76289b4680e4b9f1f52fb22,
         type: 3}

@@ -95,7 +95,7 @@ namespace Sanicball.Logic
                 activeChat.ShowMessage(message.From, message.Text);
         }
 
-        public void LoadLobbyCallback()
+        public void LoadLobbyCallback(LoadLobbyMessage message)
         {
             GoToLobby();
         }

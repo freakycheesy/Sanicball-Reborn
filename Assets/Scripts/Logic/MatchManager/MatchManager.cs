@@ -55,18 +55,25 @@ namespace Sanicball.Logic
 
         public void RequestLoadLobby()
         {
-            NetworkServer.SendToAll<LoadLobbyMessage>(new());
+            NetworkClient.Send<LoadLobbyMessage>(new());
         }
-       
-        void Start()
+        void Awake()
         {
+            if (Instance != this && Instance)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+        }
+        void Start()
+        { 
             Instance = this;
             SceneManager.sceneLoaded += OnLevelHasLoaded;
             DontDestroyOnLoad(gameObject);
             RegisterNetworkMessages();
             activeChat = Instantiate(chatPrefab);
             activeChat.MessageSent += LocalChatMessageSent;
-
+            RegisterNetworkMessages();
             MatchManagerSpawned?.Invoke(this, Time.time);
         }
         public override void OnStopServer()
@@ -87,27 +94,34 @@ namespace Sanicball.Logic
                 inLobby = true;
             }
         }
+        public static bool IsLocalId(NetworkConnectionToClient id)
+        {
+            return IsLocalId(id.connectionId);
+        }
+        public static bool IsLocalId(int id)
+        {
+            return NetworkServer.localConnection.connectionId == id;
+        }
         public override void OnStartClient()
         {
             Instance = this;
             if (isClientOnly) MatchManager.Instance.showSettingsOnLobbyLoad = false;
-            RegisterNetworkMessages();
             NetworkClient.Send<ClientJoinedMessage>(new(ActiveData.GameSettings.nickname));
         }
         private const bool RequireAuth = true;
         private void RegisterNetworkMessages()
         {
-            NetworkServer.RegisterHandler<AutoStartTimerMessage>((_, a)=>AutoStartTimerCallback(a), RequireAuth);
-            NetworkServer.RegisterHandler<ChangedReadyMessage>(ChangedReadyCallback, RequireAuth);
-            NetworkServer.RegisterHandler<CharacterChangedMessage>(CharacterChangedCallback, RequireAuth);
-            NetworkServer.RegisterHandler<ChatMessage>((_, a)=>ChatCallback(a), RequireAuth);
-            NetworkServer.RegisterHandler<ClientJoinedMessage>(ClientJoinedCallback, RequireAuth);
-            NetworkServer.RegisterHandler<ClientLeftMessage>(ClientLeftCallback, RequireAuth);
-            NetworkServer.RegisterHandler<PlayerJoinedMessage>(PlayerJoinedCallback, RequireAuth);
-            NetworkServer.RegisterHandler<PlayerLeftMessage>(PlayerLeftCallback, RequireAuth);
-            NetworkClient.RegisterHandler<SettingsChangedMessage>(SettingsChangedCallback);
-            NetworkClient.RegisterHandler<LoadRaceMessage>((_, _)=>LoadRaceCallback());
-            NetworkClient.RegisterHandler<LoadLobbyMessage>((_, _) => LoadLobbyCallback());
+            NetworkServer.ReplaceHandler<AutoStartTimerMessage>((_, a)=>AutoStartTimerCallback(a), RequireAuth);
+            NetworkServer.ReplaceHandler<ChangedReadyMessage>(ChangedReadyCallback, RequireAuth);
+            NetworkServer.ReplaceHandler<CharacterChangedMessage>(CharacterChangedCallback, RequireAuth);
+            NetworkServer.ReplaceHandler<ChatMessage>((_, a)=>ChatCallback(a), RequireAuth);
+            NetworkServer.ReplaceHandler<ClientJoinedMessage>(ClientJoinedCallback, RequireAuth);
+            NetworkServer.ReplaceHandler<ClientLeftMessage>(ClientLeftCallback, RequireAuth);
+            NetworkServer.ReplaceHandler<PlayerJoinedMessage>(PlayerJoinedCallback, RequireAuth);
+            NetworkServer.ReplaceHandler<PlayerLeftMessage>(PlayerLeftCallback, RequireAuth);
+            NetworkServer.ReplaceHandler<LoadLobbyMessage>(LoadLobbyCallback);
+            NetworkClient.ReplaceHandler<SettingsChangedMessage>(SettingsChangedCallback);
+            NetworkClient.ReplaceHandler<LoadRaceMessage>((_, _)=>LoadRaceCallback());
         }
 
         private void PlayerJoinedCallback(NetworkConnectionToClient conn, PlayerJoinedMessage message)
@@ -214,10 +228,10 @@ namespace Sanicball.Logic
                 Destroy(player.BallObject.gameObject);
             }
 
-            string name = Clients.First(a => a.ConnectionId == player.ConnectionId).Name + " (" + GameInput.GetControlTypeName(player.CtrlType) + ")";
-            player.BallObject = spawner.SpawnBall((player.ConnectionId == connectionToClient.connectionId) ? player.CtrlType : ControlType.None, player.CharacterId, name, conn);
+            string name = Clients.First(a => a.ConnectionId == conn.connectionId).Name + " (" + GameInput.GetControlTypeName(player.CtrlType) + ")";
+            player.BallObject = spawner.SpawnBall((conn == NetworkServer.localConnection) ? player.CtrlType : ControlType.None, player.CharacterId, name, conn);
 
-            if (player.ConnectionId != connectionToClient.connectionId)
+            if (conn != NetworkServer.localConnection)
             {
                 Marker marker = Instantiate(markerPrefab);
                 marker.transform.SetParent(LobbyReferences.Active.MarkerContainer, false);

@@ -20,31 +20,27 @@ namespace Sanicball.UI
 
         private List<ClientListEntry> curClientListEntries = new List<ClientListEntry>();
 
-        private MatchManager manager;
-
         private void Awake()
         {
             MatchManager.MatchManagerSpawned += (_, _) => OnStart();
         }
         private void OnStart()
         {
-            manager = MatchManager.Instance;
-
             UpdateText();
         }
 
         private void UpdateText()
         {
-            if (!manager) return;
+            if (!MatchManager.Instance) return;
 
-            int clients = manager.Clients.Count;
-            int players = manager.Players.Count;
+            int clients = MatchManager.Instance.Clients.Count;
+            int players = MatchManager.Instance.Players.Count;
 
-            if (manager.AutoStartTimerOn)
+            if (MatchManager.Instance.AutoStartTimerOn)
             {
-                leftText.text = "Match will start in " + GetTimeString(System.TimeSpan.FromSeconds(manager.AutoStartTimer)) + ", or when all players are ready.";
+                leftText.text = "Match will start in " + GetTimeString(System.TimeSpan.FromSeconds(MatchManager.Instance.AutoStartTimer)) + ", or when all players are ready.";
             }
-            else if (manager.Players.Count > 0)
+            else if (MatchManager.Instance.Players.Count > 0)
             {
                 leftText.text = "Match starts when all players are ready.";
             }
@@ -60,12 +56,12 @@ namespace Sanicball.UI
             }
             curClientListEntries.Clear();
 
-            foreach (MatchClient c in manager.Clients)
+            foreach (MatchClient c in MatchManager.Instance.Clients)
             {
                 ClientListEntry listEntry = Instantiate(clientListEntryPrefab);
                 listEntry.transform.SetParent(clientList, false);
 
-                listEntry.FillFields(c, manager);
+                listEntry.FillFields(c, MatchManager.Instance);
                 curClientListEntries.Add(listEntry);
             }
         }

@@ -2,11 +2,14 @@ using System;
 using Mirror;
 using Sanicball.Data;
 using Sanicball.Logic;
+using Sanicball.UI;
 using SanicballCore.MatchMessages;
 using UnityEngine;
 
 public class SanicNetworkManager : AddressablesNetworkManager
 {
+    private new static SanicNetworkManager singleton { get; set; }
+    public static SanicNetworkManager Singleton => singleton;
     public override void OnStartServer()
     {
         base.OnStartServer();
@@ -38,14 +41,26 @@ public class SanicNetworkManager : AddressablesNetworkManager
 
     public static void LeaveLobby()
     {
-        singleton?.StopHost();
+        if(singleton.isNetworkActive) singleton?.StopHost();
     }
+    public override void OnStopServer()
+    {
+        base.OnStopServer();
+        Destroy(MatchManager.Instance.gameObject);
+    }
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+        Destroy(Chat.Instance.gameObject);
+    }
+
 
     public override void Awake()
     {
         base.Awake();
         DontDestroyOnLoad(this.gameObject);
+        singleton = this;
+        if (singleton != this) singleton = this;
     }
-
 
 }

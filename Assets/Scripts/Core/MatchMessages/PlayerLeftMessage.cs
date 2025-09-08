@@ -4,7 +4,7 @@ namespace SanicballCore.MatchMessages
 {
     public struct PlayerLeftMessage : NetworkMessage
     {
-        public ControlType CtrlType { get; private set; }
+        public ControlType CtrlType ;
 
         public PlayerLeftMessage(ControlType ctrlType)
         {

@@ -4,8 +4,8 @@ namespace SanicballCore.MatchMessages
 {
     public struct ChangedReadyMessage : NetworkMessage
     {
-        public ControlType CtrlType { get; private set; }
-        public bool Ready { get; private set; }
+        public ControlType CtrlType;
+        public bool Ready;
 
         public ChangedReadyMessage(ControlType ctrlType, bool ready)
         {

@@ -4,8 +4,8 @@ namespace SanicballCore.MatchMessages
 {
     public struct CharacterChangedMessage : NetworkMessage
     {
-        public ControlType CtrlType { get; private set; }
-        public int NewCharacter { get; private set; }
+        public ControlType CtrlType;
+        public int NewCharacter;
 
         public CharacterChangedMessage(ControlType ctrlType, int newCharacter)
         {

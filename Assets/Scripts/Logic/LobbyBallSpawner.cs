@@ -22,6 +22,7 @@ namespace Sanicball.Logic
                 Debug.LogError("LobbyBallSpawner has no lobby platform assigned");
             }
             var ball = SpawnBall(transform.position, transform.rotation, BallType.LobbyPlayer, ctrlType, character, nickname, connection);
+            NetworkServer.Spawn(ball.netIdentity.gameObject, connection);
             return ball;
         }
 

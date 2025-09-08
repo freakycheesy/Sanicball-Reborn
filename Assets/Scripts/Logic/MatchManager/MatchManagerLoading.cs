@@ -28,6 +28,7 @@ namespace Sanicball.Logic
 
             loadingStage = false;
             loadingLobby = true;
+            SanicNetworkManager.Singleton.ServerChangeScene(SanicNetworkManager.singleton.onlineScene);
             //if(BootstrapSceneManager.Scene != null) BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
             //else
             //BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
@@ -80,6 +81,7 @@ namespace Sanicball.Logic
                 LobbyReferences.Active.MatchSettingsPanel.Show();
                 showSettingsOnLobbyLoad = false;
             }
+            MatchManagerSpawned?.Invoke(this, Time.time);
         }
 
         //Initiate a race after loading the stage scene

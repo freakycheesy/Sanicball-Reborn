@@ -4,7 +4,7 @@ namespace SanicballCore.MatchMessages
 {
     public struct ClientJoinedMessage : NetworkMessage
     {
-        public string ClientName { get; private set; }
+        public string ClientName;
 
         public ClientJoinedMessage(string clientName)
         {

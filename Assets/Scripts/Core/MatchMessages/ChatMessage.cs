@@ -10,9 +10,9 @@ namespace SanicballCore.MatchMessages
 
     public struct ChatMessage : NetworkMessage
     {
-        public string From { get; private set; }
-        public ChatMessageType Type { get; private set; }
-        public string Text { get; private set; }
+        public string From;
+        public ChatMessageType Type;
+        public string Text;
 
         public ChatMessage(string from, ChatMessageType type, string text)
         {

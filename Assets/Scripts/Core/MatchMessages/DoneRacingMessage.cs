@@ -4,10 +4,10 @@ namespace SanicballCore.MatchMessages
 {
     public struct DoneRacingMessage : NetworkMessage
     {
-        public int ConnectionID { get; private set; }
-        public ControlType CtrlType { get; private set; }
-        public double RaceTime { get; private set; }
-        public bool Disqualified { get; private set; }
+        public int ConnectionID ;
+        public ControlType CtrlType ;
+        public double RaceTime ;
+        public bool Disqualified ;
 
         public DoneRacingMessage(int clientGuid, ControlType ctrlType, double raceTime, bool disqualified)
         {

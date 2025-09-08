@@ -4,7 +4,7 @@ namespace SanicballCore.MatchMessages
 {
     public struct SettingsChangedMessage : NetworkMessage
     {
-        public MatchSettings NewMatchSettings { get; private set; }
+        public MatchSettings NewMatchSettings ;
 
         public SettingsChangedMessage(MatchSettings newMatchSettings)
         {
