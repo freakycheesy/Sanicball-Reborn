@@ -1,21 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.ResourceManagement.ResourceLocations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 
 namespace Mirror
 {
-
     public class AddressablesNetworkManager : NetworkManager
     {
         public static new AddressablesNetworkManager singleton { get; private set; }
         public static new AsyncOperationHandle<SceneInstance> loadingSceneAsync;
-        public static Dictionary<string, object> loadedAddressables = new();
-        public List<AssetLabelReference> Labels = new();
+        public AssetReference offlineSceneRef = new();
+        public AssetReference onlineSceneRef = new();
         /// <summary>
         /// Runs on both Server and Client
         /// Networking is NOT initialized when this fires
@@ -24,29 +20,11 @@ namespace Mirror
         {
             base.Awake();
             singleton = this;
-            LoadAddressables();
-        }
-
-        private void LoadAddressables()
-        {
-            foreach (var label in Labels)
-            {
-                var loadResourceLocationsHandle = Addressables.LoadResourceLocationsAsync(label).WaitForCompletion();
-
-                foreach (IResourceLocation location in loadResourceLocationsHandle)
-                {
-                    var data = location.Data;
-                    loadedAddressables.Add(location.PrimaryKey, data);
-                    if (data is GameObject)
-                    {
-                        if (((GameObject)data).GetComponent<NetworkIdentity>()) spawnPrefabs.Add((GameObject)data);
-                    }
-                }
-            }
+            offlineScene = (string)offlineSceneRef.RuntimeKey;
+            onlineScene = (string)onlineSceneRef.RuntimeKey;
         }
 
         #region Unity Callbacks
-
 
         public override void OnValidate()
         {
@@ -150,17 +128,8 @@ namespace Mirror
                 Debug.LogError($"Scene change is already in progress for {newSceneName}");
                 return;
             }
-            object scene = null;
-
-            foreach (var word in loadedAddressables)
-            {
-                if (word.Key.Contains(networkSceneName) || networkSceneName.Contains(word.Key))
-                {
-                    scene = word.Value;
-                }
-            }
-
-            if (scene == null)
+            var searchResult = Addressables.LoadResourceLocationsAsync(newSceneName, typeof(SceneInstance)).WaitForCompletion();
+            if (searchResult.Count <= 0)
             {
                 Debug.LogError($"Scene {newSceneName} does not exist in Addressables!");
                 return;
@@ -178,7 +147,7 @@ namespace Mirror
             NetworkServer.isLoadingScene = true;
 
             // loadingSceneAsync = SceneManager.LoadSceneAsync(newSceneName);
-            loadingSceneAsync = Addressables.LoadSceneAsync(scene);
+            loadingSceneAsync = Addressables.LoadSceneAsync(networkSceneName);
 
             // ServerChangeScene can be called when stopping the server
             // when this happens the server is not active so does not need to tell clients about the change
@@ -485,4 +454,5 @@ namespace Mirror
         public override void OnStopClient() { }
         #endregion
     }
+
 }

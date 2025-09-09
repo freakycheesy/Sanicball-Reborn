@@ -51,8 +51,8 @@ MonoBehaviour:
   headlessStartMode: 0
   editorAutoStart: 0
   sendRate: 60
-  offlineScene: Assets/Scenes/Default/Menu.unity
-  onlineScene: Assets/Scenes/Default/Lobby.unity
+  offlineScene: 
+  onlineScene: 
   offlineSceneLoadDelay: 0
   transport: {fileID: 232779417100486059}
   networkAddress: localhost
@@ -85,9 +85,18 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
-  Labels:
-  - m_LabelString: default
-  - m_LabelString: mod
+  offlineSceneRef:
+    m_AssetGUID: 451586f28ff22a946b895ef0d457d0d9
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  onlineSceneRef:
+    m_AssetGUID: c1e00a02ec0c7304584fa323ef166aaf
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
   debugGui: 0
 --- !u!114 &232779417100486059
 MonoBehaviour:
