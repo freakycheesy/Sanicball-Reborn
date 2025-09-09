@@ -25,7 +25,7 @@ namespace Sanicball.UI
         public void IncrementStage()
         {
             selectedStage++;
-            if (selectedStage >= ActiveData.Stages.Count)
+            if (selectedStage >= ActiveData.Instance.Stages.Count)
             {
                 selectedStage = 0;
             }
@@ -37,7 +37,7 @@ namespace Sanicball.UI
             selectedStage--;
             if (selectedStage < 0)
             {
-                selectedStage = ActiveData.Stages.Count - 1;
+                selectedStage = ActiveData.Instance.Stages.Count - 1;
             }
             UpdateStageName();
         }
@@ -62,7 +62,7 @@ namespace Sanicball.UI
 
         private void UpdateFields()
         {
-            string selectedStageBarcode = ActiveData.Stages[selectedStage].BARCODE;
+            string selectedStageBarcode = ActiveData.Instance.Stages[selectedStage].BARCODE;
             var records = ActiveData.RaceRecords.Where(a => a.Stage == selectedStageBarcode && a.GameVersion == GameVersion.AS_FLOAT && a.WasTesting == GameVersion.IS_TESTING).OrderBy(a => a.Time);
 
 			for (int i = 0; i < recordTypes.Count (); i++) {
@@ -80,7 +80,7 @@ namespace Sanicball.UI
 
         private void UpdateStageName()
         {
-            stageNameField.text = ActiveData.Stages[selectedStage].BARCODE;
+            stageNameField.text = ActiveData.Instance.Stages[selectedStage].BARCODE;
             UpdateFields();
         }
     }

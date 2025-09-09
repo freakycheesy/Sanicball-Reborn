@@ -24,7 +24,7 @@ namespace Sanicball.Logic
         public void RequestSettingsChange(MatchSettings newSettings)
         {
             SettingsChangedMessage message = new(newSettings);
-            Instance.CurrentSettings = newSettings;
+            Instance.state.CurrentSettings = newSettings;
             MatchSettingsChanged?.Invoke(this, EventArgs.Empty);
             NetworkClient.Send(message);
         }
@@ -64,36 +64,23 @@ namespace Sanicball.Logic
                 Destroy(this.gameObject);
                 return;
             }
+            Instance = this;
         }
         void Start()
-        { 
+        {
             Instance = this;
-            SceneManager.sceneLoaded += OnLevelHasLoaded;
+            state = new(ActiveData.MatchSettings);
             DontDestroyOnLoad(gameObject);
-            RegisterNetworkMessages();
+            if (NetworkServer.active) state.CurrentSettings = ActiveData.MatchSettings;
+            if (NetworkServer.active) state.inLobby = true;
+            if (NetworkServer.activeHost) state.showSettingsOnLobbyLoad = true;
+            SceneManager.sceneLoaded += OnLevelHasLoaded;
             activeChat = Instantiate(chatPrefab);
             activeChat.MessageSent += LocalChatMessageSent;
             RegisterNetworkMessages();
             MatchManagerSpawned?.Invoke(this, Time.time);
         }
-        public override void OnStopServer()
-        {
-            if (MatchManager.Instance)
-            {
-                MatchManager.Instance.inLobby = false;
-                MatchManager.Instance.loadingLobby = false;
-            }
-        }
-        public override void OnStartServer()
-        {
-            DontDestroyOnLoad(gameObject);
-            CurrentSettings = ActiveData.MatchSettings;
-            showSettingsOnLobbyLoad = true;
-            if (AddressablesNetworkManager.networkSceneName.Contains("Lobby"))
-            {
-                inLobby = true;
-            }
-        }
+        
         public static bool IsLocalId(NetworkConnectionToClient id)
         {
             return IsLocalId(id.connectionId);
@@ -102,49 +89,52 @@ namespace Sanicball.Logic
         {
             return NetworkServer.localConnection.connectionId == id;
         }
-        public override void OnStartClient()
-        {
-            Instance = this;
-            if (isClientOnly) MatchManager.Instance.showSettingsOnLobbyLoad = false;
-            NetworkClient.Send<ClientJoinedMessage>(new(ActiveData.GameSettings.nickname));
-        }
         private const bool RequireAuth = true;
         private void RegisterNetworkMessages()
         {
-            NetworkServer.ReplaceHandler<AutoStartTimerMessage>((_, a)=>AutoStartTimerCallback(a), RequireAuth);
+            NetworkServer.ReplaceHandler<AutoStartTimerMessage>((_, a) => AutoStartTimerCallback(a), RequireAuth);
             NetworkServer.ReplaceHandler<ChangedReadyMessage>(ChangedReadyCallback, RequireAuth);
             NetworkServer.ReplaceHandler<CharacterChangedMessage>(CharacterChangedCallback, RequireAuth);
-            NetworkServer.ReplaceHandler<ChatMessage>((_, a)=>ChatCallback(a), RequireAuth);
+            NetworkServer.ReplaceHandler<ChatMessage>((_, a) => ChatCallback(a), RequireAuth);
             NetworkServer.ReplaceHandler<ClientJoinedMessage>(ClientJoinedCallback, RequireAuth);
             NetworkServer.ReplaceHandler<ClientLeftMessage>(ClientLeftCallback, RequireAuth);
             NetworkServer.ReplaceHandler<PlayerJoinedMessage>(PlayerJoinedCallback, RequireAuth);
             NetworkServer.ReplaceHandler<PlayerLeftMessage>(PlayerLeftCallback, RequireAuth);
             NetworkServer.ReplaceHandler<LoadLobbyMessage>(LoadLobbyCallback);
             NetworkClient.ReplaceHandler<SettingsChangedMessage>(SettingsChangedCallback);
-            NetworkClient.ReplaceHandler<LoadRaceMessage>((_, _)=>LoadRaceCallback());
+            NetworkClient.ReplaceHandler<LoadRaceMessage>((_, _) => LoadRaceCallback());
+        }
+
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+            localClient = new(NetworkServer.localConnection.connectionId, ActiveData.GameSettings.nickname);
+            NetworkClient.Send<ClientJoinedMessage>(new(localClient));
         }
 
         private void PlayerJoinedCallback(NetworkConnectionToClient conn, PlayerJoinedMessage message)
         {
             var p = new MatchPlayer(conn.connectionId, message.CtrlType, message.InitialCharacter);
-            MatchManager.Instance.Players.Add(p);
+            if (state.players.Contains(p)) return;
+            state.players.Add(p);
 
-            if (MatchManager.Instance.inLobby)
+            if (state.inLobby)
             {
-                MatchManager.Instance.SpawnLobbyBall(conn,p);
+                SpawnLobbyBall(conn, p);
             }
 
-            MatchManager.Instance.StopLobbyTimer();
+            StopLobbyTimer();
 
-            MatchManager.MatchPlayerAdded(this, new MatchPlayerEventArgs(p, conn.identity.isLocalPlayer));
+            MatchPlayerAdded(this, new MatchPlayerEventArgs(p, conn.identity.isLocalPlayer));
         }
 
         private void ClientJoinedCallback(NetworkConnectionToClient conn, ClientJoinedMessage message)
         {
-            var matchClient = new MatchClient(conn.connectionId, message.ClientName);
+            var matchClient = message.Client;
+            if (state.clients.Contains(matchClient)) return;
             if (MatchManager.Instance.Clients.Contains(matchClient)) return;
             MatchManager.Instance.Clients.Add(matchClient);
-            Debug.Log("New client " + message.ClientName);
+            Debug.Log("New client " + matchClient.Name);
         }
 
         private void SettingsChangedCallback(SettingsChangedMessage message)
@@ -161,7 +151,7 @@ namespace Sanicball.Logic
         public void Update()
         {
             //var messenger = InstanceFinder.ClientManager;
-            matchSettingJson = JsonConvert.SerializeObject(CurrentSettings);
+            matchSettingJson = JsonConvert.SerializeObject(state.CurrentSettings);
             //Pausing/unpausing
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7))
             {
@@ -177,21 +167,21 @@ namespace Sanicball.Logic
                 }
             }
 
-            if (lobbyTimerOn && inLobby)
+            if (state.lobbyTimerOn && state.inLobby)
             {
-                lobbyTimer -= Time.deltaTime;
-                LobbyReferences.Active.CountdownField.text = "Match starts in " + Mathf.Max(1f, Mathf.Ceil(lobbyTimer));
+                state.lobbyTimer -= Time.deltaTime;
+                LobbyReferences.Active.CountdownField.text = "Match starts in " + Mathf.Max(1f, Mathf.Ceil(state.lobbyTimer));
 
                 //LoadRaceMessages don't need to be sent in online mode - the server will ignore it anyway.
-                if (lobbyTimer <= 0)
+                if (state.lobbyTimer <= 0)
                 {
                     NetworkServer.SendToAll<LoadRaceMessage>(new());
                 }
             }
 
-            if (autoStartTimerOn && inLobby)
+            if (state.autoStartTimerOn && state.inLobby)
             {
-                autoStartTimer = Mathf.Max(0, autoStartTimer - Time.deltaTime);
+                state.autoStartTimer = Mathf.Max(0, state.autoStartTimer - Time.deltaTime);
             }
         }
 
@@ -199,21 +189,53 @@ namespace Sanicball.Logic
         {
             if (activeChat)
                 Destroy(activeChat.gameObject);
+            state.inLobby = false;
+            state.loadingLobby = false;
         }
 
         #region Players ready and lobby timer
 
         public void StartLobbyTimer(float offset = 0)
         {
-            lobbyTimerOn = true;
-            lobbyTimer -= offset;
+            state.lobbyTimerOn = true;
+            state.lobbyTimer -= offset;
             LobbyReferences.Active.CountdownField.enabled = true;
+        }
+
+        protected virtual void FixedUpdate()
+        {
+            if (NetworkServer.active)
+            {
+                FixedServerUpdate();
+            }
+            if (NetworkServer.activeHost)
+            {
+                FixedHostUpdate();
+            }
+            if (NetworkClient.active)
+            {
+                FixedClientUpdate();
+            }
+        }
+
+        protected virtual void FixedServerUpdate()
+        {
+
+        }
+
+        protected virtual void FixedHostUpdate()
+        {
+
+        }
+        protected virtual void FixedClientUpdate()
+        {
+
         }
 
         public void StopLobbyTimer()
         {
-            lobbyTimerOn = false;
-            lobbyTimer = lobbyTimerMax;
+            state.lobbyTimerOn = false;
+            state.lobbyTimer = MatchState.lobbyTimerMax;
             LobbyReferences.Active.CountdownField.enabled = false;
         }
 

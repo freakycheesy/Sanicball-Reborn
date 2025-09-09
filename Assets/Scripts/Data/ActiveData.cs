@@ -51,19 +51,18 @@ namespace Sanicball.Data
         #region Properties
         public static GameSettings GameSettings { get { return Instance.gameSettings; } }
         public static KeybindCollection Keybinds { get { return Instance.keybinds; } }
-        public static MatchSettings MatchSettings = MatchSettings.CreateDefault();
+        public static MatchSettings MatchSettings = new();
         public static List<RaceRecord> RaceRecords { get { return Instance.raceRecords; } }
 
-        public static List<SanicPallet> CustomStagesPallets = new List<SanicPallet>();
-        public static List<StageInfo> Stages = new List<StageInfo>();
-        public static List<PowerupLogic> Powerups = new List<PowerupLogic>();
-        public static List<CharacterInfo> Characters = new List<CharacterInfo>();
-        public static GameJoltInfo GameJoltInfo { get { return Instance.gameJoltInfo; } }
-        public static GameObject ChristmasHat { get { return Instance.christmasHat; } }
-        public static Material ESportsTrail { get { return Instance.eSportsTrail; } }
-        public static GameObject ESportsHat { get { return Instance.eSportsHat; } }
-        public static Song ESportsMusic { get { return Instance.eSportsMusic; } }
-        public static ESportMode ESportsPrefab { get { return Instance.eSportsPrefab; } }
+        public List<SanicPallet> CustomStagesPallets = new List<SanicPallet>();
+        public List<StageInfo> Stages = new List<StageInfo>();
+        public List<PowerupLogic> Powerups = new List<PowerupLogic>();
+        public List<CharacterInfo> Characters = new List<CharacterInfo>();
+        public GameObject ChristmasHat { get { return Instance.christmasHat; } }
+        public Material ESportsTrail { get { return Instance.eSportsTrail; } }
+        public GameObject ESportsHat { get { return Instance.eSportsHat; } }
+        public Song ESportsMusic { get { return Instance.eSportsMusic; } }
+        public ESportMode ESportsPrefab { get { return Instance.eSportsPrefab; } }
 
         public static bool ESportsFullyReady
         {
@@ -92,15 +91,15 @@ namespace Sanicball.Data
             }
         }
         public static AsyncOperationHandle<IList<SanicPallet>> PalletHandle = new();
-        public static void FindPallets()
+        public void FindPallets()
         {
             PalletHandle = Addressables.LoadAssetsAsync<SanicPallet>("mod", LoadPalletCallback);
             PalletHandle.Completed += PalletCompleted;
         }
 
-        private static void PalletCompleted(AsyncOperationHandle<IList<SanicPallet>> _)
+        private void PalletCompleted(AsyncOperationHandle<IList<SanicPallet>> _)
         {
-            MatchSettings = MatchSettings.CreateDefault();
+            MatchSettings = new();
             foreach (var info in Stages)
             {
                 //AddressablesNetworkManager.AddSceneReference(info.scene);
@@ -108,7 +107,7 @@ namespace Sanicball.Data
             Debug.Log("Completed Loading Pallet!");
         }
 
-        public static void LoadPalletCallback(SanicPallet pallet)
+        public void LoadPalletCallback(SanicPallet pallet)
         {
             CustomStagesPallets.Add(pallet);
             Stages.AddRange(pallet.Stages);
@@ -126,17 +125,22 @@ namespace Sanicball.Data
         }
         public static StageInfo GetRandomStage()
         {
-            return Stages[Random.Range(0, Stages.Count - 1)];
+            return Instance.Stages[Random.Range(0, Instance.Stages.Count - 1)];
         }
         public static int GetIndexFromStage(StageInfo stage)
         {
-            return Stages.IndexOf(stage);
+            return Instance.Stages.IndexOf(stage);
         }
         public static StageInfo GetStageByBarcode(string barcode)
         {
+            if (barcode == null)
+            {
+                Debug.LogError("Barcode is null");
+                return null;
+            }
             barcode = barcode.ToLower();
-            var selectedStage = Stages[0];
-            foreach (var stage in Stages)
+            var selectedStage = Instance.Stages[0];
+            foreach (var stage in Instance.Stages)
             {
                 if (stage.BARCODE.ToLower().Contains(barcode)) selectedStage = stage;
             }
@@ -145,7 +149,7 @@ namespace Sanicball.Data
 
         public static void LoadLevel(StageInfo level, LoadSceneMode mode = LoadSceneMode.Single)
         {
-            BootstrapSceneManager.LoadScene(level.scene.RuntimeKey);
+            BootstrapSceneManager.LoadScene(level.scene);
             //level.LoadSceneAsync(mode);
             //Addressables.LoadSceneAsync(level, mode);
         }

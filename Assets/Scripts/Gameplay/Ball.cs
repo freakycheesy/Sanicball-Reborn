@@ -198,9 +198,9 @@ namespace Sanicball.Gameplay
             gameObject.name = type.ToString() + " - " + nickname;
 
             //Set character
-            if (CharacterId >= 0 && CharacterId < ActiveData.Characters.Count)
+            if (CharacterId >= 0 && CharacterId < ActiveData.Instance.Characters.Count)
             {
-                SetCharacter(ActiveData.Characters[CharacterId]);
+                SetCharacter(ActiveData.Instance.Characters[CharacterId]);
             }
 
             //Set up speed effect
@@ -211,12 +211,12 @@ namespace Sanicball.Gameplay
             DateTime now = DateTime.Now;
             if (now.Month == 12 && now.Day > 20 && now.Day <= 31)
             {
-                hatPrefab = ActiveData.ChristmasHat;
+                hatPrefab = ActiveData.Instance.ChristmasHat;
             }
 
             if (ActiveData.GameSettings.eSportsReady)
             {
-                hatPrefab = ActiveData.ESportsHat;
+                hatPrefab = ActiveData.Instance.ESportsHat;
             }
 
             //Spawn hat
@@ -292,7 +292,7 @@ namespace Sanicball.Gameplay
             TrailRenderer.material = c.trail;
             if (c.name == "Super Sanic" && ActiveData.GameSettings.eSportsReady)
             {
-                TrailRenderer.material = ActiveData.ESportsTrail;
+                TrailRenderer.material = ActiveData.Instance.ESportsTrail;
             }
             transform.localScale = new Vector3(c.ballSize, c.ballSize, c.ballSize);
             if (c.alternativeMesh != null)

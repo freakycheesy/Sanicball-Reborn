@@ -1,14 +1,15 @@
 ﻿using Mirror;
+using Sanicball.Logic;
 
 namespace SanicballCore.MatchMessages
 {
     public struct ClientJoinedMessage : NetworkMessage
     {
-        public string ClientName;
+        public MatchClient Client;
 
-        public ClientJoinedMessage(string clientName)
+        public ClientJoinedMessage(MatchClient Client)
         {
-            ClientName = clientName;
+            this.Client = Client;
         }
     }
 }

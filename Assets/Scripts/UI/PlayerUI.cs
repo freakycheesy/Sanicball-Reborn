@@ -93,7 +93,7 @@ namespace Sanicball.UI
                     //Disabled for now, glitchy as fuck
                     //playerMarker.HideImageWhenInSight = true;
 
-                    Data.CharacterInfo character = ActiveData.Characters[p.Character];
+                    Data.CharacterInfo character = ActiveData.Instance.Characters[p.Character];
                     //playerMarker.Sprite = character.icon;
                     Color c = character.color;
                     c.a = 0.2f;
@@ -135,7 +135,7 @@ namespace Sanicball.UI
 
             if (TargetPlayer.LapRecordsEnabled)
             {
-				CharacterTier tier = ActiveData.Characters[targetPlayer.Character].tier;
+				CharacterTier tier = ActiveData.Instance.Characters[targetPlayer.Character].tier;
                 string stage = MatchManager.CurrentStage.BARCODE;
 
                 float time = (float)e.CurrentLapTime.TotalSeconds;

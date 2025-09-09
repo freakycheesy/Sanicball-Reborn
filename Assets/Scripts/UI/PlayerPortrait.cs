@@ -52,7 +52,7 @@ namespace Sanicball.UI
             positionField.text = Utils.GetPosString(targetPosition);
             if (TargetPlayer.RaceFinished) positionField.color = new Color(0f, 0.5f, 1f);
             //Image representing character
-            characterImage.color = ActiveData.Characters[TargetPlayer.Character].color;
+            characterImage.color = ActiveData.Instance.Characters[TargetPlayer.Character].color;
             //Name field
             nameField.text = TargetPlayer.Name;
 

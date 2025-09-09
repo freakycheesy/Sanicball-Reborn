@@ -232,7 +232,7 @@ namespace Sanicball.Logic
 
                 if (LapRecordsEnabled)
                 {
-                    CharacterTier tier = ActiveData.Characters[Character].tier;
+                    CharacterTier tier = ActiveData.Instance.Characters[Character].tier;
                     string sceneName = SceneManager.GetActiveScene().name;
 
                     ActiveData.RaceRecords.Add(new RaceRecord(

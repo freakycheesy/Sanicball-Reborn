@@ -66,7 +66,7 @@ namespace Sanicball.UI
 
                 slideshow.SetSlide(loginFieldsSlide);
 
-                linkError.text = "Verified and saved! Type: " + ActiveData.GameJoltInfo.GetPlayerType(username.text) + ".";
+                //linkError.text = "Verified and saved! Type: " + ActiveData.GameJoltInfo.GetPlayerType(username.text) + ".";
             }
             else
             {

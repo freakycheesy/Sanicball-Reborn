@@ -411,7 +411,7 @@ MonoBehaviour:
     alternativeMesh: {fileID: 0}
     collisionMesh: {fileID: 0}
     tier: 1
-    hidden: 1
+    hidden: 0
   Powerups:
   - {fileID: 11400000, guid: b5dbb1884bb044940b87805d146b0cdd, type: 2}
   - {fileID: 11400000, guid: 7cecf37b9f4043d419bfd21734b1c824, type: 2}

@@ -27,9 +27,9 @@ namespace Sanicball.Powerups
         [Server]
         private void RandomisePowerup()
         {
-            if (ActiveData.Powerups.Count <= 0) return;
-            var i = Random.Range(0, ActiveData.Powerups.Count - 1);
-            containedPowerup = ActiveData.Powerups[i];
+            if (ActiveData.Instance.Powerups.Count <= 0) return;
+            var i = Random.Range(0, ActiveData.Instance.Powerups.Count - 1);
+            containedPowerup = ActiveData.Instance.Powerups[i];
             icon.sprite = containedPowerup.icon;
             RandomisePowerupRpc(i);
         }
@@ -37,7 +37,7 @@ namespace Sanicball.Powerups
         [ClientRpc]
         private void RandomisePowerupRpc(int i)
         {
-            icon.sprite = ActiveData.Powerups[i].icon;
+            icon.sprite = ActiveData.Instance.Powerups[i].icon;
         }
 
         [Server]

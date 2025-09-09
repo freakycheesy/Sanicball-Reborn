@@ -24,7 +24,7 @@ namespace Sanicball.UI
         [SerializeField]
         private Text[] aiCharacters;
 
-        private MatchSettings tempSettings = MatchSettings.CreateDefault();
+        private MatchSettings tempSettings = new();
 
         public void Show()
         {
@@ -44,7 +44,7 @@ namespace Sanicball.UI
             var manager = MatchManager.Instance;
             if (manager)
             {
-                tempSettings = manager.CurrentSettings;
+                tempSettings = manager.State.CurrentSettings;
             }
             UpdateUiFields();
         }
@@ -61,7 +61,7 @@ namespace Sanicball.UI
 
         public void DefaultSettings()
         {
-            tempSettings = MatchSettings.CreateDefault();
+            tempSettings = new();
             UpdateUiFields();
         }
 
@@ -85,10 +85,10 @@ namespace Sanicball.UI
         public void IncrementStage()
         {
             var StageId = ActiveData.GetIndexFromStage(ActiveData.GetStageByBarcode(tempSettings.StageBarcode));
-            if (StageId < ActiveData.Stages.Count - 1) StageId++;
+            if (StageId < ActiveData.Instance.Stages.Count - 1) StageId++;
             else
                 StageId = 0;
-            tempSettings.StageBarcode = ActiveData.Stages[StageId].BARCODE;
+            tempSettings.StageBarcode = ActiveData.Instance.Stages[StageId].BARCODE;
             UpdateUiFields();
         }
 
@@ -97,8 +97,8 @@ namespace Sanicball.UI
             var StageId = ActiveData.GetIndexFromStage(ActiveData.GetStageByBarcode(tempSettings.StageBarcode));
             if (StageId > 0) StageId--;
             else
-                StageId = ActiveData.Stages.Count - 1;
-            tempSettings.StageBarcode = ActiveData.Stages[StageId].BARCODE;
+                StageId = ActiveData.Instance.Stages.Count - 1;
+            tempSettings.StageBarcode = ActiveData.Instance.Stages[StageId].BARCODE;
             UpdateUiFields();
         }
 
@@ -144,11 +144,11 @@ namespace Sanicball.UI
             do
             {
                 characterId++;
-                if (characterId >= ActiveData.Characters.Count)
+                if (characterId >= ActiveData.Instance.Characters.Count)
                 {
                     characterId = 0;
                 }
-            } while (ActiveData.Characters[characterId].hidden);
+            } while (ActiveData.Instance.Characters[characterId].hidden);
 
             tempSettings.SetAICharacter(pos, characterId);
             UpdateUiFields();
@@ -162,9 +162,9 @@ namespace Sanicball.UI
                 characterId--;
                 if (characterId < 0)
                 {
-                    characterId = ActiveData.Characters.Count - 1;
+                    characterId = ActiveData.Instance.Characters.Count - 1;
                 }
-            } while (ActiveData.Characters[characterId].hidden);
+            } while (ActiveData.Instance.Characters[characterId].hidden);
 
             tempSettings.SetAICharacter(pos, characterId);
             UpdateUiFields();
@@ -178,7 +178,7 @@ namespace Sanicball.UI
             aiSkill.text = tempSettings.AISkill.ToString();
             for (int i = 0; i < aiCharacters.Length; i++)
             {
-                aiCharacters[i].text = ActiveData.Characters[tempSettings.GetAICharacter(i)].name;
+                aiCharacters[i].text = ActiveData.Instance.Characters[tempSettings.GetAICharacter(i)].name;
             }
         }
 

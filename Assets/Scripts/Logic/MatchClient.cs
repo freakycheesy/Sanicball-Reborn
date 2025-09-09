@@ -7,11 +7,11 @@ using UnityEngine;
 
 namespace Sanicball.Logic
 {
-    [Serializable]
+    [System.Serializable]
     public struct MatchClient
     {
-        public int ConnectionId { get; private set; }
-        public string Name { get; private set; }
+        public int ConnectionId;
+        public string Name;
 
         public MatchClient(int guid,string name)
         {

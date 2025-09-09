@@ -79,7 +79,7 @@ namespace Sanicball
             {
                 if (!MatchManager.Instance.InLobby) {
                     List<Song> p = new();
-                    Song s = ActiveData.ESportsMusic;
+                    Song s = ActiveData.Instance.ESportsMusic;
                     p.Add(s);
                     p.Insert(0,s);
                     Playlist = p;

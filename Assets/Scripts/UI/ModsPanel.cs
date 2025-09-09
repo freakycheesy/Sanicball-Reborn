@@ -21,7 +21,7 @@ public class ModsPanel : MonoBehaviour
     private void Refresh()
     {
         foreach(var mod in listedMods) Destroy(mod);
-        foreach (var pallet in ActiveData.CustomStagesPallets)
+        foreach (var pallet in ActiveData.Instance.CustomStagesPallets)
         {
             Text spawnedMod = Instantiate(modsText.gameObject, modsParent).GetComponent<Text>();
             string modinfo = Template;

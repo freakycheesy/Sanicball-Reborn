@@ -24,10 +24,10 @@ namespace Sanicball.Logic
         [Server]
         public void GoToLobby()
         {
-            if (inLobby) return;
+            if (state.inLobby) return;
 
-            loadingStage = false;
-            loadingLobby = true;
+            state.loadingStage = false;
+            state.loadingLobby = true;
             BootstrapSceneManager.LoadScene(ActiveData.Instance.LobbyScene.RuntimeKey);
             //if(BootstrapSceneManager.Scene != null) BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
             //else
@@ -36,10 +36,10 @@ namespace Sanicball.Logic
         [Server]
         public void GoToStage()
         {
-            CurrentStage = ActiveData.GetStageByBarcode(CurrentSettings.StageBarcode);
+            CurrentStage = ActiveData.GetStageByBarcode(state.CurrentSettings.StageBarcode);
 
-            loadingStage = true;
-            loadingLobby = false;
+            state.loadingStage = true;
+            state.loadingLobby = false;
 
             foreach (var p in Players)
             {
@@ -54,15 +54,16 @@ namespace Sanicball.Logic
         //Check if we were loading the lobby or the race
         public void OnLevelHasLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (loadingLobby)
+            if(scene.name.ToLower() == "lobby") state.inLobby = true;
+            if (state.loadingLobby)
             {
                 InitLobby();
-                loadingLobby = false;
+                state.loadingLobby = false;
             }
-            if (loadingStage)
+            if (state.loadingStage)
             {
                 InitRace();
-                loadingStage = false;
+                state.loadingStage = false;
             }
             foreach (var camera in Resources.FindObjectsOfTypeAll<UniversalAdditionalCameraData>())
             {
@@ -73,13 +74,13 @@ namespace Sanicball.Logic
         //Initiate the lobby after loading lobby scene
         public void InitLobby()
         {
-            inLobby = true;
+            state.inLobby = true;
 
-            if (showSettingsOnLobbyLoad)
+            if (state.showSettingsOnLobbyLoad)
             {
                 //Let the player pick settings first time entering the lobby
                 LobbyReferences.Active.MatchSettingsPanel.Show();
-                showSettingsOnLobbyLoad = false;
+                state.showSettingsOnLobbyLoad = false;
             }
             MatchManagerSpawned?.Invoke(this, Time.time);
         }
@@ -87,11 +88,11 @@ namespace Sanicball.Logic
         //Initiate a race after loading the stage scene
         public void InitRace()
         {
-            inLobby = false;
+            state.inLobby = false;
 
             var raceManager = Instantiate(raceManagerPrefab);
-            raceManager.Init(CurrentSettings, this, joiningRaceInProgress);
-            joiningRaceInProgress = false;
+            raceManager.Init(state.CurrentSettings, this, state.joiningRaceInProgress);
+            state.joiningRaceInProgress = false;
         }
 
         public void QuitMatch(string reason = null)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Mirror;
 using Sanicball.Data;
 using Sanicball.Logic;
 using SanicballCore;
@@ -34,7 +35,7 @@ namespace Sanicball.UI
                 //Create local player panels for players already in the game
                 foreach (var p in manager.Players)
                 {
-                    if (p.ConnectionId == manager.connectionToClient.connectionId && p.CtrlType != ControlType.None)
+                    if (p.ConnectionId == NetworkServer.localConnection.connectionId && p.CtrlType != ControlType.None)
                     {
                         var panel = CreatePanelForControlType(p.CtrlType, true);
                         panel.AssignedPlayer = p;

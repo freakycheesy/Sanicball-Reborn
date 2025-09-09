@@ -12,7 +12,7 @@ namespace Sanicball.UI {
 
 		void Start () {
 			var characterText = new List<string> ();
-			var characters = ActiveData.Characters;
+			var characters = ActiveData.Instance.Characters;
 			foreach (Sanicball.Data.CharacterInfo c in characters.Where(a => !a.hidden).OrderBy(a => a.tier)) {
 				characterText.Add (c.name + ": <b>" + c.artBy + "</b>");
 			}

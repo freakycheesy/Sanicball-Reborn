@@ -21,14 +21,14 @@ namespace SanicballCore
         Random,
     }
 
-	public enum AllowedTiers
-	{
-		All,
-		NormalOnly,
-		OddOnly,
-		HyperspeedOnly,
-		NoHyperspeed,
-	}
+    public enum AllowedTiers
+    {
+        All,
+        NormalOnly,
+        OddOnly,
+        HyperspeedOnly,
+        NoHyperspeed,
+    }
 
     public enum TierRotationMode
     {
@@ -58,39 +58,15 @@ namespace SanicballCore
         public AllowedTiers AllowedTiers { get; set; }
         public TierRotationMode TierRotationMode { get; set; }
         public int DisqualificationTime { get; set; }
-
         /// <summary>
         /// Creates a MatchSettings object with the game's default settings.
         /// </summary>
         /// <returns></returns>
-        public static MatchSettings CreateDefault()
-        {
-            return new MatchSettings()
-            {
-                StageBarcode = "bk-tn.main.greenhillzone",
-                Laps = 2,
-                AICount = 0,
-                AISkill = AISkillLevel.Average,
-                aiCharacters = "1,2,3,4,5,6,7,8,9,10,11,12",
-
-                AutoStartTime = 60,
-                AutoStartMinPlayers = 2,
-                AutoReturnTime = 15,
-                VoteRatio = 1f,
-                StageRotationMode = StageRotationMode.None,
-                AllowedTiers = AllowedTiers.All,
-                TierRotationMode = TierRotationMode.None,
-                DisqualificationTime = 120,
-                Aliases = new Dictionary<string, int>()
-            };
-        }
-
         public MatchSettings(string StageBarcode = "bk-tn.main.greenhillzone",
                 int Laps = 2,
                 int AICount = 0,
                 AISkillLevel AISkill = AISkillLevel.Average,
                 string aiCharacters = "1,2,3,4,5,6,7,8,9,10,11,12",
-
                 int AutoStartTime = 60,
                 int AutoStartMinPlayers = 2,
                 int AutoReturnTime = 15,
@@ -98,23 +74,24 @@ namespace SanicballCore
                 StageRotationMode StageRotationMode = StageRotationMode.None,
                 AllowedTiers AllowedTiers = AllowedTiers.All,
                 TierRotationMode TierRotationMode = TierRotationMode.None,
-                int DisqualificationTime = 120)
+                int DisqualificationTime = 120
+                )
         {
-            this.StageBarcode = "bk-tn.main.greenhillzone";
-                this.Laps = 2;
-                this.AICount = 0;
-                this.AISkill = AISkillLevel.Average;
-            this.aiCharacters = "1,2,3,4,5,6,7,8,9,10,11,12";
+            this.StageBarcode = StageBarcode;
+            this.Laps = Laps;
+            this.AICount = AICount;
+            this.AISkill = AISkill;
+            this.aiCharacters = aiCharacters;
 
-                 this.AutoStartTime = 60;
-                 this.AutoStartMinPlayers = 2;
-                 this.AutoReturnTime = 15;
-                 this.VoteRatio = 1f;
-                 this.StageRotationMode = StageRotationMode.None;
-                 this.AllowedTiers = AllowedTiers.All;
-                 this.TierRotationMode = TierRotationMode.None;
-                 this.DisqualificationTime = 120;
-                 this.Aliases = new Dictionary<string, int>();
+            this.AutoStartTime = AutoStartTime;
+            this.AutoStartMinPlayers = AutoStartMinPlayers;
+            this.AutoReturnTime = AutoReturnTime;
+            this.VoteRatio = VoteRatio;
+            this.StageRotationMode = StageRotationMode;
+            this.AllowedTiers = AllowedTiers;
+            this.TierRotationMode = TierRotationMode;
+            this.DisqualificationTime = DisqualificationTime;
+            this.Aliases = new();
         }
 
         /// <summary>

@@ -23,7 +23,7 @@ namespace Sanicball.Logic
 
         public Ball SpawnBall(int position, BallType ballType, ControlType ctrlType, int character, string nickname, NetworkConnectionToClient conn)
         {
-            float characterSize = ActiveData.Characters[character].ballSize;
+            float characterSize = ActiveData.Instance.Characters[character].ballSize;
 
             return SpawnBall(GetSpawnPoint(position, characterSize / 2f), transform.rotation, ballType, ctrlType, character, nickname, conn);
         }

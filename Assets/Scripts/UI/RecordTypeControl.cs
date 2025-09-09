@@ -19,7 +19,7 @@ namespace Sanicball.UI
                 var timespan = TimeSpan.FromSeconds(r.Time);
                 timeField.color = new Color(50 / 255f, 50 / 255f, 50 / 255f);
                 timeField.text = string.Format("{0:00}:{1:00}.{2:000}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds);
-                characterField.text = "Set with " + ActiveData.Characters[r.Character].name;
+                characterField.text = "Set with " + ActiveData.Instance.Characters[r.Character].name;
                 dateField.text = r.Date.ToString();
             }
             else

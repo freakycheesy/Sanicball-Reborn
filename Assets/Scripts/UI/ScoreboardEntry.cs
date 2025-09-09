@@ -47,7 +47,7 @@ namespace Sanicball.UI
                 timeField.text = "Still racing";
             }
 
-            iconField.sprite = Data.ActiveData.Characters[player.Character].icon;
+            iconField.sprite = Data.ActiveData.Instance.Characters[player.Character].icon;
             nameField.text = player.Name;
         }
     }

@@ -32,8 +32,6 @@ namespace Sanicball.Logic
             int guid = conn.connectionId;
             ControlType type = message.CtrlType;
             var player = Players.FirstOrDefault(a => a.ConnectionId == guid && a.CtrlType == type);
-            if (player != null)
-            {
                 Players.Remove(player);
 
                 if (player.BallObject)
@@ -44,39 +42,33 @@ namespace Sanicball.Logic
 
                 if (MatchPlayerRemoved != null)
                     MatchPlayerRemoved(this, new MatchPlayerEventArgs(player, conn.identity.isLocalPlayer)); //TODO: determine if removed player was local
-            }
         }
 
         public void CharacterChangedCallback(NetworkConnectionToClient conn, CharacterChangedMessage message)
         {
-            if (!inLobby)
+            if (!state.inLobby)
             {
                 Debug.LogError("Cannot set character outside of lobby!");
             }
 
             var player = Players.FirstOrDefault(a => a.ConnectionId == conn.connectionId && a.CtrlType == message.CtrlType);
-            if (player != null)
-            {
-                player.CharacterId = message.NewCharacter;
-                SpawnLobbyBall(conn, player);
-            }
+            player.CharacterId = message.NewCharacter;
+            SpawnLobbyBall(conn, player);
         }
 
         public void ChangedReadyCallback(NetworkConnectionToClient conn, ChangedReadyMessage message)
         {
             var player = Instance.Players.FirstOrDefault(a => a.ConnectionId == conn.connectionId && a.CtrlType == message.CtrlType);
-            if (player != null)
-            {
-                player.ReadyToRace = !player.ReadyToRace;
-            }
+            player.ReadyToRace = !player.ReadyToRace;
+
             //Check if all players are ready and start/stop lobby timer accordingly
             var allReady = Players.ToList().TrueForAll(a => a.ReadyToRace);
-            if (allReady && !lobbyTimerOn)
+            if (allReady && !state.lobbyTimerOn)
             {
                 Debug.Log("Start Lobby Timer");
                 StartLobbyTimer(0);
             }
-            if (!allReady && lobbyTimerOn)
+            if (!allReady && state.lobbyTimerOn)
             {
                 Debug.Log("Stop Lobby Timer");
                 StopLobbyTimer();
@@ -102,8 +94,8 @@ namespace Sanicball.Logic
 
         public void AutoStartTimerCallback(AutoStartTimerMessage message)
         {
-            autoStartTimerOn = message.Enabled;
-            autoStartTimer = CurrentSettings.AutoStartTime - (float)NetworkTime.rtt;
+            state.autoStartTimerOn = message.Enabled;
+            state.autoStartTimer = state.CurrentSettings.AutoStartTime - (float)NetworkTime.rtt;
         }
 
 #endregion Match message callbacks

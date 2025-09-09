@@ -26,7 +26,7 @@ namespace Sanicball.UI
 
         void Start() {
             if (ActiveData.ESportsFullyReady) {
-                esport = Instantiate(ActiveData.ESportsPrefab);
+                esport = Instantiate(ActiveData.Instance.ESportsPrefab);
             }
         }
 
