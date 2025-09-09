@@ -1,13 +1,9 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using Cysharp.Threading.Tasks;
-using Unity.Android.Gradle;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.Rendering;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceLocations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 
@@ -18,8 +14,8 @@ namespace Mirror
     {
         public static new AddressablesNetworkManager singleton { get; private set; }
         public static new AsyncOperationHandle<SceneInstance> loadingSceneAsync;
-        public static Dictionary<string, object> loadedAddressables;
-
+        public static Dictionary<string, object> loadedAddressables = new();
+        public List<AssetLabelReference> Labels = new();
         /// <summary>
         /// Runs on both Server and Client
         /// Networking is NOT initialized when this fires
@@ -28,20 +24,29 @@ namespace Mirror
         {
             base.Awake();
             singleton = this;
-            var loadResourceLocationsHandle = Addressables.LoadResourceLocationsAsync(null);
-            foreach (var location in loadResourceLocationsHandle.Result)
+            LoadAddressables();
+        }
+
+        private void LoadAddressables()
+        {
+            foreach (var label in Labels)
             {
-                var asset = Addressables.LoadAssetAsync<UnityEngine.Object>(location);
-                loadedAddressables.Add(asset.Result.name, location.PrimaryKey);
-                if (asset.Result is GameObject)
+                var loadResourceLocationsHandle = Addressables.LoadResourceLocationsAsync(label).WaitForCompletion();
+
+                foreach (IResourceLocation location in loadResourceLocationsHandle)
                 {
-                    var gameObject = asset.Result as GameObject;
-                    if (gameObject.GetComponent<NetworkIdentity>()) spawnPrefabs.Add(asset.Result as GameObject);
+                    var data = location.Data;
+                    loadedAddressables.Add(location.PrimaryKey, data);
+                    if (data is GameObject)
+                    {
+                        if (((GameObject)data).GetComponent<NetworkIdentity>()) spawnPrefabs.Add((GameObject)data);
+                    }
                 }
             }
         }
 
         #region Unity Callbacks
+
 
         public override void OnValidate()
         {
@@ -145,8 +150,17 @@ namespace Mirror
                 Debug.LogError($"Scene change is already in progress for {newSceneName}");
                 return;
             }
+            object scene = null;
 
-            if (!loadedAddressables.TryGetValue(newSceneName, out var scene))
+            foreach (var word in loadedAddressables)
+            {
+                if (word.Key.Contains(networkSceneName) || networkSceneName.Contains(word.Key))
+                {
+                    scene = word.Value;
+                }
+            }
+
+            if (scene == null)
             {
                 Debug.LogError($"Scene {newSceneName} does not exist in Addressables!");
                 return;

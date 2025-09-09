@@ -85,6 +85,9 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
+  Labels:
+  - m_LabelString: default
+  - m_LabelString: mod
   debugGui: 0
 --- !u!114 &232779417100486059
 MonoBehaviour:

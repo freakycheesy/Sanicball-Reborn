@@ -46,12 +46,12 @@ public class SanicNetworkManager : AddressablesNetworkManager
     public override void OnStopServer()
     {
         base.OnStopServer();
-        Destroy(MatchManager.Instance.gameObject);
+        if(MatchManager.Instance) Destroy(MatchManager.Instance.gameObject);
     }
     public override void OnStopClient()
     {
         base.OnStopClient();
-        Destroy(Chat.Instance.gameObject);
+        if(Chat.Instance) Destroy(Chat.Instance.gameObject);
     }
 
 
