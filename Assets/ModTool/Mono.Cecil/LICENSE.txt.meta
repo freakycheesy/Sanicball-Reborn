@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: dd1afc418a94a79479389eeff2261ebf
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 75580
+  packageName: ModTool
+  packageVersion: 2.0
+  assetPath: Assets/ModTool/Mono.Cecil/LICENSE.txt
+  uploadId: 505469

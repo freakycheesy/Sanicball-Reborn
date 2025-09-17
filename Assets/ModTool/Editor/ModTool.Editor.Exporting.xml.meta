@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 9b248c16187a55e4c94ac09a08014ac9
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 75580
+  packageName: ModTool
+  packageVersion: 2.0
+  assetPath: Assets/ModTool/Editor/ModTool.Editor.Exporting.xml
+  uploadId: 505469

@@ -37,8 +37,8 @@ namespace Sanicball.UI
         private void Manager_MatchSettingsChanged(object sender, System.EventArgs e)
         {
             MatchSettings s = manager ? manager.State.CurrentSettings : new();
-            var stage = ActiveData.GetStageByBarcode(s.StageBarcode);
-            var stageId = ActiveData.GetIndexFromStage(stage);
+            var stage = ActiveData.Instance.GetStageByBarcode(s.StageBarcode);
+            var stageId = ActiveData.Instance.GetIndexFromStage(stage);
             targetStageCamPos = new Vector3(stageId * 50, stageLayoutCamera.transform.position.y, stageLayoutCamera.transform.position.z);
             stageName.text = stage.name;
             stageImage.sprite = stage.picture;

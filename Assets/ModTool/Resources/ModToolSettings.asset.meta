@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7cf07065a4873934c9fdefc14aca36d6
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 75580
+  packageName: ModTool
+  packageVersion: 2.0
+  assetPath: Assets/ModTool/Resources/ModToolSettings.asset
+  uploadId: 505469

@@ -28,7 +28,7 @@ namespace Sanicball.Logic
 
             state.loadingStage = false;
             state.loadingLobby = true;
-            BootstrapSceneManager.LoadScene(ActiveData.Instance.LobbyScene.RuntimeKey);
+            BootstrapSceneManager.LoadScene(ActiveData.Instance.LobbyScene);
             //if(BootstrapSceneManager.Scene != null) BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
             //else
             //BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
@@ -36,7 +36,7 @@ namespace Sanicball.Logic
         [Server]
         public void GoToStage()
         {
-            CurrentStage = ActiveData.GetStageByBarcode(state.CurrentSettings.StageBarcode);
+            CurrentStage = ActiveData.Instance.GetStageByBarcode(state.CurrentSettings.StageBarcode);
 
             state.loadingStage = true;
             state.loadingLobby = false;
@@ -46,7 +46,7 @@ namespace Sanicball.Logic
                 p.ReadyToRace = false;
             }
 
-            ActiveData.LoadLevel(CurrentStage);
+            ActiveData.Instance.LoadLevel(CurrentStage);
         }
 
         public static StageInfo CurrentStage;

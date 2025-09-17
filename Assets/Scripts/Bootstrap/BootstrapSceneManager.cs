@@ -1,8 +1,6 @@
 using Mirror;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.ResourceProviders;
-
+using UnityEngine.SceneManagement;
 public class BootstrapSceneManager : MonoBehaviour
 {
     void Awake()
@@ -24,8 +22,10 @@ public class BootstrapSceneManager : MonoBehaviour
     [Server]
     public static void LoadScene(object sceneKey)
     {
-        if (sceneKey is AssetReference) sceneKey = ((AssetReference)sceneKey).RuntimeKey;
-        AddressablesNetworkManager.singleton.ServerChangeScene((string)sceneKey);
+        string newSceneName = "";
+        if (sceneKey is Scene) newSceneName = ((Scene)sceneKey).path;
+        else if (sceneKey is string) newSceneName = sceneKey as string;
+        NetworkManager.singleton.ServerChangeScene(newSceneName);
     }
 
 }

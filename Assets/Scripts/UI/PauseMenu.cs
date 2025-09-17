@@ -1,7 +1,6 @@
 ﻿using Mirror;
 using Sanicball.Logic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -104,7 +103,7 @@ namespace Sanicball.UI
             }
             else
             {
-                Addressables.LoadSceneAsync(NetworkManager.singleton.offlineScene);
+                SceneManager.LoadSceneAsync(NetworkManager.singleton.offlineScene);
             }
         }
     }

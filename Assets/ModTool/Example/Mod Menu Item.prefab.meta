@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 47e9c5d23f6e1984e84773e6d6c51372
+timeCreated: 1501401430
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 75580
+  packageName: ModTool
+  packageVersion: 2.0
+  assetPath: Assets/ModTool/Example/Mod Menu Item.prefab
+  uploadId: 505469

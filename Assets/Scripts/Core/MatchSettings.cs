@@ -58,15 +58,16 @@ namespace SanicballCore
         public AllowedTiers AllowedTiers { get; set; }
         public TierRotationMode TierRotationMode { get; set; }
         public int DisqualificationTime { get; set; }
+        public const string DEFAULTSTAGE = "bk-tn.main.greenhillzone";
+        public const string DEFAULTAICHARACTERS = "1,2,3,4,5,6,7,8,9,10,11,12";
         /// <summary>
         /// Creates a MatchSettings object with the game's default settings.
         /// </summary>
         /// <returns></returns>
-        public MatchSettings(string StageBarcode = "bk-tn.main.greenhillzone",
+        public MatchSettings(
                 int Laps = 2,
                 int AICount = 0,
                 AISkillLevel AISkill = AISkillLevel.Average,
-                string aiCharacters = "1,2,3,4,5,6,7,8,9,10,11,12",
                 int AutoStartTime = 60,
                 int AutoStartMinPlayers = 2,
                 int AutoReturnTime = 15,
@@ -77,11 +78,11 @@ namespace SanicballCore
                 int DisqualificationTime = 120
                 )
         {
-            this.StageBarcode = StageBarcode;
+            this.StageBarcode = DEFAULTSTAGE;
             this.Laps = Laps;
             this.AICount = AICount;
             this.AISkill = AISkill;
-            this.aiCharacters = aiCharacters;
+            this.aiCharacters = DEFAULTAICHARACTERS;
 
             this.AutoStartTime = AutoStartTime;
             this.AutoStartMinPlayers = AutoStartMinPlayers;

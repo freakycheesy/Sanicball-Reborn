@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8ea1d4ce6843dce47b7d53a1b0a582e5
+timeCreated: 1529133803
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 75580
+  packageName: ModTool
+  packageVersion: 2.0
+  assetPath: Assets/ModTool/Change log.txt
+  uploadId: 505469

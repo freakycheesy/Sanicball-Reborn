@@ -80,7 +80,7 @@ namespace Sanicball.Logic
                     case RaceState.Waiting:
                         activeWaitingCam = Instantiate(waitingCamPrefab);
                         activeWaitingUI = Instantiate(waitingUIPrefab);
-                        activeWaitingUI.StageNameToShow = ActiveData.GetStageByBarcode(settings.StageBarcode).name;
+                        activeWaitingUI.StageNameToShow = ActiveData.Instance.GetStageByBarcode(settings.StageBarcode).name;
                         if (joinedWhileRaceInProgress)
                         {
                             activeWaitingUI.InfoToShow = "Waiting for race to end.";

@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: dcf26e3d20a39694cbec8e937f4ebc9a
+timeCreated: 1472208813
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: -100
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 75580
+  packageName: ModTool
+  packageVersion: 2.0
+  assetPath: Assets/ModTool/Example/ModMenu.cs
+  uploadId: 505469

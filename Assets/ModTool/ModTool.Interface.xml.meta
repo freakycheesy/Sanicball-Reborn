@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f813713a47ae0cb418b2e0ac57d41525
+timeCreated: 1528795094
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 75580
+  packageName: ModTool
+  packageVersion: 2.0
+  assetPath: Assets/ModTool/ModTool.Interface.xml
+  uploadId: 505469

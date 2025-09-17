@@ -1,6 +1,5 @@
 ﻿using Sanicball.Data;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace Sanicball.UI
 {
@@ -13,7 +12,6 @@ namespace Sanicball.UI
             UnityEditor.EditorApplication.isPlaying = false;
 #endif
             Application.Quit();
-            ActiveData.PalletHandle.Release();
         }
     }
 }

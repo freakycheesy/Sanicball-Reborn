@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Sanicball.Data;
@@ -8,7 +7,7 @@ namespace Sanicball.UI
 {
     public class Intro : MonoBehaviour
     {
-        public SceneReference MenuScene;
+        public Object MenuScene;
 
         public Image[] images;
         public float imgTime = 0.2f;
@@ -82,7 +81,7 @@ namespace Sanicball.UI
 
         private void GoToMenu()
         {
-            Addressables.LoadSceneAsync(MenuScene, LoadSceneMode.Single);
+            SceneManager.LoadSceneAsync(MenuScene.name, LoadSceneMode.Single);
             isHoldingImage = true;
         }
     }

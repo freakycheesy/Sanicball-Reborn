@@ -6,7 +6,7 @@ using Sanicball.UI;
 using SanicballCore.MatchMessages;
 using UnityEngine;
 
-public class SanicNetworkManager : AddressablesNetworkManager
+public class SanicNetworkManager : NetworkManager
 {
     private new static SanicNetworkManager singleton { get; set; }
     public static SanicNetworkManager Singleton => singleton;

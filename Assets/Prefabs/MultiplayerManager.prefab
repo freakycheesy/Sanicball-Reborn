@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6818551846960294037}
   - component: {fileID: 2231023705682993178}
+  - component: {fileID: 3563542487113084554}
   - component: {fileID: 232779417100486059}
-  - component: {fileID: 7777117685727935497}
+  - component: {fileID: 694683035715645482}
   m_Layer: 0
   m_Name: MultiplayerManager
   m_TagString: Untagged
@@ -51,8 +52,8 @@ MonoBehaviour:
   headlessStartMode: 0
   editorAutoStart: 0
   sendRate: 60
-  offlineScene: 
-  onlineScene: 
+  offlineScene: Assets/Scenes/Default/Menu.unity
+  onlineScene: Assets/Scenes/Default/Lobby.unity
   offlineSceneLoadDelay: 0
   transport: {fileID: 232779417100486059}
   networkAddress: localhost
@@ -85,19 +86,23 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
-  offlineSceneRef:
-    m_AssetGUID: 451586f28ff22a946b895ef0d457d0d9
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_SubObjectGUID: 
-    m_EditorAssetChanged: 0
-  onlineSceneRef:
-    m_AssetGUID: c1e00a02ec0c7304584fa323ef166aaf
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_SubObjectGUID: 
-    m_EditorAssetChanged: 0
-  debugGui: 0
+--- !u!114 &3563542487113084554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9130736802413147131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aa135acc32a4383ae9a5817f018cb06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Inner: {fileID: 232779417100486059}
+  ClientValidateServerPubKey: 0
+  ClientTrustedPubKeySignatures: []
+  ServerLoadKeyPairFromFile: 0
+  ServerKeypairPath: ./server-keys.json
 --- !u!114 &232779417100486059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,8 +116,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transports:
-  - {fileID: 7777117685727935497}
---- !u!114 &7777117685727935497
+  - {fileID: 694683035715645482}
+--- !u!114 &694683035715645482
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -121,24 +126,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 9130736802413147131}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0110f245bfcfc7d459681f7bd9ebc590, type: 3}
+  m_Script: {fileID: 11500000, guid: 5d3e310924fb49c195391b9699f20809, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxMessageSize: 16384
-  maxHandshakeSize: 16384
-  serverMaxMsgsPerTick: 10000
-  clientMaxMsgsPerTick: 1000
-  sendTimeout: 5000
-  receiveTimeout: 20000
-  noDelay: 1
-  sslEnabled: 0
-  sslProtocols: 3072
-  sslCertJson: ./cert.json
-  port: 27777
-  batchSend: 1
-  waitBeforeSend: 1
-  clientUseWss: 0
-  clientWebsocketSettings:
-    ClientPortOption: 0
-    CustomClientPort: 7777
-  minimumLogLevel: 3
+  sleepDetection: 1
+  sleepTimeoutInSeconds: 30
+  port: 7777
+  DualMode: 1
+  NoDelay: 1
+  Interval: 10
+  Timeout: 10000
+  RecvBufferSize: 7361536
+  SendBufferSize: 7361536
+  FastResend: 2
+  ReceiveWindowSize: 4096
+  SendWindowSize: 4096
+  MaxRetransmit: 40
+  MaximizeSocketBuffers: 1
+  ReliableMaxMessageSize: 297433
+  UnreliableMaxMessageSize: 1194
+  debugLog: 0
+  statisticsGUI: 0
+  statisticsLog: 0
+  ClientValidateServerPubKey: 0
+  ClientTrustedPubKeySignatures: []
+  ServerLoadKeyPairFromFile: 0
+  ServerKeypairPath: ./server-keys.json

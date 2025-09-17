@@ -84,7 +84,7 @@ namespace Sanicball.UI
 
         public void IncrementStage()
         {
-            var StageId = ActiveData.GetIndexFromStage(ActiveData.GetStageByBarcode(tempSettings.StageBarcode));
+            var StageId = ActiveData.Instance.GetIndexFromStage(ActiveData.Instance.GetStageByBarcode(tempSettings.StageBarcode));
             if (StageId < ActiveData.Instance.Stages.Count - 1) StageId++;
             else
                 StageId = 0;
@@ -94,7 +94,7 @@ namespace Sanicball.UI
 
         public void DecrementStage()
         {
-            var StageId = ActiveData.GetIndexFromStage(ActiveData.GetStageByBarcode(tempSettings.StageBarcode));
+            var StageId = ActiveData.Instance.GetIndexFromStage(ActiveData.Instance.GetStageByBarcode(tempSettings.StageBarcode));
             if (StageId > 0) StageId--;
             else
                 StageId = ActiveData.Instance.Stages.Count - 1;

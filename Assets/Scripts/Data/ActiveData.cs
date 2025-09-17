@@ -2,15 +2,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Mirror;
+using ModTool;
 using Newtonsoft.Json;
 using Sanicball.Logic;
 using Sanicball.Powerups;
 using SanicballCore;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.Audio;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 
 namespace Sanicball.Data
@@ -44,7 +41,7 @@ namespace Sanicball.Data
         [SerializeField]
         private ESportMode eSportsPrefab;
 
-        public SceneReference LobbyScene;
+        public Object LobbyScene;
 
         #endregion Fields
 
@@ -54,7 +51,7 @@ namespace Sanicball.Data
         public static MatchSettings MatchSettings = new();
         public static List<RaceRecord> RaceRecords { get { return Instance.raceRecords; } }
 
-        public List<SanicPallet> CustomStagesPallets = new List<SanicPallet>();
+        public List<SanicPallet> Pallets = new List<SanicPallet>();
         public List<StageInfo> Stages = new List<StageInfo>();
         public List<PowerupLogic> Powerups = new List<PowerupLogic>();
         public List<CharacterInfo> Characters = new List<CharacterInfo>();
@@ -79,25 +76,27 @@ namespace Sanicball.Data
         //Make sure there is never more than one GameData object
         private void Awake()
         {
-            if (Instance == null)
+            if (Instance != this)
             {
-                Instance = this;
-                DontDestroyOnLoad(gameObject);
-                FindPallets();
+                if(Instance) Destroy(Instance.gameObject);
             }
-            else
-            {
-                Destroy(gameObject);
-            }
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            FindPallets();
         }
-        public static AsyncOperationHandle<IList<SanicPallet>> PalletHandle = new();
+        public static string ModsPath => Path.Combine(Application.persistentDataPath, "Mods");
         public void FindPallets()
         {
-            PalletHandle = Addressables.LoadAssetsAsync<SanicPallet>("mod", LoadPalletCallback);
-            PalletHandle.Completed += PalletCompleted;
+            Pallets.ForEach(LoadPalletCallback);
+
+            if (!Directory.Exists(ModsPath)) Directory.CreateDirectory(ModsPath);
+            ModManager.AddSearchDirectory(ModsPath);
+            ModManager.Refresh();
+            ModManager.ModFound += LoadModCallback;
+            ModManager.ModsChanged += PalletCompleted;
         }
 
-        private void PalletCompleted(AsyncOperationHandle<IList<SanicPallet>> _)
+        private void PalletCompleted()
         {
             MatchSettings = new();
             foreach (var info in Stages)
@@ -107,47 +106,48 @@ namespace Sanicball.Data
             Debug.Log("Completed Loading Pallet!");
         }
 
+        public void LoadModCallback(Mod mod)
+        {
+            var pallets = mod.GetAssets<SanicPallet>();
+            pallets.ToList().ForEach(LoadPalletCallback);
+        }
+
         public void LoadPalletCallback(SanicPallet pallet)
         {
-            CustomStagesPallets.Add(pallet);
+            if(!Pallets.Contains(pallet)) Pallets.Add(pallet);
             Stages.AddRange(pallet.Stages);
             for (int i = 0; i < Stages.Count; i++) Stages[i].id = i;
             MusicPlayer.Playlist.AddRange(pallet.Playlist);
             Characters.AddRange(pallet.Avatars);
             Powerups.AddRange(pallet.Powerups);
-
             Debug.Log($"Loaded Pallet: ({pallet.Author}.{pallet.name})");
         }
-        public static bool TryGetStageByBarcode(string barcode, out StageInfo stage)
+        public bool TryGetStageByBarcode(string barcode, out StageInfo stage)
         {
             stage = GetStageByBarcode(barcode);
             return stage != null;
         }
-        public static StageInfo GetRandomStage()
+        public StageInfo GetRandomStage()
         {
-            return Instance.Stages[Random.Range(0, Instance.Stages.Count - 1)];
+            return Stages[Random.Range(0, Stages.Count - 1)];
         }
-        public static int GetIndexFromStage(StageInfo stage)
+        public int GetIndexFromStage(StageInfo stage)
         {
-            return Instance.Stages.IndexOf(stage);
+            return Stages.IndexOf(stage);
         }
-        public static StageInfo GetStageByBarcode(string barcode)
+        public StageInfo GetStageByBarcode(string barcode)
         {
             if (barcode == null)
             {
                 Debug.LogError("Barcode is null");
-                return null;
+                barcode =  MatchSettings.DEFAULTSTAGE;
             }
             barcode = barcode.ToLower();
-            var selectedStage = Instance.Stages[0];
-            foreach (var stage in Instance.Stages)
-            {
-                if (stage.BARCODE.ToLower().Contains(barcode)) selectedStage = stage;
-            }
+            var selectedStage = Stages.Find(x => x.BARCODE.ToLower() == barcode.ToLower());
             return selectedStage;
         }
 
-        public static void LoadLevel(StageInfo level, LoadSceneMode mode = LoadSceneMode.Single)
+        public void LoadLevel(StageInfo level, LoadSceneMode mode = LoadSceneMode.Single)
         {
             BootstrapSceneManager.LoadScene(level.scene);
             //level.LoadSceneAsync(mode);
@@ -163,7 +163,6 @@ namespace Sanicball.Data
         private void OnApplicationQuit()
         {
             SaveAll();
-            PalletHandle.Release();
         }
 
         #endregion Unity functions

@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.ResourceProviders;
+﻿using Mirror;
+using UnityEngine;
 
 namespace Sanicball.Data
 {
@@ -10,7 +9,7 @@ namespace Sanicball.Data
         [HideInInspector] public int id = 0;
         public string BARCODE;
         public string name;
-        public SceneReference scene;
+        [Scene] public string scene;
         public Sprite picture;
         public GameObject overviewPrefab;
     }

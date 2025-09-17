@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 37349fb7f701e804cb01b1c08dd4acd6
+timeCreated: 1455139813
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 75580
+  packageName: ModTool
+  packageVersion: 2.0
+  assetPath: Assets/ModTool/Example/Menu Scene.unity
+  uploadId: 505469
