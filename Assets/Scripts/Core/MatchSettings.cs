@@ -64,35 +64,23 @@ namespace SanicballCore
         /// Creates a MatchSettings object with the game's default settings.
         /// </summary>
         /// <returns></returns>
-        public MatchSettings(
-                int Laps = 2,
-                int AICount = 0,
-                AISkillLevel AISkill = AISkillLevel.Average,
-                int AutoStartTime = 60,
-                int AutoStartMinPlayers = 2,
-                int AutoReturnTime = 15,
-                float VoteRatio = 1f,
-                StageRotationMode StageRotationMode = StageRotationMode.None,
-                AllowedTiers AllowedTiers = AllowedTiers.All,
-                TierRotationMode TierRotationMode = TierRotationMode.None,
-                int DisqualificationTime = 120
-                )
+        public MatchSettings(StageInfo info = null)
         {
-            this.StageBarcode = DEFAULTSTAGE;
-            this.Laps = Laps;
-            this.AICount = AICount;
-            this.AISkill = AISkill;
-            this.aiCharacters = DEFAULTAICHARACTERS;
+            StageBarcode = info != null ? info.BARCODE : DEFAULTSTAGE;
+            Laps = 2;
+            AICount = 8;
+            AISkill = AISkillLevel.Average;
+            aiCharacters = DEFAULTAICHARACTERS;
 
-            this.AutoStartTime = AutoStartTime;
-            this.AutoStartMinPlayers = AutoStartMinPlayers;
-            this.AutoReturnTime = AutoReturnTime;
-            this.VoteRatio = VoteRatio;
-            this.StageRotationMode = StageRotationMode;
-            this.AllowedTiers = AllowedTiers;
-            this.TierRotationMode = TierRotationMode;
-            this.DisqualificationTime = DisqualificationTime;
-            this.Aliases = new();
+            AutoStartTime = 60;
+            AutoStartMinPlayers = 2;
+            AutoReturnTime = 15;
+            VoteRatio = 1;
+            StageRotationMode = StageRotationMode.None;
+            AllowedTiers = AllowedTiers.All;
+            TierRotationMode = TierRotationMode.None;
+            DisqualificationTime = 120;
+            Aliases = new();
         }
 
         /// <summary>

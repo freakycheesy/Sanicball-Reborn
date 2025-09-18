@@ -42,13 +42,13 @@ namespace Sanicball.UI
         public static OptionsPanel Instance;
         public void Apply()
         {
-            ActiveData.GameSettings.CopyValues(tempSettings);
-            ActiveData.GameSettings.Apply(true);
+            ActiveData.Instance.GameSettings.CopyValues(tempSettings);
+            ActiveData.Instance.GameSettings.Apply(true);
         }
 
         public void RevertToCurrent()
         {
-            tempSettings.CopyValues(ActiveData.GameSettings);
+            tempSettings.CopyValues(ActiveData.Instance.GameSettings);
             UpdateFields();
         }
 

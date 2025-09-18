@@ -16,69 +16,48 @@ namespace Sanicball.Data
     {
         #region Fields
 
-        public List<RaceRecord> raceRecords = new List<RaceRecord>();
+        public List<RaceRecord> RaceRecords = new List<RaceRecord>();
 
         public static ActiveData Instance;
 
         //This data is saved to a json file
-        private GameSettings gameSettings = new GameSettings();
+        public GameSettings GameSettings = new GameSettings();
 
-        private KeybindCollection keybinds = new KeybindCollection();
+        public KeybindCollection Keybinds = new KeybindCollection();
+
+        public MatchSettings MatchSettings = new();
 
         //This data is set from the editor and remains constant
         [Header("Static data")]
-        [SerializeField]
-        private GameJoltInfo gameJoltInfo;
 
         [SerializeField]
-        private GameObject christmasHat;
+        public GameObject ChristmasHat;
         [SerializeField]
-        private Material eSportsTrail;
+        public Material ESportsTrail;
         [SerializeField]
-        private GameObject eSportsHat;
+        public GameObject ESportsHat;
         [SerializeField]
-        private Song eSportsMusic;
+        public Song ESportsMusic;
         [SerializeField]
-        private ESportMode eSportsPrefab;
+        public ESportMode ESportsPrefab;
 
         public Object LobbyScene;
 
         #endregion Fields
-
-        #region Properties
-        public static GameSettings GameSettings { get { return Instance.gameSettings; } }
-        public static KeybindCollection Keybinds { get { return Instance.keybinds; } }
-        public static MatchSettings MatchSettings = new();
-        public static List<RaceRecord> RaceRecords { get { return Instance.raceRecords; } }
-
         public List<SanicPallet> Pallets = new List<SanicPallet>();
         public List<StageInfo> Stages = new List<StageInfo>();
         public List<PowerupLogic> Powerups = new List<PowerupLogic>();
         public List<CharacterInfo> Characters = new List<CharacterInfo>();
-        public GameObject ChristmasHat { get { return Instance.christmasHat; } }
-        public Material ESportsTrail { get { return Instance.eSportsTrail; } }
-        public GameObject ESportsHat { get { return Instance.eSportsHat; } }
-        public Song ESportsMusic { get { return Instance.eSportsMusic; } }
-        public ESportMode ESportsPrefab { get { return Instance.eSportsPrefab; } }
-
-        public static bool ESportsFullyReady
-        {
-            get
-            {
-                return GameSettings.eSportsReady;
-            }
-        }
-
-        #endregion Properties
 
         #region Unity functions
 
         //Make sure there is never more than one GameData object
         private void Awake()
         {
-            if (Instance != this)
+            if (Instance != this && Instance)
             {
-                if(Instance) Destroy(Instance.gameObject);
+                Destroy(gameObject);
+                return;
             }
             Instance = this;
             DontDestroyOnLoad(gameObject);
@@ -90,10 +69,17 @@ namespace Sanicball.Data
             Pallets.ForEach(LoadPalletCallback);
 
             if (!Directory.Exists(ModsPath)) Directory.CreateDirectory(ModsPath);
-            ModManager.AddSearchDirectory(ModsPath);
-            ModManager.Refresh();
-            ModManager.ModFound += LoadModCallback;
-            ModManager.ModsChanged += PalletCompleted;
+            try
+            {
+                ModManager.AddSearchDirectory(ModsPath);
+                ModManager.Refresh();
+                ModManager.ModFound += LoadModCallback;
+                ModManager.ModsChanged += PalletCompleted;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogException(e, this);
+            }
         }
 
         private void PalletCompleted()
@@ -157,7 +143,6 @@ namespace Sanicball.Data
         private void OnEnable()
         {
             LoadAll();
-            gameJoltInfo.Init();
         }
 
         private void OnApplicationQuit()
@@ -171,18 +156,18 @@ namespace Sanicball.Data
 
         public void LoadAll()
         {
-            Load("GameSettings.json", ref gameSettings);
-            Load("GameKeybinds.json", ref keybinds);
+            Load("GameSettings.json", ref GameSettings);
+            Load("GameKeybinds.json", ref Keybinds);
             Load("MatchSettings.json", ref MatchSettings);
-            Load("Records.json", ref raceRecords);
+            Load("Records.json", ref RaceRecords);
         }
 
         public void SaveAll()
         {
-            Save("GameSettings.json", gameSettings);
-            Save("GameKeybinds.json", keybinds);
+            Save("GameSettings.json", GameSettings);
+            Save("GameKeybinds.json", Keybinds);
             Save("MatchSettings.json", MatchSettings);
-            Save("Records.json", raceRecords);
+            Save("Records.json", RaceRecords);
         }
 
         private void Load<T>(string filename, ref T output)

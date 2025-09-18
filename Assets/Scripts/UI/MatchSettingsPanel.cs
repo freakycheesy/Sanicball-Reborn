@@ -55,7 +55,7 @@ namespace Sanicball.UI
             if (manager)
             {
                 manager.RequestSettingsChange(tempSettings);
-                ActiveData.MatchSettings = tempSettings;
+                ActiveData.Instance.MatchSettings = tempSettings;
             }
         }
 

@@ -25,7 +25,7 @@ namespace Sanicball.UI
         ESportMode esport;
 
         void Start() {
-            if (ActiveData.ESportsFullyReady) {
+            if (ActiveData.Instance.GameSettings.eSportsReady) {
                 esport = Instantiate(ActiveData.Instance.ESportsPrefab);
             }
         }

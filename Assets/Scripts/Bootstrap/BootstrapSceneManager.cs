@@ -20,11 +20,14 @@ public class BootstrapSceneManager : MonoBehaviour
     */
 
     [Server]
-    public static void LoadScene(object sceneKey)
+    public static void LoadScene(Object newScene)
     {
-        string newSceneName = "";
-        if (sceneKey is Scene) newSceneName = ((Scene)sceneKey).path;
-        else if (sceneKey is string) newSceneName = sceneKey as string;
+        LoadScene(newScene.name);
+    }
+
+    [Server]
+    public static void LoadScene(string newSceneName)
+    {
         NetworkManager.singleton.ServerChangeScene(newSceneName);
     }
 

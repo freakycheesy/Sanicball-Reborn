@@ -12,7 +12,7 @@ namespace Sanicball.Gameplay
         private void Start()
         {
             tr = GetComponent<TrailRenderer>();
-            tr.enabled = ActiveData.GameSettings.trails;
+            tr.enabled = ActiveData.Instance.GameSettings.trails;
         }
 
         private void Update()

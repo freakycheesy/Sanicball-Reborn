@@ -45,20 +45,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bbc2a230d41c7c4188b4ccb438aa1b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  raceRecords: []
-  gameJoltInfo:
-    gameID: 0
-    privateKey: 
-    verbose: 1
-    disabled: 1
-  christmasHat: {fileID: 132204, guid: 59d3895ecfc783e4289b0c51098a0429, type: 3}
-  eSportsTrail: {fileID: 2100000, guid: 535ce71ad14791d40b6cbe98a2276283, type: 2}
-  eSportsHat: {fileID: 132204, guid: 8db695c5167175b4f8c02e1d1f7e5b99, type: 3}
-  eSportsMusic:
-    BARCODE: Bangarang by Skrillex
+  RaceRecords: []
+  GameSettings:
+    nickname: 
+    gameJoltUsername: 
+    gameJoltToken: 
+    resolution: 0
+    fullscreen: 1
+    vsync: 0
+    useImperial: 0
+    showControlsWhileWaiting: 1
+    aa: 0
+    trails: 1
+    shadows: 1
+    motionBlur: 0
+    bloom: 0
+    reflectionQuality: 0
+    eSportsReady: 0
+    useOldControls: 0
+    oldControlsMouseSpeed: 3
+    oldControlsKbSpeed: 10
+    soundVolume: 1
+    music: 1
+    fastMusic: 1
+  ChristmasHat: {fileID: 132204, guid: 59d3895ecfc783e4289b0c51098a0429, type: 3}
+  ESportsTrail: {fileID: 2100000, guid: 535ce71ad14791d40b6cbe98a2276283, type: 2}
+  ESportsHat: {fileID: 132204, guid: 8db695c5167175b4f8c02e1d1f7e5b99, type: 3}
+  ESportsMusic:
+    BARCODE: MLG.BANGARANGBASE
     name: Bangarang
     resource: {fileID: 8300000, guid: 44aeddca0c186224090a76d97139eaa4, type: 3}
-  eSportsPrefab: {fileID: 11400000, guid: f55190f64bbb0c349bcd0f128756a753, type: 3}
+  ESportsPrefab: {fileID: 11400000, guid: f55190f64bbb0c349bcd0f128756a753, type: 3}
   LobbyScene: {fileID: 102900000, guid: c1e00a02ec0c7304584fa323ef166aaf, type: 3}
   Pallets:
   - {fileID: 11400000, guid: 02460f397f1b79a41aa630b8b16e6850, type: 2}

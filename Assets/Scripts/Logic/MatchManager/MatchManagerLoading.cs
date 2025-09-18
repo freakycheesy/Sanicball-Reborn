@@ -76,11 +76,11 @@ namespace Sanicball.Logic
         {
             state.inLobby = true;
 
-            if (state.showSettingsOnLobbyLoad)
+            if (InitiateMatchSettings)
             {
                 //Let the player pick settings first time entering the lobby
                 LobbyReferences.Active.MatchSettingsPanel.Show();
-                state.showSettingsOnLobbyLoad = false;
+                InitiateMatchSettings = false;
             }
             MatchManagerSpawned?.Invoke(this, Time.time);
         }

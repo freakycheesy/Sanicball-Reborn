@@ -15,7 +15,7 @@ namespace Sanicball
 
         private void Start()
         {
-            ReflectionQuality q = ActiveData.GameSettings.reflectionQuality;
+            ReflectionQuality q = ActiveData.Instance.GameSettings.reflectionQuality;
 
             if (q == ReflectionQuality.Off)
             {

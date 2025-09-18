@@ -54,6 +54,8 @@ namespace Sanicball.Logic
         [TextArea(1, 50)]
         public string matchSettingJson;
         #endregion State changing methods
+
+        public static bool InitiateMatchSettings = false;
     }
 
     [Serializable]
@@ -74,7 +76,6 @@ namespace Sanicball.Logic
             loadingLobby = false;
             loadingStage = false;
             joiningRaceInProgress = false;
-            showSettingsOnLobbyLoad = false;
         }
         #region Match state
 
@@ -104,7 +105,6 @@ namespace Sanicball.Logic
         public bool loadingLobby;
         public bool loadingStage;
         public bool joiningRaceInProgress; //If true, RaceManager will be created as if a race was already in progress.
-        public bool showSettingsOnLobbyLoad; //If true, the match settings window will pop up when the lobby scene is entered.
         #endregion Scenes and scene initializing
         public MatchSettings CurrentSettings;
     }

@@ -140,7 +140,7 @@ namespace Sanicball.UI
 
                 float time = (float)e.CurrentLapTime.TotalSeconds;
 
-                RaceRecord bestRecord = ActiveData.RaceRecords
+                RaceRecord bestRecord = ActiveData.Instance.RaceRecords
                     .Where(a => a.Tier == tier && a.Stage == stage && a.GameVersion == GameVersion.AS_FLOAT && a.WasTesting == GameVersion.IS_TESTING)
                     .OrderBy(a => a.Time)
                     .FirstOrDefault();
@@ -191,7 +191,7 @@ namespace Sanicball.UI
             string postfix = " ";
 
             //Speed label
-            if (!ActiveData.GameSettings.useImperial)
+            if (!ActiveData.Instance.GameSettings.useImperial)
             {
                 postfix += (Mathf.Floor(speed) == 1f) ? "fast/h" : "fasts/h";
             }

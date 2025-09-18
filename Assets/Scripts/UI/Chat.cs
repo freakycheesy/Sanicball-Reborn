@@ -127,7 +127,7 @@ namespace Sanicball.UI
             if (text.Trim() != string.Empty)
             {
                 if (MessageSent != null)
-                    MessageSent(ActiveData.GameSettings.nickname, text);
+                    MessageSent(ActiveData.Instance.GameSettings.nickname, text);
             }
             EventSystem.current.SetSelectedGameObject(prevSelectedObject);
 

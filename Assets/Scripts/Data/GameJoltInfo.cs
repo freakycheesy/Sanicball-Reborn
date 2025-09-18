@@ -14,7 +14,7 @@ namespace Sanicball.Data
 
     [System.Serializable]
     public class GameJoltInfo
-    {
+    {/*
         public int gameID;
         public string privateKey;
         public bool verbose;
@@ -119,6 +119,6 @@ namespace Sanicball.Data
                 ActiveData.GameSettings.gameJoltToken = string.Empty;
             }
             GJAPI.Users.VerifyCallback -= CheckIfSignedInCallback;
-        }
+        }*/
     }
 }

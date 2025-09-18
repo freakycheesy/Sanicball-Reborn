@@ -52,7 +52,7 @@ namespace Sanicball.UI
         private IEnumerator Start()
         {
             var charList = ActiveData.Instance.Characters.OrderBy(a => a.tier).ToArray();
-            if (ActiveData.GameSettings.eSportsReady)
+            if (ActiveData.Instance.GameSettings.eSportsReady)
             {
                 charList = charList.Where(a => a.tier == SanicballCore.CharacterTier.Hyperspeed).ToArray();
             }

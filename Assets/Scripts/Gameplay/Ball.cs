@@ -214,7 +214,7 @@ namespace Sanicball.Gameplay
                 hatPrefab = ActiveData.Instance.ChristmasHat;
             }
 
-            if (ActiveData.GameSettings.eSportsReady)
+            if (ActiveData.Instance.GameSettings.eSportsReady)
             {
                 hatPrefab = ActiveData.Instance.ESportsHat;
             }
@@ -233,7 +233,7 @@ namespace Sanicball.Gameplay
                 {
                     IBallCamera camera;
                     //Create camera
-                    if (ActiveData.GameSettings.useOldControls)
+                    if (ActiveData.Instance.GameSettings.useOldControls)
                     {
                         camera = Instantiate(prefabs.OldCamera);
                         ((PivotCamera)camera).UseMouse = ctrlType == ControlType.Keyboard;
@@ -290,7 +290,7 @@ namespace Sanicball.Gameplay
         {
             Renderer.material = c.material;
             TrailRenderer.material = c.trail;
-            if (c.name == "Super Sanic" && ActiveData.GameSettings.eSportsReady)
+            if (c.name == "Super Sanic" && ActiveData.Instance.GameSettings.eSportsReady)
             {
                 TrailRenderer.material = ActiveData.Instance.ESportsTrail;
             }

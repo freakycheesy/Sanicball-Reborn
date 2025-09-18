@@ -63,7 +63,7 @@ namespace Sanicball.UI
         private void UpdateFields()
         {
             string selectedStageBarcode = ActiveData.Instance.Stages[selectedStage].BARCODE;
-            var records = ActiveData.RaceRecords.Where(a => a.Stage == selectedStageBarcode && a.GameVersion == GameVersion.AS_FLOAT && a.WasTesting == GameVersion.IS_TESTING).OrderBy(a => a.Time);
+            var records = ActiveData.Instance.RaceRecords.Where(a => a.Stage == selectedStageBarcode && a.GameVersion == GameVersion.AS_FLOAT && a.WasTesting == GameVersion.IS_TESTING).OrderBy(a => a.Time);
 
 			for (int i = 0; i < recordTypes.Count (); i++) {
 				var ctrl = recordTypes [i];

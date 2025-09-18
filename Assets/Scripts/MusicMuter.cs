@@ -16,7 +16,7 @@ namespace Sanicball
 
         private void Update()
         {
-            aSource.mute = !ActiveData.GameSettings.music;
+            aSource.mute = !ActiveData.Instance.GameSettings.music;
         }
     }
 }

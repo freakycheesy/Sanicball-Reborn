@@ -17,7 +17,7 @@ namespace Sanicball
             if (nicknameField.text.Trim() != "" && isReady)
             {
                 setNicknameGroup.alpha = 0f;
-                ActiveData.GameSettings.nickname = nicknameField.text;
+                ActiveData.Instance.GameSettings.nickname = nicknameField.text;
                 intro.enabled = true;
             }
         }
@@ -31,7 +31,7 @@ namespace Sanicball
         private void LoadGame()
         {
             isReady = true;
-            if (string.IsNullOrEmpty(ActiveData.GameSettings.nickname) || ActiveData.GameSettings.nickname == "Player")
+            if (string.IsNullOrEmpty(ActiveData.Instance.GameSettings.nickname) || ActiveData.Instance.GameSettings.nickname == "Player")
             {
                 //Set nickname before continuing
                 setNicknameGroup.alpha = 1f;

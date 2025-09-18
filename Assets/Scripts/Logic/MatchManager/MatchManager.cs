@@ -69,11 +69,14 @@ namespace Sanicball.Logic
         void Start()
         {
             Instance = this;
-            state = new(ActiveData.MatchSettings);
+            state = new(ActiveData.Instance.MatchSettings);
             DontDestroyOnLoad(gameObject);
-            if (NetworkServer.active) state.CurrentSettings = ActiveData.MatchSettings;
-            if (NetworkServer.active) state.inLobby = true;
-            if (NetworkServer.activeHost) state.showSettingsOnLobbyLoad = true;
+            if (NetworkServer.active)
+            {
+                state.CurrentSettings = ActiveData.Instance.MatchSettings;
+                state.inLobby = true;
+                InitiateMatchSettings = true;
+            }
             SceneManager.sceneLoaded += OnLevelHasLoaded;
             activeChat = Instantiate(chatPrefab);
             activeChat.MessageSent += LocalChatMessageSent;
@@ -108,7 +111,7 @@ namespace Sanicball.Logic
         public override void OnStartClient()
         {
             base.OnStartClient();
-            localClient = new(NetworkServer.localConnection.connectionId, ActiveData.GameSettings.nickname);
+            localClient = new(NetworkServer.localConnection.connectionId, ActiveData.Instance.GameSettings.nickname);
             NetworkClient.Send<ClientJoinedMessage>(new(localClient));
         }
 

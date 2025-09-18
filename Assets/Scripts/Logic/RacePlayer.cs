@@ -235,7 +235,7 @@ namespace Sanicball.Logic
                     CharacterTier tier = ActiveData.Instance.Characters[Character].tier;
                     string sceneName = SceneManager.GetActiveScene().name;
 
-                    ActiveData.RaceRecords.Add(new RaceRecord(
+                    ActiveData.Instance.RaceRecords.Add(new RaceRecord(
                         tier,
                         lapTime,
                         DateTime.Now,

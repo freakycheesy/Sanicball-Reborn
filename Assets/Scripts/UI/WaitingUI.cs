@@ -17,17 +17,17 @@ namespace Sanicball.UI
 
         private void Start()
         {
-            controlsPanel.alpha = ActiveData.GameSettings.showControlsWhileWaiting ? 1 : 0;
+            controlsPanel.alpha = ActiveData.Instance.GameSettings.showControlsWhileWaiting ? 1 : 0;
         }
 
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.F1) || Input.GetKeyDown(KeyCode.JoystickButton6))
             {
-                ActiveData.GameSettings.showControlsWhileWaiting = !ActiveData.GameSettings.showControlsWhileWaiting;
+                ActiveData.Instance.GameSettings.showControlsWhileWaiting = !ActiveData.Instance.GameSettings.showControlsWhileWaiting;
             }
 
-            controlsPanel.alpha = Mathf.Lerp(controlsPanel.alpha, ActiveData.GameSettings.showControlsWhileWaiting ? 1 : 0, Time.deltaTime * 20);
+            controlsPanel.alpha = Mathf.Lerp(controlsPanel.alpha, ActiveData.Instance.GameSettings.showControlsWhileWaiting ? 1 : 0, Time.deltaTime * 20);
         }
 
         public string StageNameToShow

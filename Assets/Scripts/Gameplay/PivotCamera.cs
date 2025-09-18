@@ -50,8 +50,8 @@ namespace Sanicball.Gameplay
         {
             if (UseMouse)
             {
-                sensitivityMouse = ActiveData.GameSettings.oldControlsMouseSpeed;
-                sensitivityKeyboard = ActiveData.GameSettings.oldControlsKbSpeed;
+                sensitivityMouse = ActiveData.Instance.GameSettings.oldControlsMouseSpeed;
+                sensitivityKeyboard = ActiveData.Instance.GameSettings.oldControlsKbSpeed;
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
             }
