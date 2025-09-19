@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using Newtonsoft.Json;
@@ -9,8 +7,6 @@ using Sanicball.UI;
 using SanicballCore;
 using SanicballCore.MatchMessages;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.SceneManagement;
 using SceneManager = UnityEngine.SceneManagement.SceneManager;
 
 namespace Sanicball.Logic
@@ -129,6 +125,7 @@ namespace Sanicball.Logic
             StopLobbyTimer();
 
             MatchPlayerAdded(this, new MatchPlayerEventArgs(p, conn.identity.isLocalPlayer));
+            MatchManagerUpdated?.Invoke(this);
         }
 
         private void ClientJoinedCallback(NetworkConnectionToClient conn, ClientJoinedMessage message)
@@ -138,6 +135,7 @@ namespace Sanicball.Logic
             if (MatchManager.Instance.Clients.Contains(matchClient)) return;
             MatchManager.Instance.Clients.Add(matchClient);
             Debug.Log("New client " + matchClient.Name);
+            MatchManagerUpdated?.Invoke(this);
         }
 
         private void SettingsChangedCallback(SettingsChangedMessage message)

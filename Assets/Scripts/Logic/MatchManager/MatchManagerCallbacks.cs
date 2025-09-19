@@ -26,22 +26,24 @@ namespace Sanicball.Logic
             }
             //Remove the client
             Clients.RemoveAll(a => a.ConnectionId == conn.connectionId);
+            MatchManagerUpdated?.Invoke(this);
         }
         public void PlayerLeftCallback(NetworkConnectionToClient conn, PlayerLeftMessage message)
         {
             int guid = conn.connectionId;
             ControlType type = message.CtrlType;
             var player = Players.FirstOrDefault(a => a.ConnectionId == guid && a.CtrlType == type);
-                Players.Remove(player);
+            Players.Remove(player);
 
-                if (player.BallObject)
-                {
-                    player.BallObject.CreateRemovalParticles();
-                    NetworkServer.Destroy(player.BallObject.gameObject);
-                }
+            if (player.BallObject)
+            {
+                player.BallObject.CreateRemovalParticles();
+                NetworkServer.Destroy(player.BallObject.gameObject);
+            }
 
-                if (MatchPlayerRemoved != null)
-                    MatchPlayerRemoved(this, new MatchPlayerEventArgs(player, conn.identity.isLocalPlayer)); //TODO: determine if removed player was local
+            if (MatchPlayerRemoved != null)
+                MatchPlayerRemoved(this, new MatchPlayerEventArgs(player, conn.identity.isLocalPlayer)); //TODO: determine if removed player was local
+            MatchManagerUpdated?.Invoke(this);
         }
 
         public void CharacterChangedCallback(NetworkConnectionToClient conn, CharacterChangedMessage message)

@@ -11,6 +11,7 @@ namespace Sanicball.Logic
     {
         public static EventHandler<MatchPlayerEventArgs> MatchPlayerAdded;
         public static EventHandler<MatchPlayerEventArgs> MatchPlayerRemoved;
+        public static Action<MatchManager> MatchManagerUpdated;
         public static Action<MatchManager, float> MatchManagerSpawned;
         public static EventHandler MatchSettingsChanged;
     }

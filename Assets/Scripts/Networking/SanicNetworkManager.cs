@@ -22,6 +22,7 @@ public class SanicNetworkManager : NetworkManager
 
     public static void CreateLobby()
     {
+        if (singleton == null) singleton = FindAnyObjectByType<SanicNetworkManager>();
         try
         {
             MatchManager.InitiateMatchSettings = true;
@@ -37,13 +38,15 @@ public class SanicNetworkManager : NetworkManager
 
     public static void JoinLobby(string ip)
     {
+        if (singleton == null) singleton = FindAnyObjectByType<SanicNetworkManager>();
         singleton.networkAddress = ip;
         singleton?.StartClient();
     }
 
     public static void LeaveLobby()
     {
-        if(singleton.isNetworkActive) singleton?.StopHost();
+        if (singleton == null) singleton = FindAnyObjectByType<SanicNetworkManager>();
+        if (singleton.isNetworkActive) singleton?.StopHost();
     }
     public override void OnStopServer()
     {
@@ -61,8 +64,7 @@ public class SanicNetworkManager : NetworkManager
     {
         base.Awake();
         DontDestroyOnLoad(this.gameObject);
-        singleton = this;
-        if (singleton != this) singleton = this;
+        if (singleton == null) singleton = FindAnyObjectByType<SanicNetworkManager>();
     }
 
 }
