@@ -6,6 +6,7 @@ using ModTool;
 using Newtonsoft.Json;
 using Sanicball.Logic;
 using Sanicball.Powerups;
+using Sanicball.UI;
 using SanicballCore;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -40,6 +41,17 @@ namespace Sanicball.Data
         public Song ESportsMusic;
         [SerializeField]
         public ESportMode ESportsPrefab;
+        //Prefabs
+        [SerializeField]
+        public PauseMenu pauseMenuPrefab;
+        [SerializeField]
+        public Chat chatPrefab;
+        [SerializeField]
+        public RaceManager raceManagerPrefab;
+        [SerializeField]
+        public Popup disconnectedPopupPrefab;
+        [SerializeField]
+        public Marker markerPrefab = null;
 
         public Object LobbyScene;
 

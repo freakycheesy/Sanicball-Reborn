@@ -17,17 +17,7 @@ namespace Sanicball.Logic
 
         public static MatchManager Instance;
 
-        //Prefabs
-        [SerializeField]
-        public PauseMenu pauseMenuPrefab;
-        [SerializeField]
-        public Chat chatPrefab;
-        [SerializeField]
-        public RaceManager raceManagerPrefab;
-        [SerializeField]
-        public UI.Popup disconnectedPopupPrefab;
-        [SerializeField]
-        public Marker markerPrefab = null;
+
 
         #endregion Exposed fields
 
@@ -51,11 +41,7 @@ namespace Sanicball.Logic
         #endregion Properties
 
         #region State changing methods
-        [TextArea(1, 50)]
-        public string matchSettingJson;
         #endregion State changing methods
-
-        public static bool InitiateMatchSettings = false;
     }
 
     [Serializable]

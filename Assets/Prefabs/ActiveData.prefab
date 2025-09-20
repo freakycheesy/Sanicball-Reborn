@@ -76,6 +76,12 @@ MonoBehaviour:
     name: Bangarang
     resource: {fileID: 8300000, guid: 44aeddca0c186224090a76d97139eaa4, type: 3}
   ESportsPrefab: {fileID: 11400000, guid: f55190f64bbb0c349bcd0f128756a753, type: 3}
+  pauseMenuPrefab: {fileID: 11429824, guid: 26112b52065230d4d957e3f9d87cb82e, type: 3}
+  chatPrefab: {fileID: 11491130, guid: 5161f6d36bd9b40418c825fd34b1deb7, type: 3}
+  raceManagerPrefab: {fileID: 11420630, guid: e716ae2f6176c9442addf97bb30866ee, type: 3}
+  disconnectedPopupPrefab: {fileID: 11490040, guid: 11ce84fdcf53cfe47a5dae11b1a8076a,
+    type: 3}
+  markerPrefab: {fileID: 11459252, guid: 4beca760f831c984e9f5e1b517aff2c2, type: 3}
   LobbyScene: {fileID: 102900000, guid: c1e00a02ec0c7304584fa323ef166aaf, type: 3}
   Pallets:
   - {fileID: 11400000, guid: 02460f397f1b79a41aa630b8b16e6850, type: 2}

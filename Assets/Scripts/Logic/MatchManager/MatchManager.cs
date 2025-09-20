@@ -67,19 +67,27 @@ namespace Sanicball.Logic
             Instance = this;
             state = new(ActiveData.Instance.MatchSettings);
             DontDestroyOnLoad(gameObject);
-            if (NetworkServer.active)
-            {
-                state.CurrentSettings = ActiveData.Instance.MatchSettings;
-                state.inLobby = true;
-                InitiateMatchSettings = true;
-            }
+            if (NetworkServer.active) OnStartServer();
             SceneManager.sceneLoaded += OnLevelHasLoaded;
-            activeChat = Instantiate(chatPrefab);
+            activeChat = Instantiate(ActiveData.Instance.chatPrefab);
             activeChat.MessageSent += LocalChatMessageSent;
             RegisterNetworkMessages();
             MatchManagerSpawned?.Invoke(this, Time.time);
         }
-        
+
+        public override void OnStartServer()
+        {
+            base.OnStartServer();
+            state.CurrentSettings = ActiveData.Instance.MatchSettings;
+            state.inLobby = true;
+            ShowMatchSettingsPanel();
+        }
+
+        public static void ShowMatchSettingsPanel()
+        {
+            LobbyReferences.Active?.MatchSettingsPanel?.Show();
+        }
+
         public static bool IsLocalId(NetworkConnectionToClient id)
         {
             return IsLocalId(id.connectionId);
@@ -152,13 +160,12 @@ namespace Sanicball.Logic
         public void Update()
         {
             //var messenger = InstanceFinder.ClientManager;
-            matchSettingJson = JsonConvert.SerializeObject(state.CurrentSettings);
             //Pausing/unpausing
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7))
             {
-                if (!UI.PauseMenu.GamePaused)
+                if (!PauseMenu.GamePaused)
                 {
-                    UI.PauseMenu menu = Instantiate(pauseMenuPrefab);
+                    Instantiate(ActiveData.Instance.pauseMenuPrefab);
                 }
                 else
                 {
@@ -256,7 +263,7 @@ namespace Sanicball.Logic
 
             if (conn != NetworkServer.localConnection)
             {
-                Marker marker = Instantiate(markerPrefab);
+                Marker marker = Instantiate(ActiveData.Instance.markerPrefab);
                 marker.transform.SetParent(LobbyReferences.Active.MarkerContainer, false);
                 marker.Color = Color.clear;
                 marker.Text = name;

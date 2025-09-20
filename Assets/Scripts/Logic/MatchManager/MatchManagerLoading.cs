@@ -76,12 +76,6 @@ namespace Sanicball.Logic
         {
             state.inLobby = true;
 
-            if (InitiateMatchSettings)
-            {
-                //Let the player pick settings first time entering the lobby
-                LobbyReferences.Active.MatchSettingsPanel.Show();
-                InitiateMatchSettings = false;
-            }
             MatchManagerSpawned?.Invoke(this, Time.time);
         }
 
@@ -90,7 +84,7 @@ namespace Sanicball.Logic
         {
             state.inLobby = false;
 
-            var raceManager = Instantiate(raceManagerPrefab);
+            var raceManager = Instantiate(ActiveData.Instance.raceManagerPrefab);
             raceManager.Init(state.CurrentSettings, this, state.joiningRaceInProgress);
             state.joiningRaceInProgress = false;
         }
@@ -108,7 +102,7 @@ namespace Sanicball.Logic
             {
                 yield return null;
 
-                FindAnyObjectByType<UI.PopupHandler>().OpenPopup(disconnectedPopupPrefab);
+                FindAnyObjectByType<UI.PopupHandler>().OpenPopup(ActiveData.Instance.disconnectedPopupPrefab);
                 FindAnyObjectByType<UI.PopupDisconnected>().Reason = reason;
             }
 

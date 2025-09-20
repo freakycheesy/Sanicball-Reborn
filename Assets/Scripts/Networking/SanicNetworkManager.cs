@@ -25,12 +25,10 @@ public class SanicNetworkManager : NetworkManager
         if (singleton == null) singleton = FindAnyObjectByType<SanicNetworkManager>();
         try
         {
-            MatchManager.InitiateMatchSettings = true;
             singleton?.StartHost();
         }
         catch (Exception e)
         {
-            MatchManager.InitiateMatchSettings = false;
             Debug.Log($"Trying to Join Client, Reason: {e}");
             singleton?.StartClient();
         }
