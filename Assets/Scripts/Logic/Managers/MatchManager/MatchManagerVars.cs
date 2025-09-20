@@ -45,31 +45,25 @@ namespace Sanicball.Logic
     }
 
     [Serializable]
-    public struct MatchState
+    public class MatchState
     {
         public MatchState(MatchSettings MatchSettings)
         {
-            clients = new();
-            players = new();
-            CurrentSettings = MatchSettings != null ? MatchSettings : new();
-            lobbyTimerOn = false;
-            lobbyTimer = lobbyTimerMax;
-            autoStartTimerOn = false;
-            autoStartTimer = 0;
-            inLobby = false;
-            loadingLobby = false;
-            loadingStage = false;
-            joiningRaceInProgress = false;
+            CurrentSettings = MatchSettings;
+        }
+        public MatchState()
+        {
+            CurrentSettings = new();
         }
         #region Match state
 
         //List of all clients in the match. Only serves a purpose in online play.
         //In local play, this list will always only contain the local client.
-        public List<MatchClient> clients;
+        public List<MatchClient> clients = new();
 
         //List of all players - players are seperate from clients because each client can have
         //up to 4 players playing in splitscreen.
-        public List<MatchPlayer> players;
+        public List<MatchPlayer> players = new();
 
         //Lobby countdown timer stuff
         public bool lobbyTimerOn;
@@ -90,6 +84,6 @@ namespace Sanicball.Logic
         public bool loadingStage;
         public bool joiningRaceInProgress; //If true, RaceManager will be created as if a race was already in progress.
         #endregion Scenes and scene initializing
-        public MatchSettings CurrentSettings;
+        public MatchSettings CurrentSettings = new();
     }
 }

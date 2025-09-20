@@ -16,6 +16,7 @@ namespace Sanicball.Logic
             var ball = Instantiate(ballPrefab, position, rotation);
             ball.Init(ballType, ctrlType, character, nickname);
             NetworkServer.Spawn(ball.netIdentity.gameObject, connection);
+            ball.ReceiveControlType(connection,ctrlType);
             return ball;
         }
     }

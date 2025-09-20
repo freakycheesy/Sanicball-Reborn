@@ -57,14 +57,13 @@ namespace Sanicball.Logic
                 bool local = MatchManager.IsLocalId(matchPlayer.ConnectionId);
 
                 //Create ball
-                string name = matchManager.Clients.FirstOrDefault(a => MatchManager.IsLocalId(a.ConnectionId)).Name;
-                NetworkServer.connections.TryGetValue(matchPlayer.ConnectionId, out var conn);
+                string name = NetworkServer.connections.FirstOrDefault(a => MatchManager.IsLocalId(a.Value)).Value.connectionId.ToString();
                 matchPlayer.BallObject = ballSpawner.SpawnBall(
                     nextBallPosition,
                     BallType.Player,
                     local ? matchPlayer.CtrlType : ControlType.None,
                     matchPlayer.CharacterId,
-                    name + " (" + GameInput.GetControlTypeName(matchPlayer.CtrlType) + ")", conn
+                    name + " (" + GameInput.GetControlTypeName(matchPlayer.CtrlType) + ")", matchPlayer.ConnectionId
                     );
 
                 //Create race player
@@ -135,7 +134,7 @@ namespace Sanicball.Logic
                     if (MatchManager.IsLocalId(rp.AssociatedMatchPlayer.ConnectionId))
                     {
                         //For local player balls, send a DoneRacingMessage.
-                        DoneRacingMessage message = new(rp.AssociatedMatchPlayer.ConnectionId, rp.AssociatedMatchPlayer.CtrlType, raceTimer, false);
+                        DoneRacingMessage message = new(rp.AssociatedMatchPlayer.CtrlType, raceTimer, false);
                         NetworkClient.Send<DoneRacingMessage>(message);
                         //LobbyScript.Instance.DoneRacingRpc(rp.AssociatedMatchPlayer.ClientGuid, rp.AssociatedMatchPlayer.CtrlType, raceTimer, false);
                     }
@@ -166,6 +165,7 @@ namespace Sanicball.Logic
         public void Awake()
         {
             Instance = this;
+            NetworkServer.OnDisconnectedEvent += ClientLeftCallback;
         }
         public void Start()
         {
@@ -185,9 +185,9 @@ namespace Sanicball.Logic
             //LobbyScript.Instance.StartRaceRpc();
             foreach (var p in MatchManager.Instance.Players)
             {
-                if (NetworkServer.localConnection.connectionId == p.ConnectionId)
+                if (NetworkServer.localConnection == p.ConnectionId)
                 {
-                    NetworkClient.Send<ReadyUpRaceMessage>(new(p.ConnectionId, p.CtrlType));
+                    NetworkClient.Send<ReadyUpRaceMessage>(new(p.CtrlType));
                     //LobbyScript.Instance.ReadyUpRaceRpc(p.CtrlType);
                 }
             }
@@ -196,7 +196,6 @@ namespace Sanicball.Logic
         private void RegisterMessages()
         {
             NetworkServer.ReplaceHandler<DoneRacingMessage>(DoneRacingCallback);
-            NetworkServer.ReplaceHandler<ClientLeftMessage>(ClientLeftCallback);
             NetworkServer.ReplaceHandler<ReadyUpRaceMessage>(ReadyUpRace);
         }
 
@@ -230,7 +229,7 @@ namespace Sanicball.Logic
         public struct ReadyUpRaceMessage : NetworkMessage {
             public ControlType ctrlType;
 
-            public ReadyUpRaceMessage(int myGuid, ControlType ctrlType)
+            public ReadyUpRaceMessage(ControlType ctrlType)
             {
                 this.ctrlType = ctrlType;
             }
@@ -240,7 +239,7 @@ namespace Sanicball.Logic
         [Server]
         public void ReadyUpRace(NetworkConnectionToClient conn, ReadyUpRaceMessage message)
         {
-            var players = MatchManager.Instance.Players.FindAll(x => x.ConnectionId == conn.connectionId);
+            var players = MatchManager.Instance.Players.FindAll(x => x.ConnectionId == conn);
             foreach (var player in players)
             {
                 player.ReadyToRace = true;

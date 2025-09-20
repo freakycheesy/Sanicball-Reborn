@@ -82,8 +82,8 @@ namespace Sanicball.Gameplay
         [Header("Initial stats")]
         [SerializeField, SyncVar]
         private BallType type;
-        [SerializeField, SyncVar]
-        private ControlType ctrlType;
+        [SerializeField]
+        private ControlType ctrlType = ControlType.None;
         [SerializeField, SyncVar]
         private int characterId;
         [SerializeField, SyncVar]
@@ -155,6 +155,12 @@ namespace Sanicball.Gameplay
         {
             if (RespawnRequested != null)
                 RespawnRequested?.Invoke();
+        }
+
+        [TargetRpc]
+        public void ReceiveControlType(NetworkConnectionToClient target, ControlType type)
+        {
+            ctrlType = type;
         }
 
         public void Init(BallType type, ControlType ctrlType, int characterId, string nickname)

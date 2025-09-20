@@ -15,23 +15,22 @@ namespace Sanicball.UI
         [SerializeField]
         private Text playerCountField = null;
 
-        public static List<ClientListEntry> ClientListEntries = new List<ClientListEntry>();
         public static ClientListEntry ClientListEntryPrefab = null;
         public static Transform ClientList;
 
         void OnEnable()
         {
-            ClientListEntries.Add(this);
+            LobbyStatusBar.Instance.ClientListEntries.Add(this);
         }
 
         void OnDisable()
         {
-            ClientListEntries.Remove(this);
+            LobbyStatusBar.Instance.ClientListEntries.Remove(this);
         }
 
         public static void ClearEntries()
         {
-            ClientListEntries.ForEach(ClearEntry);
+            foreach (var entry in LobbyStatusBar.Instance.ClientListEntries.ToArray()) ClearEntry(entry);
         }
 
         public static void ClearEntry(ClientListEntry entry)
@@ -58,7 +57,7 @@ namespace Sanicball.UI
         {
             nameField.text = client.Name;
 
-            List<MatchPlayer> players = manager.Players.Where(a => a.CharacterId == client.ConnectionId).ToList();
+            List<MatchPlayer> players = manager.Players.Where(a => a.ConnectionId == client.GetConnection()).ToList();
             int playersTotal = players.Count();
             int playersReady = players.Count(a => a.ReadyToRace);
 

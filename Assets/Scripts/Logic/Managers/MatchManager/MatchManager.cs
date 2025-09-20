@@ -60,6 +60,8 @@ namespace Sanicball.Logic
                 return;
             }
             Instance = this;
+            NetworkServer.OnConnectedEvent += ClientJoinedCallback;
+            NetworkServer.OnDisconnectedEvent += ClientLeftCallback;
         }
         void Start()
         {
@@ -71,7 +73,7 @@ namespace Sanicball.Logic
             activeChat = Instantiate(ActiveData.Instance.chatPrefab);
             activeChat.MessageSent += LocalChatMessageSent;
             RegisterNetworkMessages();
-            MatchManagerSpawned(this, Time.time);
+            MatchManagerSpawned(this, Time.time); 
         }
 
         public override void OnStartServer()
@@ -86,8 +88,6 @@ namespace Sanicball.Logic
         {
             if(!NetworkClient.ready) NetworkClient.Ready();
             base.OnStartClient();
-            localClient = new(NetworkServer.localConnection.connectionId, ActiveData.Instance.GameSettings.nickname);
-            ClientJoinedCallback(localClient);
         }
 
         public static void ShowMatchSettingsPanel()
@@ -110,7 +110,6 @@ namespace Sanicball.Logic
             NetworkServer.ReplaceHandler<ChangedReadyMessage>(ChangedReadyCallback, RequireAuth);
             NetworkServer.ReplaceHandler<CharacterChangedMessage>(CharacterChangedCallback, RequireAuth);
             NetworkServer.ReplaceHandler<ChatMessage>((_, a) => ChatCallback(a), RequireAuth);
-            NetworkServer.ReplaceHandler<ClientLeftMessage>(ClientLeftCallback, RequireAuth);
             NetworkServer.ReplaceHandler<PlayerJoinedMessage>(PlayerJoinedCallback, RequireAuth);
             NetworkServer.ReplaceHandler<PlayerLeftMessage>(PlayerLeftCallback, RequireAuth);
             NetworkServer.ReplaceHandler<LoadLobbyMessage>(LoadLobbyCallback);
@@ -131,17 +130,6 @@ namespace Sanicball.Logic
             StopLobbyTimer();
 
             MatchPlayerAdded(this,new MatchPlayerEventArgs(p, conn.identity.isLocalPlayer));
-            MatchManagerUpdated(this, new());
-        }
-
-        [Command(requiresAuthority = false)]
-        private void ClientJoinedCallback(MatchClient client)
-        {
-            var matchClient = client;
-            if (state.clients.Contains(matchClient)) return;
-            if (Clients.Contains(matchClient)) return;
-            Clients.Add(matchClient);
-            Debug.Log("New client " + matchClient.Name);
             MatchManagerUpdated(this, new());
         }
 
@@ -259,8 +247,8 @@ namespace Sanicball.Logic
                 Destroy(player.BallObject.gameObject);
             }
 
-            string name = Clients.First(a => a.ConnectionId == conn.connectionId).Name + " (" + GameInput.GetControlTypeName(player.CtrlType) + ")";
-            player.BallObject = spawner.SpawnBall((conn == NetworkServer.localConnection) ? player.CtrlType : ControlType.None, player.CharacterId, name, conn);
+            string name = Clients.First(a => a.GetConnection() == conn).Name + " (" + GameInput.GetControlTypeName(player.CtrlType) + ")";
+            player.BallObject = spawner.Spawn(IsLocalId(conn) ? player.CtrlType : ControlType.None, player.CharacterId, name, conn);
 
             if (conn != NetworkServer.localConnection)
             {

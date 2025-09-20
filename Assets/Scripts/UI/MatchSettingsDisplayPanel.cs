@@ -41,7 +41,7 @@ namespace Sanicball.UI
             StageInfo stage = new();
             if (!ActiveData.Instance.TryGetStageByBarcode(s.StageBarcode, out stage)) stage = ActiveData.Instance.GetStageByBarcode(MatchSettings.DEFAULTSTAGE);
             var stageId = ActiveData.Instance.GetIndexFromStage(stage);
-            targetStageCamPos = new Vector3(stageId * 50, stageLayoutCamera.transform.position.y, stageLayoutCamera.transform.position.z);
+            if(stageLayoutCamera) targetStageCamPos = new Vector3(stageId * 50, stageLayoutCamera.transform.position.y, stageLayoutCamera.transform.position.z);
             stageName.text = stage.name;
             stageImage.sprite = stage.picture;
             lapCount.text = s.Laps + (s.Laps == 1 ? " lap" : " laps");
@@ -52,8 +52,8 @@ namespace Sanicball.UI
             }*/
             aiSkill.text = "AI Skill: " + s.AISkill;
 
-            settingsChangedAnimation.Rewind();
-            settingsChangedAnimation.Play();
+            settingsChangedAnimation?.Rewind();
+            settingsChangedAnimation?.Play();
         }
 
         private void Update()

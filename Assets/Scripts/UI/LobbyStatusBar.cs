@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Mirror;
 using Sanicball.Data;
 using Sanicball.Logic;
 using Telepathy;
@@ -21,13 +22,16 @@ namespace Sanicball.UI
         [SerializeField]
         private ClientListEntry clientListEntryPrefab = null;
 
+        public List<ClientListEntry> ClientListEntries = new List<ClientListEntry>();
 
         public static MatchManager manager;
+        public static LobbyStatusBar Instance;
 
         private void Awake()
         {
+            Instance = this;
             manager ??= FindAnyObjectByType<MatchManager>();
-            MatchManager.MatchManagerUpdated += (a,_) => Manager_Update(a as MatchManager);
+            MatchManager.MatchManagerUpdated += (a, _) => Manager_Update(a as MatchManager);
             MatchManager.MatchManagerSpawned += (a, _) => OnStart(a as MatchManager);
         }
 
@@ -47,7 +51,7 @@ namespace Sanicball.UI
         {
             if (!manager) return;
 
-            int clients = manager.Clients.Count;
+            int clients = NetworkServer.connections.Count;
             int players = manager.Players.Count;
 
             if (manager.AutoStartTimerOn)

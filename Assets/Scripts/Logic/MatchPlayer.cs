@@ -28,7 +28,7 @@ namespace Sanicball.Logic
         [SerializeField]
         private ControlType ctrlType;
 
-        public MatchPlayer(int clientGuid = 0, ControlType ctrlType = ControlType.None, int initialCharacterId = 0, Ball BallObject = null, bool ReadyToRace = false)
+        public MatchPlayer(int clientGuid, ControlType ctrlType = ControlType.None, int initialCharacterId = 0, Ball BallObject = null, bool ReadyToRace = false)
         {
             this.connectionId = clientGuid;
             this.ctrlType = ctrlType;
@@ -40,7 +40,14 @@ namespace Sanicball.Logic
         {
 
         }
-        public int ConnectionId { get { return connectionId; } }
+        public NetworkConnectionToClient ConnectionId
+        {
+            get
+            {
+                NetworkServer.connections.TryGetValue(connectionId, out var value);
+                return value;
+            }
+        }
         public ControlType CtrlType { get { return ctrlType; } }
         public int CharacterId { get; set; }
         public Ball BallObject { get; set; }

@@ -16,23 +16,29 @@ namespace Sanicball.Logic
     public partial class MatchManager : NetworkBehaviour
     {
         #region Match message callbacks
-        public void ClientLeftCallback(NetworkConnectionToClient conn, ClientLeftMessage message)
+        public void ClientJoinedCallback(NetworkConnectionToClient client)
+        {
+            MatchClient matchClient = new(client, $"Player{client.authenticationData}");
+            Clients.Add(matchClient);
+            Debug.Log("New client " + matchClient.Name);
+            MatchManagerUpdated(this, new());
+        }
+
+        public void ClientLeftCallback(NetworkConnectionToClient conn)
         {
             //Remove all players added by this client
-            List<MatchPlayer> playersToRemove = Players.Where(a => a.ConnectionId == conn.connectionId).ToList();
+            List<MatchPlayer> playersToRemove = Players.Where(a => a.ConnectionId == conn).ToList();
             foreach (MatchPlayer player in playersToRemove)
             {
                 PlayerLeftCallback(conn, new(player.CtrlType));
             }
             //Remove the client
-            Clients.RemoveAll(a => a.ConnectionId == conn.connectionId);
             MatchManagerUpdated(this, new());
         }
         public void PlayerLeftCallback(NetworkConnectionToClient conn, PlayerLeftMessage message)
         {
-            int guid = conn.connectionId;
             ControlType type = message.CtrlType;
-            var player = Players.FirstOrDefault(a => a.ConnectionId == guid && a.CtrlType == type);
+            var player = Players.FirstOrDefault(a => a.ConnectionId == conn && a.CtrlType == type);
             Players.Remove(player);
 
             if (player.BallObject)
@@ -53,14 +59,14 @@ namespace Sanicball.Logic
                 Debug.LogError("Cannot set character outside of lobby!");
             }
 
-            var player = Players.FirstOrDefault(a => a.ConnectionId == conn.connectionId && a.CtrlType == message.CtrlType);
+            var player = Players.FirstOrDefault(a => a.ConnectionId == conn && a.CtrlType == message.CtrlType);
             player.CharacterId = message.NewCharacter;
             SpawnLobbyBall(conn, player);
         }
 
         public void ChangedReadyCallback(NetworkConnectionToClient conn, ChangedReadyMessage message)
         {
-            var player = Instance.Players.FirstOrDefault(a => a.ConnectionId == conn.connectionId && a.CtrlType == message.CtrlType);
+            var player = Instance.Players.FirstOrDefault(a => a.ConnectionId == conn && a.CtrlType == message.CtrlType);
             player.ReadyToRace = !player.ReadyToRace;
 
             //Check if all players are ready and start/stop lobby timer accordingly

@@ -11,11 +11,16 @@ namespace Sanicball.Logic
     public struct MatchClient
     {
         public int ConnectionId;
+        public NetworkConnectionToClient GetConnection()
+        {
+            NetworkServer.connections.TryGetValue(ConnectionId, out var value);
+            return value;
+        }
         public string Name;
 
-        public MatchClient(int guid,string name)
+        public MatchClient(NetworkConnectionToClient connection, string name)
         {
-            ConnectionId = guid;
+            ConnectionId = connection.connectionId;
             Name = name;
         }
     }

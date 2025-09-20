@@ -35,7 +35,7 @@ namespace Sanicball.UI
                 //Create local player panels for players already in the game
                 foreach (var p in manager.Players)
                 {
-                    if (p.ConnectionId == NetworkServer.localConnection.connectionId && p.CtrlType != ControlType.None)
+                    if (p.ConnectionId == NetworkServer.localConnection && p.CtrlType != ControlType.None)
                     {
                         var panel = CreatePanelForControlType(p.CtrlType, true);
                         panel.AssignedPlayer = p;
@@ -130,7 +130,7 @@ namespace Sanicball.UI
         {
             bool anyLeft = usedControls.Count < maxPlayers;
             bool hasKeyboard = usedControls.Contains(ControlType.Keyboard);
-
+            if (!matchJoiningHelpField) return;
             matchJoiningHelpField.text = "";
             if (anyLeft)
             {

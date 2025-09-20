@@ -184,7 +184,7 @@ namespace Sanicball.Logic
                         //Send a match message for local players
                         waitingForCheckpointMessage = true;
                         Instance = this;
-                        NetworkClient.Send<CheckpointPassedMessage>(new(associatedMatchPlayer.ConnectionId, associatedMatchPlayer.CtrlType, lapTime));
+                        NetworkClient.Send<CheckpointPassedMessage>(new(associatedMatchPlayer.CtrlType, lapTime));
                     }
                 }
                 else if (ball.Type == BallType.AI)
@@ -195,18 +195,18 @@ namespace Sanicball.Logic
             }
         }
         public static RacePlayer Instance { get; private set; }
-        public void CheckpointPassedHandler(CheckpointPassedMessage message)
+        public void CheckpointPassedHandler(NetworkConnectionToClient conn, CheckpointPassedMessage message)
         {
-            if (associatedMatchPlayer != null && message.ConnectionID == associatedMatchPlayer.ConnectionId && message.CtrlType == associatedMatchPlayer.CtrlType)
+            if (associatedMatchPlayer != null && conn == associatedMatchPlayer.ConnectionId && message.CtrlType == associatedMatchPlayer.CtrlType)
             {
                 PassNextCheckpoint(lapTime);
                 waitingForCheckpointMessage = false;
             }
         }
 
-        public void RaceTimeoutHandler(RaceTimeoutMessage message)
+        public void RaceTimeoutHandler(NetworkConnectionToClient conn, RaceTimeoutMessage message)
         {
-            if (associatedMatchPlayer != null && message.ConnectionID == associatedMatchPlayer.ConnectionId && message.CtrlType == associatedMatchPlayer.CtrlType)
+            if (associatedMatchPlayer != null && conn == associatedMatchPlayer.ConnectionId && message.CtrlType == associatedMatchPlayer.CtrlType)
             {
                 timeout = lapTime - (float)NetworkTime.rtt;
             }
