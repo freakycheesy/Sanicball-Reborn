@@ -36,7 +36,7 @@ namespace Sanicball.Logic
         [Server]
         public void GoToStage()
         {
-            CurrentStage = ActiveData.Instance.GetStageByBarcode(state.CurrentSettings.StageBarcode);
+            if (!ActiveData.Instance.TryGetStageByBarcode(state.CurrentSettings.StageBarcode, out CurrentStage)) return;
 
             state.loadingStage = true;
             state.loadingLobby = false;

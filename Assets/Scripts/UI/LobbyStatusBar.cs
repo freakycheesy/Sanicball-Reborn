@@ -27,8 +27,8 @@ namespace Sanicball.UI
         private void Awake()
         {
             manager ??= FindAnyObjectByType<MatchManager>();
-            MatchManager.MatchManagerUpdated += Manager_Update;
-            MatchManager.MatchManagerSpawned += (a, _) => OnStart(a);
+            MatchManager.MatchManagerUpdated += (a,_) => Manager_Update(a as MatchManager);
+            MatchManager.MatchManagerSpawned += (a, _) => OnStart(a as MatchManager);
         }
 
         private void Manager_Update(MatchManager a)

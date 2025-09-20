@@ -19,10 +19,9 @@ namespace Sanicball.Logic
         [Server]
         public void RequestSettingsChange(MatchSettings newSettings)
         {
-            SettingsChangedMessage message = new(newSettings);
-            Instance.state.CurrentSettings = newSettings;
-            MatchSettingsChanged?.Invoke(this, EventArgs.Empty);
-            NetworkClient.Send(message);
+            state.CurrentSettings = newSettings;
+            MatchSettingsChanged(this, state.CurrentSettings);
+            SettingsChangedCallback(state.CurrentSettings);
         }
 
         public void RequestPlayerJoin(ControlType ctrlType, int initialCharacter)
@@ -72,7 +71,7 @@ namespace Sanicball.Logic
             activeChat = Instantiate(ActiveData.Instance.chatPrefab);
             activeChat.MessageSent += LocalChatMessageSent;
             RegisterNetworkMessages();
-            MatchManagerSpawned?.Invoke(this, Time.time);
+            MatchManagerSpawned(this, Time.time);
         }
 
         public override void OnStartServer()
@@ -81,6 +80,14 @@ namespace Sanicball.Logic
             state.CurrentSettings = ActiveData.Instance.MatchSettings;
             state.inLobby = true;
             ShowMatchSettingsPanel();
+        }
+
+        public override void OnStartClient()
+        {
+            if(!NetworkClient.ready) NetworkClient.Ready();
+            base.OnStartClient();
+            localClient = new(NetworkServer.localConnection.connectionId, ActiveData.Instance.GameSettings.nickname);
+            ClientJoinedCallback(localClient);
         }
 
         public static void ShowMatchSettingsPanel()
@@ -103,20 +110,11 @@ namespace Sanicball.Logic
             NetworkServer.ReplaceHandler<ChangedReadyMessage>(ChangedReadyCallback, RequireAuth);
             NetworkServer.ReplaceHandler<CharacterChangedMessage>(CharacterChangedCallback, RequireAuth);
             NetworkServer.ReplaceHandler<ChatMessage>((_, a) => ChatCallback(a), RequireAuth);
-            NetworkServer.ReplaceHandler<ClientJoinedMessage>(ClientJoinedCallback, RequireAuth);
             NetworkServer.ReplaceHandler<ClientLeftMessage>(ClientLeftCallback, RequireAuth);
             NetworkServer.ReplaceHandler<PlayerJoinedMessage>(PlayerJoinedCallback, RequireAuth);
             NetworkServer.ReplaceHandler<PlayerLeftMessage>(PlayerLeftCallback, RequireAuth);
             NetworkServer.ReplaceHandler<LoadLobbyMessage>(LoadLobbyCallback);
-            NetworkClient.ReplaceHandler<SettingsChangedMessage>(SettingsChangedCallback);
             NetworkClient.ReplaceHandler<LoadRaceMessage>((_, _) => LoadRaceCallback());
-        }
-
-        public override void OnStartClient()
-        {
-            base.OnStartClient();
-            localClient = new(NetworkServer.localConnection.connectionId, ActiveData.Instance.GameSettings.nickname);
-            NetworkClient.Send<ClientJoinedMessage>(new(localClient));
         }
 
         private void PlayerJoinedCallback(NetworkConnectionToClient conn, PlayerJoinedMessage message)
@@ -132,24 +130,27 @@ namespace Sanicball.Logic
 
             StopLobbyTimer();
 
-            MatchPlayerAdded(this, new MatchPlayerEventArgs(p, conn.identity.isLocalPlayer));
-            MatchManagerUpdated?.Invoke(this);
+            MatchPlayerAdded(this,new MatchPlayerEventArgs(p, conn.identity.isLocalPlayer));
+            MatchManagerUpdated(this, new());
         }
 
-        private void ClientJoinedCallback(NetworkConnectionToClient conn, ClientJoinedMessage message)
+        [Command(requiresAuthority = false)]
+        private void ClientJoinedCallback(MatchClient client)
         {
-            var matchClient = message.Client;
+            var matchClient = client;
             if (state.clients.Contains(matchClient)) return;
-            if (MatchManager.Instance.Clients.Contains(matchClient)) return;
-            MatchManager.Instance.Clients.Add(matchClient);
+            if (Clients.Contains(matchClient)) return;
+            Clients.Add(matchClient);
             Debug.Log("New client " + matchClient.Name);
-            MatchManagerUpdated?.Invoke(this);
+            MatchManagerUpdated(this, new());
         }
 
-        private void SettingsChangedCallback(SettingsChangedMessage message)
+        [ClientRpc]
+        private void SettingsChangedCallback(MatchSettings newSettings)
         {
             Debug.Log("Settings changed");
-            MatchSettingsChanged?.Invoke(this, EventArgs.Empty);
+            MatchSettingsChanged?.Invoke(this, newSettings);
+            state.CurrentSettings = newSettings;
         }
 
         public void LocalChatMessageSent(string from, string text)

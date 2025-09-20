@@ -1,5 +1,6 @@
 using System;
 using Mirror;
+using SanicballCore;
 using UnityEngine;
 
 namespace Sanicball.Logic
@@ -11,8 +12,8 @@ namespace Sanicball.Logic
     {
         public static EventHandler<MatchPlayerEventArgs> MatchPlayerAdded;
         public static EventHandler<MatchPlayerEventArgs> MatchPlayerRemoved;
-        public static Action<MatchManager> MatchManagerUpdated;
-        public static Action<MatchManager, float> MatchManagerSpawned;
-        public static EventHandler MatchSettingsChanged;
+        public static EventHandler MatchManagerUpdated;
+        public static EventHandler<float> MatchManagerSpawned;
+        public static EventHandler<MatchSettings> MatchSettingsChanged;
     }
 }

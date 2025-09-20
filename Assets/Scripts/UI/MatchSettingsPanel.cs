@@ -1,4 +1,5 @@
-﻿using Sanicball.Data;
+﻿using System;
+using Sanicball.Data;
 using Sanicball.Logic;
 using SanicballCore;
 using UnityEngine;
@@ -84,7 +85,16 @@ namespace Sanicball.UI
 
         public void IncrementStage()
         {
-            var StageId = ActiveData.Instance.GetIndexFromStage(ActiveData.Instance.GetStageByBarcode(tempSettings.StageBarcode));
+            StageInfo stage = null;
+            try
+            {
+                ActiveData.Instance.TryGetStageByBarcode(tempSettings.StageBarcode, out stage);
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+            }
+            var StageId = ActiveData.Instance.GetIndexFromStage(stage);
             if (StageId < ActiveData.Instance.Stages.Count - 1) StageId++;
             else
                 StageId = 0;

@@ -24,20 +24,22 @@ namespace Sanicball.UI
         [SerializeField]
         private Camera stageLayoutCamera = null;
 
-        private MatchManager manager => MatchManager.Instance;
+        private MatchManager manager { get; set; }
 
         private void Start()
         {
-            MatchManager.MatchSettingsChanged += Manager_MatchSettingsChanged;
+            MatchManager.MatchSettingsChanged += (a, _) => Manager_MatchSettingsChanged(a as MatchManager);
 
             //Invoke callback immediately to set initial settings
-            MatchManager.MatchManagerSpawned += (_, _)=>Manager_MatchSettingsChanged(this, System.EventArgs.Empty);
+            MatchManager.MatchManagerSpawned += (a, _)=>Manager_MatchSettingsChanged(a as MatchManager);
         }
 
-        private void Manager_MatchSettingsChanged(object sender, System.EventArgs e)
+        private void Manager_MatchSettingsChanged(MatchManager matchManager)
         {
+            manager = matchManager;
             MatchSettings s = manager ? manager.State.CurrentSettings : new();
-            var stage = ActiveData.Instance.GetStageByBarcode(s.StageBarcode);
+            StageInfo stage = new();
+            if (!ActiveData.Instance.TryGetStageByBarcode(s.StageBarcode, out stage)) stage = ActiveData.Instance.GetStageByBarcode(MatchSettings.DEFAULTSTAGE);
             var stageId = ActiveData.Instance.GetIndexFromStage(stage);
             targetStageCamPos = new Vector3(stageId * 50, stageLayoutCamera.transform.position.y, stageLayoutCamera.transform.position.z);
             stageName.text = stage.name;

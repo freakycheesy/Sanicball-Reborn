@@ -26,7 +26,7 @@ namespace Sanicball.Logic
             }
             //Remove the client
             Clients.RemoveAll(a => a.ConnectionId == conn.connectionId);
-            MatchManagerUpdated?.Invoke(this);
+            MatchManagerUpdated(this, new());
         }
         public void PlayerLeftCallback(NetworkConnectionToClient conn, PlayerLeftMessage message)
         {
@@ -42,8 +42,8 @@ namespace Sanicball.Logic
             }
 
             if (MatchPlayerRemoved != null)
-                MatchPlayerRemoved(this, new MatchPlayerEventArgs(player, conn.identity.isLocalPlayer)); //TODO: determine if removed player was local
-            MatchManagerUpdated?.Invoke(this);
+                MatchPlayerRemoved(this,new MatchPlayerEventArgs(player, conn.identity.isLocalPlayer)); //TODO: determine if removed player was local
+            MatchManagerUpdated(this, new());
         }
 
         public void CharacterChangedCallback(NetworkConnectionToClient conn, CharacterChangedMessage message)

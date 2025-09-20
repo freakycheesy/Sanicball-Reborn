@@ -3,7 +3,7 @@ using Sanicball.Logic;
 
 namespace SanicballCore.MatchMessages
 {
-    public struct ClientJoinedMessage : NetworkMessage
+    public struct ClientJoinedMessage
     {
         public MatchClient Client;
 

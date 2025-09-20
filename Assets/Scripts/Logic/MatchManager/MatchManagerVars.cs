@@ -47,13 +47,11 @@ namespace Sanicball.Logic
     [Serializable]
     public struct MatchState
     {
-        public MatchState(
-            MatchSettings MatchSettings = new()
-          )
+        public MatchState(MatchSettings MatchSettings)
         {
             clients = new();
             players = new();
-            CurrentSettings = MatchSettings;
+            CurrentSettings = MatchSettings != null ? MatchSettings : new();
             lobbyTimerOn = false;
             lobbyTimer = lobbyTimerMax;
             autoStartTimerOn = false;

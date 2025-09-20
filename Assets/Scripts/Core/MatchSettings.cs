@@ -39,48 +39,41 @@ namespace SanicballCore
     }
 
     [Serializable]
-    public struct MatchSettings
+    public class MatchSettings
     {
         [Newtonsoft.Json.JsonProperty]
-        private string aiCharacters;
+        private string aiCharacters { get; set; } = DEFAULTAICHARACTERS;
 
-        public string StageBarcode { get; set; }
-        public int Laps { get; set; }
-        public int AICount { get; set; }
-        public AISkillLevel AISkill { get; set; }
-        public Dictionary<string, int> Aliases { get; set; }
+        public string StageBarcode { get; set; } = DEFAULTSTAGE;
+        public int Laps { get; set; } = 2;
+        public int AICount { get; set; } = 8;
+        public AISkillLevel AISkill { get; set; } = AISkillLevel.Average;
+        public Dictionary<string, int> Aliases { get; set; } = new();
 
-        public int AutoStartTime { get; set; }
-        public int AutoStartMinPlayers { get; set; }
-        public int AutoReturnTime { get; set; }
-        public float VoteRatio { get; set; }
-        public StageRotationMode StageRotationMode { get; set; }
-        public AllowedTiers AllowedTiers { get; set; }
-        public TierRotationMode TierRotationMode { get; set; }
-        public int DisqualificationTime { get; set; }
+        public int AutoStartTime { get; set; } = 60;
+        public int AutoStartMinPlayers { get; set; } = 2;
+        public int AutoReturnTime { get; set; } = 15;
+        public float VoteRatio { get; set; } = 1;
+        public StageRotationMode StageRotationMode { get; set; } = StageRotationMode.None;
+        public AllowedTiers AllowedTiers { get; set; } = AllowedTiers.All;
+        public TierRotationMode TierRotationMode { get; set; } = TierRotationMode.None;
+        public int DisqualificationTime { get; set; } = 120;
         public const string DEFAULTSTAGE = "bk-tn.main.greenhillzone";
         public const string DEFAULTAICHARACTERS = "1,2,3,4,5,6,7,8,9,10,11,12";
         /// <summary>
         /// Creates a MatchSettings object with the game's default settings.
         /// </summary>
         /// <returns></returns>
-        public MatchSettings(StageInfo info = null)
+        public MatchSettings(string startingStage = DEFAULTSTAGE, string startingAI= DEFAULTAICHARACTERS)
         {
-            StageBarcode = info != null ? info.BARCODE : DEFAULTSTAGE;
-            Laps = 2;
-            AICount = 8;
-            AISkill = AISkillLevel.Average;
-            aiCharacters = DEFAULTAICHARACTERS;
+            StageBarcode = startingStage;
+            aiCharacters = startingAI;
+        }
 
-            AutoStartTime = 60;
-            AutoStartMinPlayers = 2;
-            AutoReturnTime = 15;
-            VoteRatio = 1;
-            StageRotationMode = StageRotationMode.None;
-            AllowedTiers = AllowedTiers.All;
-            TierRotationMode = TierRotationMode.None;
-            DisqualificationTime = 120;
-            Aliases = new();
+        public MatchSettings()
+        {
+            StageBarcode = DEFAULTSTAGE;
+            aiCharacters = DEFAULTAICHARACTERS;
         }
 
         /// <summary>
@@ -90,7 +83,15 @@ namespace SanicballCore
         /// <returns></returns>
         public int GetAICharacter(int pos)
         {
-            string[] charIDs = aiCharacters.Split(',');
+            string[] charIDs = DEFAULTAICHARACTERS.Split(',');
+            try
+            {
+                charIDs = aiCharacters.Split(',');
+            }
+            catch
+            {
+                charIDs = DEFAULTAICHARACTERS.Split(',');
+            }
 
             if (pos >= 0 && pos < charIDs.Length)
             {
