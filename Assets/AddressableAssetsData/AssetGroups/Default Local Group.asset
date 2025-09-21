@@ -33,8 +33,8 @@ MonoBehaviour:
     m_SerializedLabels:
     - default
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9876baf8fe9d10d42b8119ad05a6d044
-    m_Address: SanicBall-SDK
+  - m_GUID: 96a0ae04737b9424298add917ddd1876
+    m_Address: Assets/Mods
     m_ReadOnly: 0
     m_SerializedLabels:
     - mod
