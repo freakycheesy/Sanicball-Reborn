@@ -117,6 +117,10 @@ namespace Sanicball.Data
         {
             return Stages[Random.Range(0, Stages.Count - 1)];
         }
+        public static int GetIndexFromStageBarcode(string barcode)
+        {
+            return Stages.IndexOf(GetStageByBarcode(barcode));
+        }
         public static int GetIndexFromStage(StageInfo stage)
         {
             return Stages.IndexOf(stage);

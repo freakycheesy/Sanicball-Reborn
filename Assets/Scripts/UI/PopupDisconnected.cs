@@ -8,6 +8,13 @@ namespace Sanicball.UI
         [SerializeField]
         private Text reasonField = null;
 
+        public static PopupDisconnected Instance;
+
+        void Start()
+        {
+            Instance = this;
+        }
+
         public string Reason { set { reasonField.text = value; } }
     }
 }

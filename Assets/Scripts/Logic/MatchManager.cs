@@ -3,15 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Newtonsoft.Json;
 using Sanicball.Data;
 using Sanicball.UI;
 using SanicballCore;
 using SanicballCore.MatchMessages;
+using SanicballCore.Server;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 
 namespace Sanicball.Logic
@@ -129,11 +127,10 @@ namespace Sanicball.Logic
         #endregion Properties
 
         #region State changing methods
-        [TextArea(1, 50)]
-        public string matchSettingJson;
         public void RequestSettingsChange(MatchSettings newSettings)
         {
             messenger.SendMessage(new SettingsChangedMessage(newSettings));
+            Server.ServerInstance?.SendToAll(new SettingsChangedMessage(newSettings));
         }
 
         public void RequestPlayerJoin(ControlType ctrlType, int initialCharacter)
@@ -363,9 +360,9 @@ namespace Sanicball.Logic
             }
             Instance = this;
         }
-        private void Start()
+        private IEnumerator Start()
         {
-            if (Instance != this) return;
+            if (Instance != this) yield return null;
             SceneManager.sceneLoaded += (_, _) => OnLevelHasLoaded();
             DontDestroyOnLoad(gameObject);
 
@@ -384,9 +381,9 @@ namespace Sanicball.Logic
 
             //Create this client
             myGuid = Guid.NewGuid();
+            yield return new WaitForSeconds(0.3f);
             messenger.SendMessage(new ClientJoinedMessage(myGuid, ActiveData.GameSettings.nickname));
         }
-
         private void LocalChatMessageSent(object sender, UI.ChatMessageArgs args)
         {
             MatchClient myClient = clients.FirstOrDefault(a => a.Guid == myGuid);
@@ -405,7 +402,6 @@ namespace Sanicball.Logic
         private void Update()
         {
             messenger.UpdateListeners();
-            matchSettingJson = JsonConvert.SerializeObject(currentSettings);
             //Pausing/unpausing
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7))
             {
@@ -525,10 +521,6 @@ namespace Sanicball.Logic
                 InitRace();
                 loadingStage = false;
             }
-            foreach (var camera in Resources.FindObjectsOfTypeAll<UniversalAdditionalCameraData>())
-            {
-                camera.renderPostProcessing = true;
-            }
         }
 
         //Initiate the lobby after loading lobby scene
@@ -572,8 +564,8 @@ namespace Sanicball.Logic
             {
                 yield return null;
 
-                FindAnyObjectByType<UI.PopupHandler>().OpenPopup(disconnectedPopupPrefab);
-                FindAnyObjectByType<UI.PopupDisconnected>().Reason = reason;
+                PopupHandler.Instance?.OpenPopup(disconnectedPopupPrefab);
+                PopupDisconnected.Instance.Reason = reason;
             }
 
             Destroy(gameObject);

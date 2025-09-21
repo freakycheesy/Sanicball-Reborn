@@ -1642,7 +1642,7 @@ namespace SanicballCore.Server
 
         #region Utility methods
 
-        private void SendToAll(MatchMessage matchMsg)
+        public void SendToAll(MatchMessage matchMsg)
         {
             Log("Sending message of type " + matchMsg.GetType() + " to " + netServer.Connections.Count + " connection(s)", LogType.Debug);
             if (netServer.ConnectionsCount == 0) return;
@@ -1655,7 +1655,7 @@ namespace SanicballCore.Server
             netServer.SendMessage(netMsg, netServer.Connections, NetDeliveryMethod.ReliableOrdered, 0);
         }
 
-        private void SendTo(MatchMessage matchMsg, ServClient reciever) {
+        public void SendTo(MatchMessage matchMsg, ServClient reciever) {
             Log("Sending message of type " + matchMsg.GetType() + " to client " + reciever.Name, LogType.Debug);
             string matchMsgSerialized = JsonConvert.SerializeObject(matchMsg, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
 

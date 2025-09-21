@@ -41,6 +41,7 @@ namespace SanicballCore
         Random,  // 33% chance for normal, odd, hyper
         WeightedRandom // Most chance for normal, small chance for odd, smaller chance for hyper
     }
+    [Serializable]
     public struct MatchSettings
     {
         [Newtonsoft.Json.JsonProperty]
@@ -50,17 +51,17 @@ namespace SanicballCore
         public int Laps { get; set; }
         public bool PowerupsEnabled { get; set; }
         public int AICount { get; set; }
-        public AISkillLevel AISkill { get; set; }
-        public Dictionary<string, int> Aliases { get; set; }
+        public AISkillLevel AISkill{ get; set; }
+        public Dictionary<string, int> Aliases{ get; set; }
 
-        public int AutoStartTime { get; set; }
-        public int AutoStartMinPlayers { get; set; }
-        public int AutoReturnTime { get; set; }
-        public float VoteRatio { get; set; }
-        public StageRotationMode StageRotationMode { get; set; }
-        public AllowedTiers AllowedTiers { get; set; }
-        public TierRotationMode TierRotationMode { get; set; }
-        public int DisqualificationTime { get; set; }
+        public int AutoStartTime{ get; set; }
+        public int AutoStartMinPlayers{ get; set; }
+        public int AutoReturnTime{ get; set; }
+        public float VoteRatio{ get; set; }
+        public StageRotationMode StageRotationMode{ get; set; }
+        public AllowedTiers AllowedTiers{ get; set; }
+        public TierRotationMode TierRotationMode{ get; set; }
+        public int DisqualificationTime{ get; set; }
 
         /// <summary>
         /// Creates a MatchSettings object with the game's default settings.

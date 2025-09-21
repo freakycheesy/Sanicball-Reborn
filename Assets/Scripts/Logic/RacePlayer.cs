@@ -232,8 +232,7 @@ namespace Sanicball.Logic
                 if (LapRecordsEnabled)
                 {
                     CharacterTier tier = ActiveData.Characters[Character].tier;
-                    string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-                    string stage = ActiveData.Stages.Where(a => a.scene.Asset.name.Equals(sceneName)).First().BARCODE;
+                    string stage = ActiveData.Stages[MatchManager.Instance.CurrentSettings.StageId].BARCODE;
 
                     ActiveData.RaceRecords.Add(new RaceRecord(
                         tier,

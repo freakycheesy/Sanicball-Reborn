@@ -27,6 +27,11 @@ MonoBehaviour:
     m_SerializedLabels:
     - default
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52bdea808ea287643a5281b8c8fbcfc0
+    m_Address: Assets/Scripts/SDK/Templates/TemplateTrack.unity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 755d0a34fdb294c4f95f172361af102d
     m_Address: Shaders
     m_ReadOnly: 0
