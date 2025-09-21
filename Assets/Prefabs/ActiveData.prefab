@@ -68,6 +68,20 @@ MonoBehaviour:
     soundVolume: 1
     music: 1
     fastMusic: 1
+  MatchSettings:
+    aiCharacters: 1,2,3,4,5,6,7,8,9,10,11,12
+    StageBarcode: bk-tn.main.greenhillzone
+    Laps: 2
+    AICount: 8
+    AISkill: 1
+    AutoStartTime: 60
+    AutoStartMinPlayers: 2
+    AutoReturnTime: 15
+    VoteRatio: 1
+    StageRotationMode: 0
+    AllowedTiers: 0
+    TierRotationMode: 0
+    DisqualificationTime: 120
   ChristmasHat: {fileID: 132204, guid: 59d3895ecfc783e4289b0c51098a0429, type: 3}
   ESportsTrail: {fileID: 2100000, guid: 535ce71ad14791d40b6cbe98a2276283, type: 2}
   ESportsHat: {fileID: 132204, guid: 8db695c5167175b4f8c02e1d1f7e5b99, type: 3}
@@ -78,6 +92,8 @@ MonoBehaviour:
   ESportsPrefab: {fileID: 11400000, guid: f55190f64bbb0c349bcd0f128756a753, type: 3}
   pauseMenuPrefab: {fileID: 11429824, guid: 26112b52065230d4d957e3f9d87cb82e, type: 3}
   chatPrefab: {fileID: 11491130, guid: 5161f6d36bd9b40418c825fd34b1deb7, type: 3}
+  matchManagerPrefab: {fileID: 3915811301394740083, guid: fdb6e26d3a9dcac42af827fefb1aa46f,
+    type: 3}
   raceManagerPrefab: {fileID: 11420630, guid: e716ae2f6176c9442addf97bb30866ee, type: 3}
   disconnectedPopupPrefab: {fileID: 11490040, guid: 11ce84fdcf53cfe47a5dae11b1a8076a,
     type: 3}

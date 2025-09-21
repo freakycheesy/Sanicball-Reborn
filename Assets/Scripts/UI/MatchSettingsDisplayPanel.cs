@@ -24,24 +24,35 @@ namespace Sanicball.UI
         [SerializeField]
         private Camera stageLayoutCamera = null;
 
-        private MatchManager manager { get; set; }
+        public static MatchSettingsDisplayPanel Instance;
 
         private void Start()
         {
-            MatchManager.MatchSettingsChanged += (a, _) => Manager_MatchSettingsChanged(a as MatchManager);
+            Instance = this;
 
             //Invoke callback immediately to set initial settings
-            MatchManager.MatchManagerSpawned += (a, _)=>Manager_MatchSettingsChanged(a as MatchManager);
+            MatchManager.MatchSettingsChanged +=  Manager_MatchSettingsChanged;
+            MatchManager.MatchManagerSpawned +=  Manager_MatchSettingsChanged;
         }
 
-        private void Manager_MatchSettingsChanged(MatchManager matchManager)
+        void OnDestroy()
         {
-            manager = matchManager;
-            MatchSettings s = manager ? manager.State.CurrentSettings : new();
-            StageInfo stage = new();
+            MatchManager.MatchSettingsChanged-=Manager_MatchSettingsChanged;
+            MatchManager.MatchManagerSpawned -= Manager_MatchSettingsChanged;
+        }
+
+        private void Manager_MatchSettingsChanged(object sender, float time)
+        {
+            Manager_MatchSettingsChanged(sender, (sender as MatchManager).state.CurrentSettings);
+        }
+
+        private void Manager_MatchSettingsChanged(object sender, MatchSettings settings)
+        {
+            MatchSettings s = settings;
+            StageInfo stage;
             if (!ActiveData.Instance.TryGetStageByBarcode(s.StageBarcode, out stage)) stage = ActiveData.Instance.GetStageByBarcode(MatchSettings.DEFAULTSTAGE);
             var stageId = ActiveData.Instance.GetIndexFromStage(stage);
-            if(stageLayoutCamera) targetStageCamPos = new Vector3(stageId * 50, stageLayoutCamera.transform.position.y, stageLayoutCamera.transform.position.z);
+            if (stageLayoutCamera) targetStageCamPos = new Vector3(stageId * 50, stageLayoutCamera.transform.position.y, stageLayoutCamera.transform.position.z);
             stageName.text = stage.name;
             stageImage.sprite = stage.picture;
             lapCount.text = s.Laps + (s.Laps == 1 ? " lap" : " laps");

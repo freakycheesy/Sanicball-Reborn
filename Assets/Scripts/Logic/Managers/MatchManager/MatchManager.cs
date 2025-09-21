@@ -53,21 +53,19 @@ namespace Sanicball.Logic
             NetworkClient.Send<LoadLobbyMessage>(new());
         }
         void Awake()
-        {
-            if (Instance != this && Instance)
-            {
-                Destroy(this.gameObject);
-                return;
-            }
-            Instance = this;
-            NetworkServer.OnConnectedEvent += ClientJoinedCallback;
-            NetworkServer.OnDisconnectedEvent += ClientLeftCallback;
+        {  
+            MatchClient.OnConnectedEvent += ClientJoinedCallback;
+            MatchClient.OnDisconnectedEvent += ClientLeftCallback;
         }
         void Start()
         {
+            DontDestroyOnLoad(gameObject);
+            if (Instance)
+            {
+                Destroy(Instance.gameObject);
+            }
             Instance = this;
             state = new(ActiveData.Instance.MatchSettings);
-            DontDestroyOnLoad(gameObject);
             if (NetworkServer.active) OnStartServer();
             SceneManager.sceneLoaded += OnLevelHasLoaded;
             activeChat = Instantiate(ActiveData.Instance.chatPrefab);
@@ -116,29 +114,18 @@ namespace Sanicball.Logic
             NetworkClient.ReplaceHandler<LoadRaceMessage>((_, _) => LoadRaceCallback());
         }
 
-        private void PlayerJoinedCallback(NetworkConnectionToClient conn, PlayerJoinedMessage message)
-        {
-            var p = new MatchPlayer(conn.connectionId, message.CtrlType, message.InitialCharacter);
-            if (state.players.Contains(p)) return;
-            state.players.Add(p);
-
-            if (state.inLobby)
-            {
-                SpawnLobbyBall(conn, p);
-            }
-
-            StopLobbyTimer();
-
-            MatchPlayerAdded(this,new MatchPlayerEventArgs(p, conn.identity.isLocalPlayer));
-            MatchManagerUpdated(this, new());
-        }
-
         [ClientRpc]
         private void SettingsChangedCallback(MatchSettings newSettings)
         {
             Debug.Log("Settings changed");
             MatchSettingsChanged?.Invoke(this, newSettings);
             state.CurrentSettings = newSettings;
+        }
+
+        [ClientRpc]
+        public void UpdateMatchManager()
+        {
+            MatchManagerUpdated(this, new());
         }
 
         public void LocalChatMessageSent(string from, string text)
@@ -247,7 +234,7 @@ namespace Sanicball.Logic
                 Destroy(player.BallObject.gameObject);
             }
 
-            string name = Clients.First(a => a.GetConnection() == conn).Name + " (" + GameInput.GetControlTypeName(player.CtrlType) + ")";
+            string name = MatchClient.Clients.First(a => a.GetConnection() == conn).Nickname + " (" + GameInput.GetControlTypeName(player.CtrlType) + ")";
             player.BallObject = spawner.Spawn(IsLocalId(conn) ? player.CtrlType : ControlType.None, player.CharacterId, name, conn);
 
             if (conn != NetworkServer.localConnection)

@@ -32,7 +32,6 @@ namespace Sanicball.Logic
         public RaceState currentState = RaceState.Waiting;
 
         //Fields set in Init()
-        public MatchSettings settings;
         public MatchManager matchManager;
 
         //Misc
@@ -46,7 +45,6 @@ namespace Sanicball.Logic
 
         //Properties
         public System.TimeSpan RaceTime { get { return System.TimeSpan.FromSeconds(raceTimer); } }
-        public MatchSettings Settings { get { return settings; } }
 
         //PlayerCount gets number of players, indexer lets you retrieve them
         public int PlayerCount { get { return players.Count; } }
@@ -80,7 +78,7 @@ namespace Sanicball.Logic
                     case RaceState.Waiting:
                         activeWaitingCam = Instantiate(waitingCamPrefab);
                         activeWaitingUI = Instantiate(waitingUIPrefab);
-                        activeWaitingUI.StageNameToShow = ActiveData.Instance.GetStageByBarcode(settings.StageBarcode).name;
+                        activeWaitingUI.StageNameToShow = ActiveData.Instance.GetStageByBarcode(MatchManager.Instance.state.CurrentSettings.StageBarcode).name;
                         if (joinedWhileRaceInProgress)
                         {
                             activeWaitingUI.InfoToShow = "Waiting for race to end.";

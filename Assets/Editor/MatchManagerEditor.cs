@@ -13,6 +13,10 @@ public class MatchManagerEditor : Editor
             MatchManager.ShowMatchSettingsPanel();
         }
         base.OnInspectorGUI();
+        if (GUILayout.Button("Start Race"))
+        {
+            MatchManager.Instance.LoadRaceCallback();
+        }
         EditorGUI.BeginDisabledGroup(true);
         var settings = MatchManager.Instance?MatchManager.Instance.State.CurrentSettings:new();
         GUILayout.Label("Match Settings");

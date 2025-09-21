@@ -16,24 +16,42 @@ namespace Sanicball.Logic
     public partial class MatchManager : NetworkBehaviour
     {
         #region Match message callbacks
-        public void ClientJoinedCallback(NetworkConnectionToClient client)
+
+        private void PlayerJoinedCallback(NetworkConnectionToClient conn, PlayerJoinedMessage message)
         {
-            MatchClient matchClient = new(client, $"Player{client.authenticationData}");
-            Clients.Add(matchClient);
-            Debug.Log("New client " + matchClient.Name);
+            var p = new MatchPlayer(conn.connectionId, message.CtrlType, message.InitialCharacter);
+            if (state.players.Contains(p)) return;
+            state.players.Add(p);
+
+            if (state.inLobby)
+            {
+                SpawnLobbyBall(conn, p);
+            }
+
+            StopLobbyTimer();
+
+            MatchPlayerAdded(this, new MatchPlayerEventArgs(p, conn.identity.isLocalPlayer));
             MatchManagerUpdated(this, new());
+            UpdateMatchManager();
         }
 
-        public void ClientLeftCallback(NetworkConnectionToClient conn)
+        public void ClientJoinedCallback(MatchClient client)
+        {
+            MatchManagerUpdated(this, new());
+            UpdateMatchManager();
+        }
+
+        public void ClientLeftCallback(MatchClient client)
         {
             //Remove all players added by this client
-            List<MatchPlayer> playersToRemove = Players.Where(a => a.ConnectionId == conn).ToList();
+            List<MatchPlayer> playersToRemove = Players.Where(a => a.ConnectionId == client.GetConnection()).ToList();
             foreach (MatchPlayer player in playersToRemove)
             {
-                PlayerLeftCallback(conn, new(player.CtrlType));
+                PlayerLeftCallback(client.GetConnection(), new(player.CtrlType));
             }
             //Remove the client
             MatchManagerUpdated(this, new());
+            UpdateMatchManager();
         }
         public void PlayerLeftCallback(NetworkConnectionToClient conn, PlayerLeftMessage message)
         {
@@ -48,8 +66,9 @@ namespace Sanicball.Logic
             }
 
             if (MatchPlayerRemoved != null)
-                MatchPlayerRemoved(this,new MatchPlayerEventArgs(player, conn.identity.isLocalPlayer)); //TODO: determine if removed player was local
+                MatchPlayerRemoved(this, new MatchPlayerEventArgs(player, conn.identity.isLocalPlayer)); //TODO: determine if removed player was local
             MatchManagerUpdated(this, new());
+            UpdateMatchManager();
         }
 
         public void CharacterChangedCallback(NetworkConnectionToClient conn, CharacterChangedMessage message)
@@ -62,6 +81,7 @@ namespace Sanicball.Logic
             var player = Players.FirstOrDefault(a => a.ConnectionId == conn && a.CtrlType == message.CtrlType);
             player.CharacterId = message.NewCharacter;
             SpawnLobbyBall(conn, player);
+            UpdateMatchManager();
         }
 
         public void ChangedReadyCallback(NetworkConnectionToClient conn, ChangedReadyMessage message)
@@ -81,31 +101,36 @@ namespace Sanicball.Logic
                 Debug.Log("Stop Lobby Timer");
                 StopLobbyTimer();
             }
+            UpdateMatchManager();
         }
 
         public void LoadRaceCallback()
         {
             StopLobbyTimer();
             CameraFade.StartAlphaFade(Color.black, false, 0.3f, 0.05f, GoToStage);
+            UpdateMatchManager();
         }
 
         public void ChatCallback(ChatMessage message)
         {
             if (activeChat)
                 activeChat.ShowMessage(message.From, message.Text);
+            UpdateMatchManager();
         }
 
         public void LoadLobbyCallback(LoadLobbyMessage message)
         {
             GoToLobby();
+            UpdateMatchManager();
         }
 
         public void AutoStartTimerCallback(AutoStartTimerMessage message)
         {
             state.autoStartTimerOn = message.Enabled;
             state.autoStartTimer = state.CurrentSettings.AutoStartTime - (float)NetworkTime.rtt;
+            UpdateMatchManager();
         }
 
-#endregion Match message callbacks
+        #endregion Match message callbacks
     }
 }

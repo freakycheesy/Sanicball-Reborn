@@ -29,6 +29,7 @@ namespace Sanicball.Logic
             state.loadingStage = false;
             state.loadingLobby = true;
             BootstrapSceneManager.LoadScene(ActiveData.Instance.LobbyScene);
+            NetworkServer.Destroy(gameObject);
             //if(BootstrapSceneManager.Scene != null) BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
             //else
             //BootstrapSceneManager.LoadScene(lobbyScene.RuntimeKey);
@@ -85,7 +86,7 @@ namespace Sanicball.Logic
             state.inLobby = false;
 
             var raceManager = Instantiate(ActiveData.Instance.raceManagerPrefab);
-            raceManager.Init(state.CurrentSettings, this, state.joiningRaceInProgress);
+            raceManager.Init(this, state.joiningRaceInProgress);
             state.joiningRaceInProgress = false;
         }
 

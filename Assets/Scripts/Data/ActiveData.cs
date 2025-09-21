@@ -47,6 +47,8 @@ namespace Sanicball.Data
         [SerializeField]
         public Chat chatPrefab;
         [SerializeField]
+        public MatchManager matchManagerPrefab;
+        [SerializeField]
         public RaceManager raceManagerPrefab;
         [SerializeField]
         public Popup disconnectedPopupPrefab;

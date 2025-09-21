@@ -113,6 +113,8 @@ namespace Sanicball.Gameplay
         public DriftySmoke smoke;
         public SpeedFire speedFire;
 
+        public AudioListener listener;
+
         public bool CanMove { get { return canMove; } set { canMove = value; } }
         public bool AutoBrake { get; set; }
         public Vector3 DirectionVector { get; set; }
@@ -183,9 +185,8 @@ namespace Sanicball.Gameplay
             Brake = brake;
         }
 
-        public override void OnStartClient()
+        private void Start()
         {
-            base.OnStartClient();
             Balls.Add(this);
             Up = Vector3.up;
 
@@ -265,16 +266,14 @@ namespace Sanicball.Gameplay
                 }
             }
 
-            if (!authority)
-            {
-                var ears = GetComponentInChildren<AudioListener>();
-                if (ears) ears.enabled = false;
-            }
+            listener = GetComponentInChildren<AudioListener>();
+            listener?.gameObject?.SetActive(authority);
         }
+        
         public override void OnStartServer()
         {
             base.OnStartServer();
-            if (IsTesting && MatchManager.Instance) NetworkServer.Destroy(this.gameObject);
+            if (IsTesting && RaceManager.Instance) NetworkServer.Destroy(this.gameObject);
             if (Type == BallType.AI)
             {
                 //Create AI component

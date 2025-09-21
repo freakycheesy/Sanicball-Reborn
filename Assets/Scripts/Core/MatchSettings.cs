@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using Sanicball.Data;
+using Newtonsoft.Json;
+using UnityEngine;
 
 namespace SanicballCore
 {
@@ -41,23 +38,23 @@ namespace SanicballCore
     [Serializable]
     public class MatchSettings
     {
-        [Newtonsoft.Json.JsonProperty]
-        private string aiCharacters { get; set; } = DEFAULTAICHARACTERS;
+        [JsonProperty, SerializeField]
+        private string aiCharacters = DEFAULTAICHARACTERS;
+        [JsonProperty]
+        public string StageBarcode = DEFAULTSTAGE;
 
-        public string StageBarcode { get; set; } = DEFAULTSTAGE;
-        public int Laps { get; set; } = 2;
-        public int AICount { get; set; } = 8;
-        public AISkillLevel AISkill { get; set; } = AISkillLevel.Average;
-        public Dictionary<string, int> Aliases { get; set; } = new();
+        public int Laps = 2;
+        public int AICount = 8;
+        public AISkillLevel AISkill = AISkillLevel.Average;
 
-        public int AutoStartTime { get; set; } = 60;
-        public int AutoStartMinPlayers { get; set; } = 2;
-        public int AutoReturnTime { get; set; } = 15;
-        public float VoteRatio { get; set; } = 1;
-        public StageRotationMode StageRotationMode { get; set; } = StageRotationMode.None;
-        public AllowedTiers AllowedTiers { get; set; } = AllowedTiers.All;
-        public TierRotationMode TierRotationMode { get; set; } = TierRotationMode.None;
-        public int DisqualificationTime { get; set; } = 120;
+        public int AutoStartTime = 60;
+        public int AutoStartMinPlayers = 2;
+        public int AutoReturnTime = 15;
+        public float VoteRatio = 1;
+        public StageRotationMode StageRotationMode = StageRotationMode.None;
+        public AllowedTiers AllowedTiers = AllowedTiers.All;
+        public TierRotationMode TierRotationMode = TierRotationMode.None;
+        public int DisqualificationTime = 120;
         public const string DEFAULTSTAGE = "bk-tn.main.greenhillzone";
         public const string DEFAULTAICHARACTERS = "1,2,3,4,5,6,7,8,9,10,11,12";
         /// <summary>
@@ -83,15 +80,8 @@ namespace SanicballCore
         /// <returns></returns>
         public int GetAICharacter(int pos)
         {
-            string[] charIDs = DEFAULTAICHARACTERS.Split(',');
-            try
-            {
-                charIDs = aiCharacters.Split(',');
-            }
-            catch
-            {
-                charIDs = DEFAULTAICHARACTERS.Split(',');
-            }
+            var charIDs = GetCharacterIds();
+
 
             if (pos >= 0 && pos < charIDs.Length)
             {
@@ -111,7 +101,7 @@ namespace SanicballCore
         /// <param name="characterId">Character ID to use there</param>
         public void SetAICharacter(int pos, int characterId)
         {
-            string[] charIDs = aiCharacters.Split(',');
+            var charIDs = GetCharacterIds();
 
             if (pos >= 0)
             {
@@ -124,12 +114,26 @@ namespace SanicballCore
             }
         }
 
+        public string[] GetCharacterIds()
+        {
+            string[] charIDs = DEFAULTAICHARACTERS.Split(',');
+            try
+            {
+                charIDs = aiCharacters.Split(',');
+            }
+            catch
+            {
+                charIDs = DEFAULTAICHARACTERS.Split(',');
+            }
+            return charIDs;
+        }
+
         /// <summary>
         /// Removes the last AI character from the list. Use for reducing the list size to avoid bloat.
         /// </summary>
         public void RemoveLastAICharacter()
         {
-            string[] charIDs = aiCharacters.Split(',');
+            var charIDs=GetCharacterIds();
             if (charIDs.Length > 1)
             {
                 System.Array.Resize(ref charIDs, charIDs.Length - 1);

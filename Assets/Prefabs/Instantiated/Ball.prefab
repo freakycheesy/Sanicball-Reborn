@@ -609,7 +609,9 @@ MonoBehaviour:
   upResetTimer: 0
   smoke: {fileID: 0}
   speedFire: {fileID: 0}
+  listener: {fileID: 8376382429439507284}
   rb: {fileID: 0}
+  IsTesting: 0
   Renderer: {fileID: 3192411394429861634}
   TrailRenderer: {fileID: 7317994723420640640}
 --- !u!135 &13574756

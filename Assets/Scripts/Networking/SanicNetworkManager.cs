@@ -13,6 +13,8 @@ public class SanicNetworkManager : NetworkManager
     public override void OnStartServer()
     {
         base.OnStartServer();
+        var manager = Instantiate(ActiveData.Instance.matchManagerPrefab);
+        NetworkServer.Spawn(manager.gameObject);
     }
 
     public override void OnStartClient()
@@ -34,7 +36,7 @@ public class SanicNetworkManager : NetworkManager
         }
     }
 
-    public static void JoinLobby(string ip)
+    public static void JoinLobby(string ip, ushort port)
     {
         if (singleton == null) singleton = FindAnyObjectByType<SanicNetworkManager>();
         singleton.networkAddress = ip;

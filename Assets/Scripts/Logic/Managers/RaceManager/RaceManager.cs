@@ -28,16 +28,14 @@ namespace Sanicball.Logic
         }
 
         [Server]
-        public void Init(MatchSettings settings, MatchManager matchManager, bool raceIsInProgress)
+        public void Init(MatchManager matchManager, bool raceIsInProgress)
         {
-            this.settings = settings;
             this.matchManager = matchManager;
 
             if (raceIsInProgress)
             {
                 Debug.Log("Starting race in progress");
                 joinedWhileRaceInProgress = true;
-                CreateBallObjects();
             }
         }
         
@@ -52,22 +50,21 @@ namespace Sanicball.Logic
             //Create all player balls
             for (int i = 0; i < matchManager.Players.Count; i++)
             {
-                var matchPlayer = matchManager.Players[i];
-
-                bool local = MatchManager.IsLocalId(matchPlayer.ConnectionId);
-
+                var player = matchManager.Players[i];
+                bool local = MatchManager.IsLocalId(player.ConnectionId);
+                var  client = MatchClient.Clients.FirstOrDefault(x => x.GetConnection() == player.ConnectionId);
+                string nickname = $"{client.Nickname} ( {GameInput.GetControlTypeName(player.CtrlType)} )";
                 //Create ball
-                string name = NetworkServer.connections.FirstOrDefault(a => MatchManager.IsLocalId(a.Value)).Value.connectionId.ToString();
-                matchPlayer.BallObject = ballSpawner.SpawnBall(
+                player.BallObject = ballSpawner.SpawnBall(
                     nextBallPosition,
                     BallType.Player,
-                    local ? matchPlayer.CtrlType : ControlType.None,
-                    matchPlayer.CharacterId,
-                    name + " (" + GameInput.GetControlTypeName(matchPlayer.CtrlType) + ")", matchPlayer.ConnectionId
+                    local ? player.CtrlType : ControlType.None,
+                    player.CharacterId,
+                    nickname, player.ConnectionId
                     );
 
                 //Create race player
-                var racePlayer = new RacePlayer(matchPlayer.BallObject, matchPlayer);
+                var racePlayer = new RacePlayer(player.BallObject, player);
                 players.Add(racePlayer);
                 racePlayer.LapRecordsEnabled = enableLapRecords && local;
                 racePlayer.FinishLinePassed += RacePlayer_FinishLinePassed;
@@ -77,7 +74,7 @@ namespace Sanicball.Logic
 
 
                 //Create all AI balls (In local play only)
-                for (int i = 0; i < settings.AICount; i++)
+                for (int i = 0; i < MatchManager.Instance.state.CurrentSettings.AICount; i++)
                 {
                 //Create ball
                 var aiBall = ballSpawner.SpawnBall(
@@ -125,7 +122,7 @@ namespace Sanicball.Logic
             //Every time a player passes the finish line, check if it's done
             var rp = (RacePlayer)sender;
 
-            if (rp.FinishReport == null && rp.Lap > settings.Laps)
+            if (rp.FinishReport == null && rp.Lap > MatchManager.Instance.state.CurrentSettings.Laps)
             {
                 //Race finishing is handled differently depending on what type of racer this is
 

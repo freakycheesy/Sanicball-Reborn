@@ -44,7 +44,7 @@ namespace Sanicball.Logic
 
         public void JoinOnlineGame(ZaLobbyInfo lobbyInfo)
         {
-            SanicNetworkManager.JoinLobby(lobbyInfo.IP);
+            SanicNetworkManager.JoinLobby(lobbyInfo.IP, 25000);
 
             popupHandler.OpenPopup(connectingPopupPrefab);
 

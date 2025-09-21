@@ -213,7 +213,7 @@ namespace Sanicball.UI
             //Lap counter
             if (!TargetPlayer.RaceFinished)
             {
-                lapField.text = "Lap " + TargetPlayer.Lap + "/" + TargetManager.Settings.Laps;
+                lapField.text = "Lap " + TargetPlayer.Lap + "/" + MatchManager.Instance.state.CurrentSettings.Laps;
             }
             else
             {

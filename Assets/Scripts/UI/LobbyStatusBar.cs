@@ -51,7 +51,7 @@ namespace Sanicball.UI
         {
             if (!manager) return;
 
-            int clients = NetworkServer.connections.Count;
+            int clients = MatchClient.Clients.Count;
             int players = manager.Players.Count;
 
             if (manager.AutoStartTimerOn)

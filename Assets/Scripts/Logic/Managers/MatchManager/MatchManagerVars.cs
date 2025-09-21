@@ -27,12 +27,9 @@ namespace Sanicball.Logic
         public UI.Chat activeChat;
         [SyncVar] public MatchState state = new();
 
-        public MatchClient localClient = new();
-
         //Timer used for syncing realtime stuff in online
         #region Properties
         public MatchState State => state;
-        public List<MatchClient> Clients => state.clients;
         public List<MatchPlayer> Players => state.players;
         public bool AutoStartTimerOn { get { return state.autoStartTimerOn; } }
         public float AutoStartTimer { get { return state.autoStartTimer; } }
@@ -56,10 +53,6 @@ namespace Sanicball.Logic
             CurrentSettings = new();
         }
         #region Match state
-
-        //List of all clients in the match. Only serves a purpose in online play.
-        //In local play, this list will always only contain the local client.
-        public List<MatchClient> clients = new();
 
         //List of all players - players are seperate from clients because each client can have
         //up to 4 players playing in splitscreen.

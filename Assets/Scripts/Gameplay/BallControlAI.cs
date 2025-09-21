@@ -36,7 +36,7 @@ namespace Sanicball.Gameplay
             RaceManager raceManager = RaceManager.Instance;
             if (raceManager)
             {
-                skillLevel = raceManager.Settings.AISkill;
+                skillLevel = MatchManager.Instance.state.CurrentSettings.AISkill;
                 switch (skillLevel)
                 {
                     case AISkillLevel.Retarded:

@@ -42,7 +42,7 @@ namespace Sanicball.UI
         {
             ClearEntries();
             ClientList = b;
-            a.Clients.ForEach(c=>AddEntry(a, c));
+            MatchClient.Clients.ToList().ForEach(c=>AddEntry(a, c));
         }
 
         public static void AddEntry(MatchManager a, MatchClient b)
@@ -55,7 +55,7 @@ namespace Sanicball.UI
 
         public void FillFields(MatchClient client, MatchManager manager)
         {
-            nameField.text = client.Name;
+            nameField.text = client.Nickname;
 
             List<MatchPlayer> players = manager.Players.Where(a => a.ConnectionId == client.GetConnection()).ToList();
             int playersTotal = players.Count();
