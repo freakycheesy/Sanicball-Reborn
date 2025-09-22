@@ -15,6 +15,17 @@ MonoBehaviour:
   Author: freakycheesy
   Stages:
   - id: 5
+    BARCODE: freakycheesy.Extra.Green Hill Zone (OG)
+    name: Green Hill Zone (OG)
+    scene:
+      m_AssetGUID: 52bdea808ea287643a5281b8c8fbcfc0
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    picture: {fileID: 21300000, guid: dc57cdcc46adee64d900215deab711b3, type: 3}
+    overviewPrefab: {fileID: 120352, guid: b92fe95a3f8ff594cafa50f76cc55858, type: 3}
+  - id: 5
     BARCODE: freakycheesy.Extra.TemplateTrack
     name: TemplateTrack
     scene:
