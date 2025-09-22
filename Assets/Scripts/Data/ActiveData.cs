@@ -24,8 +24,9 @@ namespace Sanicball.Data
         private static ActiveData Instance;
 
         //This data is saved to a json file
+        [SerializeField]
         private GameSettings gameSettings = new GameSettings();
-
+        [SerializeField]
         private KeybindCollection keybinds = new KeybindCollection();
 
         //This data is set from the editor and remains constant
@@ -91,9 +92,17 @@ namespace Sanicball.Data
             }
         }
         public static AsyncOperationHandle<IList<SanicPallet>> PalletHandle = new();
+        public static string[] Keys = new string[]
+        {
+            string.Empty,
+            "default"
+        };
         public static void FindPallets()
         {
-            PalletHandle = Addressables.LoadAssetsAsync<SanicPallet>("mod", LoadPalletCallback);
+            foreach (var key in Keys)
+            {
+                PalletHandle = Addressables.LoadAssetsAsync<SanicPallet>(key, LoadPalletCallback);
+            }
             PalletHandle.Completed += (_) => { MatchSettings = MatchSettings.CreateDefault(); Debug.Log("Completed Loading Pallet!"); };
         }
 

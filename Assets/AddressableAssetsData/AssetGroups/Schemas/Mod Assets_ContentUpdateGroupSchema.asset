@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dea69d41f90c6ea4fa55c27c1d60c145, type: 3}
-  m_Name: AddressableAssetGroupSortSettings
+  m_Script: {fileID: 11500000, guid: 5834b5087d578d24c926ce20cd31e6d6, type: 3}
+  m_Name: Mod Assets_ContentUpdateGroupSchema
   m_EditorClassIdentifier: 
-  sortOrder:
-  - 24d11c57b16ca3046b0b87997e2a7eaf
-  - 152e4861979892847bd56a72d4e960c6
-  - b36840cd09d769644ac048c7015d9607
+  m_Group: {fileID: 11400000, guid: ef37ecc3c6b088c418c9d2de3377a4c9, type: 2}
+  m_StaticContent: 0

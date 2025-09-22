@@ -1423,26 +1423,7 @@ namespace SanicballCore.Server
                                         }
                                         SendToAll(matchMessage);
                                     }
-									
-									if (matchMessage is PlayerZappedMessage)
-                                    {
-                                        var castedMsg = (PlayerZappedMessage)matchMessage;
-                                        ServPlayer player = players.FirstOrDefault(a => a.ClientGuid == castedMsg.ClientGuid && a.CtrlType == castedMsg.CtrlType);
-                                        if (player != null)
-                                        {
-                                            SendToAll(castedMsg);
-                                        }
-                                    }
 
-                                    if (matchMessage is PlayerConfusedMessage)
-                                    {
-                                        var castedMsg = (PlayerConfusedMessage)matchMessage;
-                                        ServPlayer player = players.FirstOrDefault(a => a.ClientGuid == castedMsg.ClientGuid && a.CtrlType == castedMsg.CtrlType);
-                                        if (player != null)
-                                        {
-                                            SendToAll(castedMsg);
-                                        }
-                                    }
 
                                     if (matchMessage is PlayerForcedRespawnMessage)
                                     {

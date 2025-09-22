@@ -63,7 +63,7 @@ namespace Sanicball.Logic
         //Return players as read only collection (easier to query)
         public System.Collections.ObjectModel.ReadOnlyCollection<RacePlayer> Players { get { return new System.Collections.ObjectModel.ReadOnlyCollection<RacePlayer>(players); } }
         public static RaceManager Instance;
-        private RaceState CurrentState
+        public RaceState CurrentState
         {
             get
             {

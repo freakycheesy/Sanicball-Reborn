@@ -27,35 +27,17 @@ MonoBehaviour:
     m_SerializedLabels:
     - default
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3cde14ec190244744be6e43af089622a
-    m_Address: Levels
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - mod
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 52bdea808ea287643a5281b8c8fbcfc0
     m_Address: TemplateTrack
     m_ReadOnly: 0
     m_SerializedLabels:
-    - mod
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 599a52ab42bdfe648aa07f49fcd089c5
-    m_Address: Powerups
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - mod
+    - default
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 755d0a34fdb294c4f95f172361af102d
     m_Address: Shaders
     m_ReadOnly: 0
     m_SerializedLabels:
     - default
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cc55a107a40828d4499e14fc36a0eda4
-    m_Address: Sound
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - mod
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f3cc4978b51474a468fcec683f4c74b8, type: 2}

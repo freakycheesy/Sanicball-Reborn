@@ -10,30 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: unused
+  m_Name: Mod Assets
   m_EditorClassIdentifier: 
-  m_GroupName: unused
-  m_GUID: 152e4861979892847bd56a72d4e960c6
+  m_GroupName: Mod Assets
+  m_GUID: 24d11c57b16ca3046b0b87997e2a7eaf
   m_SerializeEntries:
-  - m_GUID: 385f6386bc8958a439098aa5a25acb6d
-    m_Address: TestingTrack
+  - m_GUID: 0a461661c988227439ecae157a0f419c
+    m_Address: Extra
     m_ReadOnly: 0
     m_SerializedLabels:
-    - unused
+    - default
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 84ec1bd52058df5439f3802601070816
-    m_Address: Track_GreenHillNew
+  - m_GUID: 201e5e74f016855428eac7698f025e27
+    m_Address: Base
     m_ReadOnly: 0
     m_SerializedLabels:
-    - unused
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a63ff38ea1fae2f4cb89c75557a2e817
-    m_Address: Unused
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - unused
+    - default
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f3cc4978b51474a468fcec683f4c74b8, type: 2}
   m_SchemaSet:
-    m_Schemas: []
+    m_Schemas:
+    - {fileID: 11400000, guid: 507afcc3241015140bfefccb74422327, type: 2}
+    - {fileID: 11400000, guid: 5eff75cf4fb12724dbad44c598aff26c, type: 2}

@@ -12,7 +12,7 @@ public class MatchManagerEditor : Editor
         var matchSettings = JsonConvert.SerializeObject(manager.CurrentSettings).Replace(",","\n");
         base.OnInspectorGUI();
         EditorGUI.BeginDisabledGroup(true);
-        EditorGUILayout.TextArea(matchSettings);
+        ActiveDataEditor.TextArea("Match Settings",matchSettings);
         EditorGUI.EndDisabledGroup();
     }
 

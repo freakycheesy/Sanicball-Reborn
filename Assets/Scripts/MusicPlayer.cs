@@ -34,8 +34,6 @@ namespace Sanicball
         private string currentSongCredits;
 
         //Song credits
-        private float timer = 0;
-
         private float slidePosition;
         private float slidePositionMax = 20;
 
@@ -53,12 +51,12 @@ namespace Sanicball
             playerCanvas.Show(credits);
             isPlaying = true;
             aSource.Play();
+            Debug.Log("Playing Song");
         }
 
         public void Pause()
         {
             aSource.Pause();
-            isPlaying = false;
         }
 
         private void Start()
@@ -102,15 +100,44 @@ namespace Sanicball
                 fastSource.Stop();
             }
         }
-
+        private float audioTime;
+        public bool CanPlay()
+        {
+            bool canPlay = Time.timeScale > 0;
+            if (canPlay)
+            {
+                if (RaceManager.Instance)
+                {
+                    canPlay = RaceManager.Instance.CurrentState.HasFlag(RaceState.Racing) || RaceManager.Instance.CurrentState.HasFlag(RaceState.Finished);
+                }
+            }
+            return canPlay;
+        }
         private void Update()
+        {
+            if (CanPlay())
+            {
+                audioTime = aSource.time;
+                MusicPlayerLogic();
+            }
+            else
+            {
+                aSource.time = audioTime;
+            }
+        }
+
+        public bool NeedsChangingMusic() {
+            return GameInput.IsChangingSong() || aSource.time > aSource.clip.length || (!aSource.isPlaying && aSource.time <= 0);
+        }
+
+        void MusicPlayerLogic()
         {
             if (fadeIn && aSource.volume < 0.5f)
             {
                 aSource.volume = Mathf.Min(aSource.volume + Time.deltaTime * 0.1f, 0.5f);
             }
             //If it's not playing but supposed to play, change song
-            if ((!aSource.isPlaying || GameInput.IsChangingSong()) && isPlaying)
+            if (NeedsChangingMusic())
             {
                 if (currentSongID < Playlist.Count - 1)
                 {
@@ -124,11 +151,6 @@ namespace Sanicball
                 slidePosition = slidePositionMax;
                 Play();
             }
-            //Timer
-            if (timer > 0)
-            {
-                timer -= Time.deltaTime;
-            }
 
             if (fastMode && fastSource.volume < 1)
             {
@@ -140,7 +162,7 @@ namespace Sanicball
                 fastSource.volume = Mathf.Max(0, fastSource.volume - Time.deltaTime * 0.5f);
                 aSource.volume = 0.5f - fastSource.volume / 2;
             }
-            if (timer > 0)
+            if (aSource.time > 0)
             {
                 slidePosition = Mathf.Lerp(slidePosition, 0, Time.deltaTime * 4);
             }
@@ -152,6 +174,7 @@ namespace Sanicball
 
         private void ShuffleSongs()
         {
+            Debug.Log("Shuffling Songs");
             for (int i = Playlist.Count; i > 1; i--)
             {
                 int j = Random.Range(0, i);
@@ -159,6 +182,7 @@ namespace Sanicball
                 Playlist[j] = Playlist[i - 1];
                 Playlist[i - 1] = tmp;
             }
+            Debug.Log("Shuffled Songs");
         }
     }
 
