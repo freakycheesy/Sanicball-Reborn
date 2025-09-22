@@ -15,7 +15,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &449212
 Transform:
@@ -29,7 +29,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1011298596908187707}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11452216
@@ -45,6 +46,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   raceRecords: []
+  gameSettings:
+    nickname: 
+    serverListURL: https://sanicball.bdgr.zone/servers/
+    gameJoltUsername: 
+    gameJoltToken: 
+    resolution: 0
+    fullscreen: 1
+    vsync: 0
+    useImperial: 0
+    showControlsWhileWaiting: 1
+    aa: 0
+    trails: 1
+    shadows: 1
+    motionBlur: 0
+    bloom: 0
+    reflectionQuality: 0
+    eSportsReady: 0
+    useOldControls: 0
+    oldControlsMouseSpeed: 3
+    oldControlsKbSpeed: 10
+    soundVolume: 1
+    music: 1
+    fastMusic: 1
   gameJoltInfo:
     gameID: 0
     privateKey: 
@@ -58,3 +82,52 @@ MonoBehaviour:
     name: Bangarang
     resource: {fileID: 8300000, guid: 44aeddca0c186224090a76d97139eaa4, type: 3}
   eSportsPrefab: {fileID: 11400000, guid: f55190f64bbb0c349bcd0f128756a753, type: 3}
+--- !u!1 &1929138344645749451
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1011298596908187707}
+  - component: {fileID: 8305554932399396124}
+  m_Layer: 0
+  m_Name: Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!4 &1011298596908187707
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1929138344645749451}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 449212}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8305554932399396124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1929138344645749451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 21
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 87c25141e0c992c42a534bb5bd153fd9, type: 2}

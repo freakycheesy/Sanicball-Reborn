@@ -56,6 +56,7 @@ namespace Sanicball.UI
             {
                 manager.RequestSettingsChange(tempSettings);
                 ActiveData.MatchSettings = tempSettings;
+                ActiveData.Instance.SaveAll();
             }
         }
 

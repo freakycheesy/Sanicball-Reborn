@@ -6,5 +6,7 @@ namespace Sanicball
     public abstract class AINode : MonoBehaviour
     {
         public abstract AINode NextNode { get; }
+
+        public abstract void AddNextNode(AINode newNode);
     }
 }

@@ -10,6 +10,11 @@ namespace Sanicball
 
         public override AINode NextNode { get { return nextNode; } }
 
+        public override void AddNextNode(AINode newNode)
+        {
+            nextNode = newNode;
+        }
+
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.blue;

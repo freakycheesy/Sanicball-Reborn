@@ -5,8 +5,7 @@ namespace Sanicball
 {
     public class AINodeSplitter : AINode
     {
-        [SerializeField]
-        private AINodeSplitterTarget[] targets;
+        public List<AINodeSplitterTarget> targets = new();
 
         public override AINode NextNode
         {
@@ -14,13 +13,18 @@ namespace Sanicball
             {
                 //Pick a random next node based on their weights
                 List<int> choices = new List<int>();
-                for (int i = 0; i < targets.Length; i++)
+                for (int i = 0; i < targets.Count; i++)
                 {
                     for (int j = 0; j < targets[i].Weight; j++) choices.Add(i);
                 }
                 int randomChoice = Random.Range(0, choices.Count);
                 return targets[choices[randomChoice]].Node;
             }
+        }
+
+        public override void AddNextNode(AINode newNode)
+        {
+            targets.Add(new(newNode, 1));
         }
 
         private void OnDrawGizmos()
@@ -40,14 +44,15 @@ namespace Sanicball
     }
 
     [System.Serializable]
-    public class AINodeSplitterTarget
+    public struct AINodeSplitterTarget
     {
-        [SerializeField]
-        private AINode node = null;
-        [SerializeField]
-        private int weight = 1;
+        public AINode Node;
+        public int Weight;
 
-        public AINode Node { get { return node; } }
-        public int Weight { get { return weight; } }
+        public AINodeSplitterTarget(AINode node = null, int weight = 1)
+        {
+            Node = node;
+            Weight = weight;
+        }
     }
 }

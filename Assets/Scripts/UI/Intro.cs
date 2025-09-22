@@ -2,6 +2,9 @@
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceProviders;
+using UnityEngine.InputSystem;
 
 namespace Sanicball.UI
 {
@@ -17,10 +20,19 @@ namespace Sanicball.UI
         private float holdImageTimer = 0;
 
         private bool isFadeOut = false;
-
-        private void Start()
+        public InputActionProperty SkipMenuButton;
+        private void OnEnable()
         {
             holdImageTimer = imgTime;
+            SkipMenuButton.action.Enable();
+            SkipMenuButton.action.performed += (_) => GoToMenu();
+        }
+
+        private void OnDisable()
+        {
+            holdImageTimer = imgTime;
+            SkipMenuButton.action.Disable();
+            SkipMenuButton.action.performed -= (_) => GoToMenu();
         }
 
         private void Update()
@@ -59,10 +71,6 @@ namespace Sanicball.UI
                     }
                 }
             }
-            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(0))
-            {
-                GoToMenu();
-            }
         }
 
         private void NextImage()
@@ -79,8 +87,11 @@ namespace Sanicball.UI
             holdImageTimer += imgTime;
         }
 
+        public bool isLoadingMenu;
         private void GoToMenu()
         {
+            if (isLoadingMenu) return;
+            isLoadingMenu = true;
             Addressables.LoadSceneAsync(MenuScene, LoadSceneMode.Single);
             isHoldingImage = true;
         }

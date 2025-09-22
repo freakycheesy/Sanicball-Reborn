@@ -524,6 +524,34 @@ MonoBehaviour:
   - {fileID: 472931088}
   imgTime: 1.2
   fadeTime: 1.2
+  SkipMenuButton:
+    m_UseReference: 0
+    m_Action:
+      m_Name: Skip Menu Button
+      m_Type: 1
+      m_ExpectedControlType: Button
+      m_Id: 5205955a-9183-4f8a-b202-582406d179e7
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings:
+      - m_Name: 
+        m_Id: 930fcb55-c89c-4f7a-b99a-f043bcaa4596
+        m_Path: <Keyboard>/anyKey
+        m_Interactions: 
+        m_Processors: 
+        m_Groups: 
+        m_Action: Skip Menu Button
+        m_Flags: 0
+      - m_Name: 
+        m_Id: c40e1e2c-9ceb-4235-8514-22180c82e5ca
+        m_Path: <Gamepad>/start
+        m_Interactions: 
+        m_Processors: 
+        m_Groups: 
+        m_Action: Skip Menu Button
+        m_Flags: 0
+      m_Flags: 0
+    m_Reference: {fileID: 0}
 --- !u!4 &348860867
 Transform:
   m_ObjectHideFlags: 0
