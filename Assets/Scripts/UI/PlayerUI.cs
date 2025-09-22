@@ -172,9 +172,16 @@ namespace Sanicball.UI
                 }
             }
         }
+        public static List<PlayerUI> Instances;
 
         private void Start()
         {
+            Instances.Add(this);
+        }
+
+        void OnDestroy()
+        {
+            Instances.Remove(this);
         }
 
         private void Update()

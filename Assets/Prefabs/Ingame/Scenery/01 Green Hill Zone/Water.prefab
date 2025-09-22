@@ -11,14 +11,13 @@ GameObject:
   - component: {fileID: 412994}
   - component: {fileID: 3399094}
   - component: {fileID: 2378608}
-  - component: {fileID: 11433348}
-  - component: {fileID: 11427314}
+  - component: {fileID: 7607310863646820301}
   m_Layer: 4
   m_Name: Water
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &412994
 Transform:
@@ -30,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -190, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 10000, y: 1, z: 10000}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3010987044890993278}
@@ -44,7 +43,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 168926}
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &2378608
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -68,7 +67,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 92e37018c3f7dc849ae0e5b3245a1f7a, type: 2}
+  - {fileID: 2100000, guid: 75a6a7865359bb84fa436bcda63d4451, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -90,7 +89,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &11433348
+--- !u!114 &7607310863646820301
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -102,28 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36240a1e85ba8054a85f573748526d1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: {x: -0.07, y: 0.06}
---- !u!114 &11427314
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 168926}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 322b1b17af066a942ae663aaf03a3435, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  noiseScaleX: 0.5
-  noiseScaleY: 0.5
-  noiseHeight: 4
-  noiseOffsetX: 0
-  noiseOffsetY: 0
-  triangleSize: 78
-  triangleCount: 128
-  noiseIterations: 2
-  speed: 0.2
+  speed: {x: 0.01, y: 0.01}
 --- !u!1 &3095610854751845764
 GameObject:
   m_ObjectHideFlags: 0
@@ -135,12 +113,13 @@ GameObject:
   - component: {fileID: 3010987044890993278}
   - component: {fileID: 3925737122220814794}
   - component: {fileID: 1965457625799696456}
+  - component: {fileID: 8548159036455504356}
   m_Layer: 4
   m_Name: FarWater
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &3010987044890993278
 Transform:
@@ -164,7 +143,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3095610854751845764}
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &1965457625799696456
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -188,7 +167,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 92e37018c3f7dc849ae0e5b3245a1f7a, type: 2}
+  - {fileID: 2100000, guid: 75a6a7865359bb84fa436bcda63d4451, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -210,6 +189,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8548159036455504356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3095610854751845764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36240a1e85ba8054a85f573748526d1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: {x: 0.25, y: 0.25}
 --- !u!1 &6139281567427783039
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,7 +218,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &7077274780150701863
 Transform:
@@ -237,8 +229,8 @@ Transform:
   m_GameObject: {fileID: 6139281567427783039}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -10, z: 0}
-  m_LocalScale: {x: 10000, y: 50, z: 10000}
+  m_LocalPosition: {x: 0, y: -25, z: 0}
+  m_LocalScale: {x: 10, y: 50, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 412994}

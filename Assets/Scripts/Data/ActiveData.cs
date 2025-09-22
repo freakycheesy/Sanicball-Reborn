@@ -114,7 +114,7 @@ namespace Sanicball.Data
             MusicPlayer.Playlist.AddRange(pallet.Playlist);
             Characters.AddRange(pallet.Avatars);
             Powerups.AddRange(pallet.Powerups);
-            
+
             Debug.Log($"Loaded Pallet: ({pallet.Author}.{pallet.name})");
         }
         public static bool TryGetStageByBarcode(string barcode, out StageInfo stage)
@@ -149,7 +149,7 @@ namespace Sanicball.Data
         {
             Addressables.LoadSceneAsync(level, mode);
         }
-        
+
         private void OnEnable()
         {
             LoadAll();
@@ -228,6 +228,7 @@ namespace Sanicball.Data
             }
             Debug.Log(filename + " saved successfully.");
         }
+        
         #endregion Saving and loading
     }
 }

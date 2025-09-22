@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Sanicball
 {
-    [ExecuteInEditMode]
+    [ExecuteAlways]
     public class Water : MonoBehaviour
     {
         public float noiseScaleX = 1f;
@@ -21,27 +21,12 @@ namespace Sanicball
         public float[,] points;
         private float t = 0;
 
-        private MeshFilter meshFilter;
-        private MeshRenderer meshRenderer;
-
-        // Use this for initialization
-        private void Start()
-        {
-            meshFilter = GetComponent<MeshFilter>();
-            meshRenderer = GetComponent<MeshRenderer>();
-            if (meshFilter == null)
-            {
-                meshFilter = gameObject.AddComponent<MeshFilter>();
-            }
-            if (meshRenderer == null)
-            {
-                meshRenderer = gameObject.AddComponent<MeshRenderer>();
-            }
-        }
-
-        // Update is called once per frame
+        private MeshFilter[] meshFilters;
+        
         private void Update()
         {
+            meshFilters = GetComponentsInChildren<MeshFilter>();
+
             t += Time.deltaTime * 10f;
             t = Time.time * speed;
 
@@ -94,17 +79,20 @@ namespace Sanicball
                 }
             }
 
-            Mesh m = meshFilter.sharedMesh;
-            if (m == null)
+            foreach (var meshFilter in meshFilters)
             {
-                m = new Mesh();
+                if (mesh == null)
+                {
+                    mesh = meshFilter.sharedMesh;
+                    mesh = new Mesh();
+                }
+                mesh.vertices = verts.ToArray();
+                mesh.triangles = tris.ToArray();
+                mesh.uv = uv.ToArray();
+                mesh.RecalculateNormals();
+                meshFilter.mesh = mesh;
             }
-            m.name = "waterMesh";
-            m.vertices = verts.ToArray();
-            m.triangles = tris.ToArray();
-            m.uv = uv.ToArray();
-            m.RecalculateNormals();
-            meshFilter.sharedMesh = m;
         }
+        Mesh mesh;
     }
 }

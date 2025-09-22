@@ -21,12 +21,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - unused
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 84ec1bd52058df5439f3802601070816
-    m_Address: Track_GreenHillNew
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - unused
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a63ff38ea1fae2f4cb89c75557a2e817
     m_Address: Unused
     m_ReadOnly: 0

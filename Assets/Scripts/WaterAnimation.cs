@@ -2,11 +2,16 @@
 
 namespace Sanicball
 {
+    [ExecuteInEditMode]
     public class WaterAnimation : MonoBehaviour
     {
-        public Vector2 speed;
-        private Vector2 offset;
-
+        public const float startSpeed = 0.05f;
+        public Vector2 speed = new(startSpeed, startSpeed);
+        private Vector2 offset = new();
+        void Start()
+        {
+            offset = new();
+        }
         private void Update()
         {
             offset += new Vector2(speed.x * Time.deltaTime, speed.y * Time.deltaTime);
@@ -18,7 +23,8 @@ namespace Sanicball
             {
                 offset += new Vector2(0, -1);
             }
-            GetComponent<Renderer>().material.SetTextureOffset("_MainTex", offset);
+            GetComponent<Renderer>().sharedMaterial.SetTextureOffset("_MainTex", offset);
+            GetComponent<Renderer>().sharedMaterial.SetTextureOffset("_BaseMap", offset);
         }
     }
 }

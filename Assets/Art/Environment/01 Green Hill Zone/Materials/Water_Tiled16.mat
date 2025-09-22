@@ -42,7 +42,7 @@ Material:
     - _BaseMap:
         m_Texture: {fileID: 2800000, guid: 259ebd244ca607f4a9e37f92cf862de2, type: 3}
         m_Scale: {x: 16, y: 16}
-        m_Offset: {x: 0, y: 0}
+        m_Offset: {x: 0.048873954, y: 0.9199716}
     - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -66,7 +66,7 @@ Material:
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 259ebd244ca607f4a9e37f92cf862de2, type: 3}
         m_Scale: {x: 16, y: 16}
-        m_Offset: {x: 0, y: 0}
+        m_Offset: {x: 0.048873954, y: 0.9199716}
     - _MetallicGlossMap:
         m_Texture: {fileID: 2800000, guid: e9adbeb9f35cb744ea06dc5dc3a48e6c, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -134,8 +134,8 @@ Material:
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.51930696, g: 0.6503857, b: 0.8308848, a: 1}
-    - _Color: {r: 0.51930696, g: 0.6503857, b: 0.8308848, a: 1}
+    - _BaseColor: {r: 0.5372549, g: 0.63529414, b: 0.85882354, a: 0.8}
+    - _Color: {r: 0.5372549, g: 0.63529414, b: 0.85882354, a: 0.8}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColorUI: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.47843137, g: 0.47843137, b: 0.47843137, a: 1}
