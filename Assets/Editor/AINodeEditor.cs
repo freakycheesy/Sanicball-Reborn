@@ -1,9 +1,6 @@
-using System;
-using System.Linq;
 using Sanicball;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [CustomEditor(typeof(AINode), true), CanEditMultipleObjects]
 public class AINodeEditor : Editor
