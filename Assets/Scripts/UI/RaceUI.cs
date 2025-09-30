@@ -15,7 +15,7 @@ namespace Sanicball.UI
 
         public RaceManager TargetManager { get; set; }
 
-        public static List<RaceUI> Instances;
+        public static List<RaceUI> Instances = new();
 
         private void Start()
         {
