@@ -44,9 +44,9 @@ namespace Sanicball.Gameplay
                     //Add position to sum
                     sum += b.transform.position;
 
-                    if (b.Input)
+                    if (b.Controller is BallControlInput)
                     {
-                        b.Input.LookDirection = transform.rotation;
+                        (b.Controller as BallControlInput).LookDirection = transform.rotation;
                     }
                 }
                 //Divide sum by number of balls to get the average position (<3 you vector math)

@@ -172,7 +172,7 @@ namespace Sanicball.UI
                 }
             }
         }
-        public static List<PlayerUI> Instances;
+        public static List<PlayerUI> Instances = new();
 
         private void Start()
         {

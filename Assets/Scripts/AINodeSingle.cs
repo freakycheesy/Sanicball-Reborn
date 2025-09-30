@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Sanicball
 {
+    [RequireComponent(typeof(Collider))]
     public class AINodeSingle : AINode
     {
         [SerializeField]

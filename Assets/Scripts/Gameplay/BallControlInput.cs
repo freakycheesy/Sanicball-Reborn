@@ -3,22 +3,15 @@ using UnityEngine;
 namespace Sanicball.Gameplay
 {
     [RequireComponent(typeof(Ball))]
-    public class BallControlInput : MonoBehaviour
+    public class BallControlInput : BallControlBase
     {
-        private Ball ball;
         private Vector3 rawDirection;
         private bool hasJumped = false;
 
         public Quaternion LookDirection { get; set; }
 
-        private void Start()
+        public override void OnUpdate()
         {
-            LookDirection = Quaternion.Euler(Vector3.forward);
-            ball = GetComponent<Ball>();
-        }
-
-        private void Update()
-        { //Short circuit if paused
             if (UI.PauseMenu.GamePaused)
             {
                 ball.DirectionVector = Vector3.zero;
@@ -67,6 +60,12 @@ namespace Sanicball.Gameplay
             {
                 ball.RequestRespawn();
             }
+        }
+
+        private void Start()
+        {
+            LookDirection = Quaternion.Euler(Vector3.forward);
+            ball = GetComponent<Ball>();
         }
     }
 }

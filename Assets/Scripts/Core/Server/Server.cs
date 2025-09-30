@@ -272,14 +272,23 @@ namespace SanicballCore.Server
             cmd =>
             {
                 bool success = false;
-                if (cmd.Content.Trim() != string.Empty)
+                try
                 {
-                    LoadMOTD(cmd.Content.Trim());
+                    success = true;
+                    if (cmd.Content.Trim() != string.Empty)
+                    {
+                        LoadMOTD(cmd.Content.Trim());
+                    }
+                    else
+                    {
+                        LoadMOTD();
+                    }
                 }
-                else
+                catch
                 {
-                    LoadMOTD();
+                    success = false;
                 }
+                Debug.WriteLine(success);
             });
             AddCommandHandler("setStage",
             "Sets the stage by index or by name (no spaces).",	

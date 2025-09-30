@@ -2,6 +2,7 @@ using System;
 using Sanicball.Data;
 using SanicballCore;
 using UnityEngine;
+using static Sanicball.Gameplay.GlobalBallController;
 
 namespace Sanicball.Gameplay
 {
@@ -68,11 +69,11 @@ namespace Sanicball.Gameplay
         public OmniCamera Camera { get { return camera; } }
         public PivotCamera OldCamera { get { return oldCamera; } }
         public ParticleSystem RemovalParticles { get { return removalParticles; } }
-        public SpeedFire SpeedFire{ get { return speedFire; } }
+        public SpeedFire SpeedFire { get { return speedFire; } }
     }
 
     [RequireComponent(typeof(Rigidbody))]
-    public class Ball : MonoBehaviour
+    public class Ball : LocalBallBehaviour
     {
         //These are set using Init() when balls are instantiated
         //But you can set them from the editor to quickly test out a track
@@ -101,7 +102,7 @@ namespace Sanicball.Gameplay
         //State
         public BallStats characterStats;
         public bool canMove = true;
-        public BallControlInput input;
+        public BallControlBase controller;
         public bool grounded = false;
         public float groundedTimer = 0;
         public float upResetTimer = 0;
@@ -117,7 +118,7 @@ namespace Sanicball.Gameplay
 
         //Component caches
         private Rigidbody rb;
-        public BallControlInput Input { get { return input; } }
+        public BallControlBase Controller { get { return controller; } }
 
         //Events
         public event System.EventHandler<CheckpointPassArgs> CheckpointPassed;
@@ -233,7 +234,7 @@ namespace Sanicball.Gameplay
             if ((type == BallType.Player || type == BallType.LobbyPlayer) && ctrlType != ControlType.None)
             {
                 //Create input component
-                input = gameObject.AddComponent<BallControlInput>();
+                controller = gameObject.AddComponent<BallControlInput>();
             }
             if (type == BallType.AI)
             {
@@ -246,7 +247,8 @@ namespace Sanicball.Gameplay
         {
             GetComponent<Renderer>().material = c.material;
             GetComponent<TrailRenderer>().material = c.trail;
-            if (c.name == "Super Sanic" && ActiveData.GameSettings.eSportsReady) {
+            if (c.name == "Super Sanic" && ActiveData.GameSettings.eSportsReady)
+            {
                 GetComponent<TrailRenderer>().material = ActiveData.ESportsTrail;
             }
             transform.localScale = new Vector3(c.ballSize, c.ballSize, c.ballSize);
@@ -272,49 +274,52 @@ namespace Sanicball.Gameplay
             characterStats = c.stats;
         }
 
-        private void FixedUpdate()
+        private void OnTriggerEnter(Collider other)
         {
-            if (CanMove)
+            var c = other.GetComponent<Checkpoint>();
+
+            if (c)
             {
-                //If grounded use torque
-                if (DirectionVector != Vector3.zero)
-                {
-                    rb.AddTorque(DirectionVector * characterStats.rollSpeed);
-                }
-                //If not use both
-                if (!grounded)
-                {
-                    rb.AddForce((Quaternion.Euler(0, -90, 0) * DirectionVector) * characterStats.airSpeed);
-                }
+                if (CheckpointPassed != null)
+                    CheckpointPassed(this, new CheckpointPassArgs(c));
             }
 
-            if (AutoBrake)
-            {
-                //Always brake when AutoBrake is on
-                Brake = true;
-            }
-
-            //Braking
-            if (Brake)
-            {
-                //Force ball to brake by resetting angular velocity every update
-                rb.angularVelocity = Vector3.zero;
-            }
-
-            // Downwards torque for extra grip - currently not used
-            if (grounded)
-            {
-                //rigidbody.AddForce(-up*stats.grip * (rigidbody.velocity.magnitude/400)); //Downwards gravity to increase grip
-                //Debug.Log(stats.grip * Mathf.Pow(rigidbody.velocity.magnitude/100,2));
-            }
+            if (other.GetComponent<TriggerRespawn>())
+                RequestRespawn();
         }
 
-        private void Update()
+        private void OnCollisionStay(Collision c)
+        {
+            //Enable grounded and reset timer
+            grounded = true;
+            groundedTimer = 0;
+            Up = c.contacts[0].normal;
+        }
+
+        private void OnCollisionExit(Collision c)
+        {
+            //Disable grounded when timer is done
+            groundedTimer = 0.08f;
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawRay(transform.position, Up);
+        }
+
+        public void CreateRemovalParticles()
+        {
+            //TODO: Create a special version of the particle system for Super Sanic that has a cloud of pot leaves instead. No, really.
+            Instantiate(prefabs.RemovalParticles, transform.position, transform.rotation);
+        }
+
+        public override void OnUpdate()
         {
             //Rolling sounds
             if (grounded)
             {
-                if(!rb) if (!TryGetComponent(out rb)) return;
+                if (!rb) TryGetComponent(out rb);
                 float rollSpd = Mathf.Clamp(rb.angularVelocity.magnitude / 230, 0, 16);
                 float vel = (-128f + rb.linearVelocity.magnitude) / 256; //Start at 128 fph, end at 256
 
@@ -373,44 +378,41 @@ namespace Sanicball.Gameplay
             }
         }
 
-        private void OnTriggerEnter(Collider other)
+        public override void OnFixedUpdate()
         {
-            var c = other.GetComponent<Checkpoint>();
-
-            if (c)
+            if (CanMove)
             {
-                if (CheckpointPassed != null)
-                    CheckpointPassed(this, new CheckpointPassArgs(c));
+                //If grounded use torque
+                if (DirectionVector != Vector3.zero)
+                {
+                    rb.AddTorque(DirectionVector * characterStats.rollSpeed);
+                }
+                //If not use both
+                if (!grounded)
+                {
+                    rb.AddForce((Quaternion.Euler(0, -90, 0) * DirectionVector) * characterStats.airSpeed);
+                }
             }
 
-            if (other.GetComponent<TriggerRespawn>())
-                RequestRespawn();
-        }
+            if (AutoBrake)
+            {
+                //Always brake when AutoBrake is on
+                Brake = true;
+            }
 
-        private void OnCollisionStay(Collision c)
-        {
-            //Enable grounded and reset timer
-            grounded = true;
-            groundedTimer = 0;
-            Up = c.contacts[0].normal;
-        }
+            //Braking
+            if (Brake)
+            {
+                //Force ball to brake by resetting angular velocity every update
+                rb.angularVelocity = Vector3.zero;
+            }
 
-        private void OnCollisionExit(Collision c)
-        {
-            //Disable grounded when timer is done
-            groundedTimer = 0.08f;
-        }
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawRay(transform.position, Up);
-        }
-
-        public void CreateRemovalParticles()
-        {
-            //TODO: Create a special version of the particle system for Super Sanic that has a cloud of pot leaves instead. No, really.
-            Instantiate(prefabs.RemovalParticles, transform.position, transform.rotation);
+            // Downwards torque for extra grip - currently not used
+            if (grounded)
+            {
+                //rigidbody.AddForce(-up*stats.grip * (rigidbody.velocity.magnitude/400)); //Downwards gravity to increase grip
+                //Debug.Log(stats.grip * Mathf.Pow(rigidbody.velocity.magnitude/100,2));
+            }
         }
     }
 }

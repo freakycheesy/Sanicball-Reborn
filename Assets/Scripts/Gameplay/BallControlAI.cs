@@ -5,12 +5,11 @@ using UnityEngine;
 namespace Sanicball.Gameplay
 {
     [RequireComponent(typeof(Ball))]
-    public class BallControlAI : MonoBehaviour
+    public class BallControlAI : BallControlBase
     {
         private const float AUTO_RESPAWN_TIME = 6.66f;
         private const float TARGET_OFFSET_CHANGE_TIME = 3.33f;
 
-        private Ball ball;
         private AINode target = null;
         private AISkillLevel skillLevel = AISkillLevel.Average;
 
@@ -59,8 +58,16 @@ namespace Sanicball.Gameplay
             target = StageReferences.Active.checkpoints[0].FirstAINode;
         }
 
-        // Update is called once per frame
-        private void Update()
+        public void OnTriggerEnter(Collider other)
+        {
+            AINode node = other.GetComponent<AINode>();
+            if (node && node == target && target.NextNode)
+            {
+                Target = target.NextNode;
+            }
+        }
+
+        public override void OnUpdate()
         {
             ball.Brake = false;
             if (target)
@@ -107,13 +114,9 @@ namespace Sanicball.Gameplay
             }
         }
 
-        public void OnTriggerEnter(Collider other)
+        public override void OnFixedUpdate()
         {
-            AINode node = other.GetComponent<AINode>();
-            if (node && node == target && target.NextNode)
-            {
-                Target = target.NextNode;
-            }
+            
         }
     }
 }

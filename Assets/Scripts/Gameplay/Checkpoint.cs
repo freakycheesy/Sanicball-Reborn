@@ -11,7 +11,7 @@ namespace Sanicball.Gameplay
         [SerializeField]
         private AINode firstAINode = null;
 
-        public AINode FirstAINode { get { return firstAINode; } }
+        public AINode FirstAINode { get => firstAINode; set => firstAINode = value; }
 
         public void Show()
         {
