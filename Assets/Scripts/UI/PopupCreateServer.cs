@@ -29,9 +29,11 @@ namespace Sanicball.UI
         private GameObject serverConnectorPrefab = null;
         [SerializeField]
         private UI.PopupHandler popupHandler = null;
-        
-        public void Start(){
+
+        public void Start()
+        {
             popupHandler = PopupHandler.Instance;
+            nameInput.text = $"{ActiveData.GameSettings.nickname}'s Game";
         }
 
         public void Create(){

@@ -44,14 +44,17 @@ public class SanicPallet : ScriptableObject
     {
         if (string.IsNullOrEmpty(Author)) Author = Application.companyName;
     }
+    [ContextMenu("Fix Barcodes")]
     public void FixBarcode()
     {
         foreach (var stage in Stages)
         {
+            if (string.IsNullOrEmpty(stage.name)) stage.name = stage.scene.SubObjectName;
             stage.BARCODE = $"{Author}.{name}.{stage.name}";
         }
         foreach (var song in Playlist)
         {
+            if (string.IsNullOrEmpty(song.name)) song.name = song.resource.name;
             song.BARCODE = $"{Author}.{name}.{song.name}";
         }
     }

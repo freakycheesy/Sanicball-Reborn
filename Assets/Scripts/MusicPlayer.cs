@@ -1,13 +1,10 @@
-using Sanicball;
 using Sanicball.Data;
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections.Generic;
-using System.Linq;
 using Sanicball.UI;
 using Sanicball.Logic;
 using UnityEngine.Audio;
-using UnityEngine.AddressableAssets;
+using Sanicball.Gameplay;
 
 namespace Sanicball
 {
@@ -41,13 +38,15 @@ namespace Sanicball
 
         public void Play()
         {
-            Song song = Playlist[currentSongID];
-            Play($"{song.name} ({song.BARCODE})");
-        }
-
-        public void Play(string credits)
-        {
             if (!ActiveData.GameSettings.music) return;
+            Song song = Playlist[currentSongID];
+            bool InLobby = MatchManager.Instance.InLobby;
+            GameState selectedState = InLobby ? GameState.Lobby : GameState.Race;
+            if(!song.PlayableStates.HasFlag(selectedState)) song = Playlist.RandomElementByProperty(a => a.PlayableStates.HasFlag(selectedState));
+            aSource.resource = song.resource;
+
+            string credits = $"{song.name} ({song.BARCODE})";
+
             playerCanvas.Show(credits);
             isPlaying = true;
             aSource.Play();
@@ -63,7 +62,7 @@ namespace Sanicball
         {
             Instance = this;
             playerCanvas = Instantiate(playerCanvasPrefab);
-            if (playerCanvasLobbyOffset) 
+            if (playerCanvasLobbyOffset)
             {
                 playerCanvas.lobbyOffset = true;
             }
@@ -79,13 +78,12 @@ namespace Sanicball
                     List<Song> p = new();
                     Song s = ActiveData.ESportsMusic;
                     p.Add(s);
-                    p.Insert(0,s);
+                    p.Insert(0, s);
                     Playlist = p;
                 }
             }
 
             currentSongID = 0;
-            aSource.resource = Playlist[currentSongID].resource;
             isPlaying = aSource.isPlaying;
             if (startPlaying && ActiveData.GameSettings.music)
             {
@@ -191,6 +189,15 @@ namespace Sanicball
     {
         public string BARCODE;
         public string name;
+        public GameState PlayableStates = GameState.Race;
         public AudioResource resource;
+    }
+
+    [System.Flags]
+    public enum GameState : byte
+    {
+        Menu,
+        Lobby,
+        Race,
     }
 }

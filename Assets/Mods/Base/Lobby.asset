@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e31d7c00ccbd29a45851d5897efe9288, type: 3}
+  m_Name: Lobby
+  m_EditorClassIdentifier: 
+  Author: BK-TN
+  Stages: []
+  Playlist:
+  - BARCODE: BK-TN.Lobby.AquaticRuinZone
+    name: AquaticRuinZone
+    PlayableStates: 1
+    resource: {fileID: 8300000, guid: 173d592ce2ab56f49be90910083bd725, type: 3}
+  - BARCODE: BK-TN.Lobby.CasinoNightZone
+    name: CasinoNightZone
+    PlayableStates: 1
+    resource: {fileID: 8300000, guid: 5a4737711b0ac8047a0735eb39038dfe, type: 3}
+  - BARCODE: BK-TN.Lobby.ChemicalPlantZone
+    name: ChemicalPlantZone
+    PlayableStates: 1
+    resource: {fileID: 8300000, guid: 3e7d5cd11d4170a48bbd2ded072e87f8, type: 3}
+  - BARCODE: BK-TN.Lobby.EmeraldHillZone
+    name: EmeraldHillZone
+    PlayableStates: 1
+    resource: {fileID: 8300000, guid: 52bbf6a55aef5ad46b4401df9a4c3aee, type: 3}
+  - BARCODE: BK-TN.Lobby.GreenHillZone
+    name: GreenHillZone
+    PlayableStates: 1
+    resource: {fileID: 8300000, guid: 65bc1dc0818c22b4e8857068055157b3, type: 3}
+  - BARCODE: BK-TN.Lobby.IceCapZone
+    name: IceCapZone
+    PlayableStates: 1
+    resource: {fileID: 8300000, guid: 7f2770e7ea82ef14693d78b061015501, type: 3}
+  - BARCODE: BK-TN.Lobby.MysticCaveZone
+    name: MysticCaveZone
+    PlayableStates: 1
+    resource: {fileID: 8300000, guid: cb4f570cf0c413445891e50c1a179f98, type: 3}
+  - BARCODE: BK-TN.Lobby.SpringYardZone
+    name: SpringYardZone
+    PlayableStates: 1
+    resource: {fileID: 8300000, guid: e42812df16935b340ba9a9a0df7dcde0, type: 3}
+  - BARCODE: BK-TN.Lobby.StarLightZone
+    name: StarLightZone
+    PlayableStates: 1
+    resource: {fileID: 8300000, guid: 44c81f1441c9db74fb26cbf1b217c417, type: 3}
+  Avatars: []
+  Powerups: []
+  song: {fileID: 0}
