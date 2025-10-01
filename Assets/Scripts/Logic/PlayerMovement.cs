@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using Lidgren.Network;
+using Lidgren.Network.Extensions;
+using Newtonsoft.Json;
 using SanicballCore;
 using UnityEngine;
 
@@ -46,11 +48,11 @@ namespace Sanicball.Logic
         {
             msg.Write(ClientGuid);
             msg.Write((byte)CtrlType);
-            msg.Write(Position);
-            msg.Write(Rotation);
-            msg.Write(Velocity);
-            msg.Write(AngularVelocity);
-            msg.Write(DirectionVector);
+            msg.ExtendedWrite(Position);
+            msg.ExtendedWrite(Rotation);
+            msg.ExtendedWrite(Velocity);
+            msg.ExtendedWrite(AngularVelocity);
+            msg.ExtendedWrite(DirectionVector);
         }
 
         public static PlayerMovement ReadFromMessage(NetBuffer msg)
