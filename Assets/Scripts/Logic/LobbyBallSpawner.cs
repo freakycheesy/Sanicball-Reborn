@@ -10,7 +10,9 @@ namespace Sanicball.Logic
         [SerializeField]
         private LobbyPlatform lobbyPlatform = null;
 
-        public Ball SpawnBall(PlayerType playerType, ControlType ctrlType, int character, string nickname)
+        public override string SpawnerKey { get => "Lobby"; }
+
+        public Ball SpawnBall(PlayerType playerType, ControlType ctrlType, int character, string nickname, Object context = null)
         {
             if (lobbyPlatform)
             {
@@ -20,8 +22,7 @@ namespace Sanicball.Logic
             {
                 Debug.LogError("LobbyBallSpawner has no lobby platform assigned");
             }
-
-            return SpawnBall(transform.position, transform.rotation, BallType.LobbyPlayer, ctrlType, character, nickname);
+            return SpawnBall(transform.position, transform.rotation, BallType.LobbyPlayer, ctrlType, character, nickname, context);
         }
 
         private void OnDrawGizmos()

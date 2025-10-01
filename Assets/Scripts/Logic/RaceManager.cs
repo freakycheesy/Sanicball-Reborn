@@ -168,8 +168,9 @@ namespace Sanicball.Logic
 
         private void StartRaceCallback(StartRaceMessage msg, float travelTime)
         {
-            countdownOffset = travelTime;
+            HasStartRaceMessage = true;
             CurrentState = RaceState.Countdown;
+            countdownOffset = travelTime;
         }
 
         private void ClientLeftCallback(ClientLeftMessage msg, float travelTime)
@@ -208,7 +209,7 @@ namespace Sanicball.Logic
                     BallType.Player,
                     local ? matchPlayer.CtrlType : ControlType.None,
                     matchPlayer.CharacterId,
-                    name + " (" + GameInput.GetControlTypeName(matchPlayer.CtrlType) + ")"
+                    name + " (" + GameInput.GetControlTypeName(matchPlayer.CtrlType) + ")", this
                     );
 
                 //Create race player
@@ -231,7 +232,7 @@ namespace Sanicball.Logic
                         BallType.AI,
                         ControlType.None,
                         i,
-                        "AI #" + i
+                        "AI #" + i, this
                         );
                     aiBall.CanMove = false;
 
@@ -341,11 +342,15 @@ namespace Sanicball.Logic
                 messenger.SendMessage(new StartRaceMessage());
             }
         }
-
+        private bool CanStartRace()
+        {
+            return !matchManager.OnlineMode && CurrentState == RaceState.Waiting && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton0));
+        }
+        private bool HasStartRaceMessage = false;
         private void Update()
         {
             //In offline mode, send a RaceStartMessage once Space (Or A on any joystick) is pressed
-            if (!matchManager.OnlineMode && CurrentState == RaceState.Waiting && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton0)))
+            if (CanStartRace() && !HasStartRaceMessage)
             {
                 messenger.SendMessage(new StartRaceMessage());
             }

@@ -584,7 +584,7 @@ namespace Sanicball.Logic
 
             string name = clients.First(a => a.Guid == player.ClientGuid).Name + " (" + GameInput.GetControlTypeName(player.CtrlType) + ")";
 
-            player.BallObject = spawner.SpawnBall(PlayerType.Normal, (player.ClientGuid == myGuid) ? player.CtrlType : ControlType.None, player.CharacterId, name);
+            player.BallObject = spawner.SpawnBall(PlayerType.Normal, (player.ClientGuid == myGuid) ? player.CtrlType : ControlType.None, player.CharacterId, name, this);
 
             if (player.ClientGuid != myGuid)
             {

@@ -7,12 +7,24 @@ using Newtonsoft.Json;
 [CustomEditor(typeof(ActiveData))]
 public class ActiveDataEditor : Editor
 {
+    static string CustomStagesPallets;
+    static string Stages;
+    static string Powerups;
+    static string Characters;
+
     public override void OnInspectorGUI()
     {
-        var CustomStagesPallets = JsonConvert.SerializeObject(ActiveData.CustomStagesPallets).Replace(",", "\n");
-        var Stages = JsonConvert.SerializeObject(ActiveData.Stages).Replace(",", "\n");
-        var Powerups = JsonConvert.SerializeObject(ActiveData.Powerups).Replace(",", "\n");
-        var Characters = JsonConvert.SerializeObject(ActiveData.Characters).Replace(",", "\n");
+        try
+        {
+            CustomStagesPallets = JsonConvert.SerializeObject(ActiveData.CustomStagesPallets).Replace(",", "\n");
+            Stages = JsonConvert.SerializeObject(ActiveData.Stages).Replace(",", "\n");
+            Powerups = JsonConvert.SerializeObject(ActiveData.Powerups).Replace(",", "\n");
+            Characters = JsonConvert.SerializeObject(ActiveData.Characters).Replace(",", "\n");
+        }
+        catch
+        {
+            
+        }
         base.OnInspectorGUI();
         EditorGUI.BeginDisabledGroup(true);
         TextArea("Pallets", CustomStagesPallets);

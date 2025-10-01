@@ -2,7 +2,6 @@ using System;
 using Sanicball.Data;
 using SanicballCore;
 using UnityEngine;
-using static Sanicball.Gameplay.GlobalBallController;
 
 namespace Sanicball.Gameplay
 {
@@ -73,7 +72,7 @@ namespace Sanicball.Gameplay
     }
 
     [RequireComponent(typeof(Rigidbody))]
-    public class Ball : LocalBallBehaviour
+    public class Ball : LocalController
     {
         //These are set using Init() when balls are instantiated
         //But you can set them from the editor to quickly test out a track
@@ -317,9 +316,10 @@ namespace Sanicball.Gameplay
         public override void OnUpdate()
         {
             //Rolling sounds
+            if (!rb) TryGetComponent(out rb);
+
             if (grounded)
             {
-                if (!rb) TryGetComponent(out rb);
                 float rollSpd = Mathf.Clamp(rb.angularVelocity.magnitude / 230, 0, 16);
                 float vel = (-128f + rb.linearVelocity.magnitude) / 256; //Start at 128 fph, end at 256
 
@@ -380,6 +380,8 @@ namespace Sanicball.Gameplay
 
         public override void OnFixedUpdate()
         {
+            if (!rb) TryGetComponent(out rb);
+
             if (CanMove)
             {
                 //If grounded use torque

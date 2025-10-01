@@ -42,7 +42,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: f0af43db82807c241a23c2d5c731412a, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: f0af43db82807c241a23c2d5c731412a, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5
@@ -171,7 +171,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 8b93e1e51502d7d4f8158b9abef14ad8, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 8b93e1e51502d7d4f8158b9abef14ad8, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0
@@ -300,7 +300,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 40c2a8ff80fe23d44bc7c4dc597bc2b7, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 40c2a8ff80fe23d44bc7c4dc597bc2b7, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0
@@ -429,7 +429,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 8131e635251a08c4dac9d7484568e666, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 8131e635251a08c4dac9d7484568e666, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0
@@ -587,6 +587,18 @@ MonoBehaviour:
     roll: {fileID: 8294728}
     speedNoise: {fileID: 8295400}
     brake: {fileID: 8236126}
+  characterStats:
+    rollSpeed: 100
+    airSpeed: 15
+    jumpHeight: 14
+    grip: 0
+  canMove: 1
+  controller: {fileID: 0}
+  grounded: 0
+  groundedTimer: 0
+  upResetTimer: 0
+  smoke: {fileID: 0}
+  speedFire: {fileID: 0}
 --- !u!33 &3320766
 MeshFilter:
   m_ObjectHideFlags: 0

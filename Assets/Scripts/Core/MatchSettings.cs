@@ -44,24 +44,26 @@ namespace SanicballCore
     [Serializable]
     public struct MatchSettings
     {
-        [Newtonsoft.Json.JsonProperty]
+        public const int maxAICount = 255;
+
+        [JsonProperty]
         private string aiCharacters;
 
-        public int StageId { get; set; }
-        public int Laps { get; set; }
-        public bool PowerupsEnabled { get; set; }
-        public int AICount { get; set; }
-        public AISkillLevel AISkill{ get; set; }
-        public Dictionary<string, int> Aliases{ get; set; }
+        public int StageId;
+        public int Laps;
+        public bool PowerupsEnabled;
+        public int AICount;
+        public AISkillLevel AISkill;
+        public Dictionary<string, int> Aliases;
 
-        public int AutoStartTime{ get; set; }
-        public int AutoStartMinPlayers{ get; set; }
-        public int AutoReturnTime{ get; set; }
-        public float VoteRatio{ get; set; }
-        public StageRotationMode StageRotationMode{ get; set; }
-        public AllowedTiers AllowedTiers{ get; set; }
-        public TierRotationMode TierRotationMode{ get; set; }
-        public int DisqualificationTime{ get; set; }
+        public int AutoStartTime;
+        public int AutoStartMinPlayers;
+        public int AutoReturnTime;
+        public float VoteRatio;
+        public StageRotationMode StageRotationMode;
+        public AllowedTiers AllowedTiers;
+        public TierRotationMode TierRotationMode;
+        public int DisqualificationTime;
 
         /// <summary>
         /// Creates a MatchSettings object with the game's default settings.

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 488496}
   - component: {fileID: 11453170}
-  - component: {fileID: 7901899181193829767}
+  - component: {fileID: 4539993357340449156}
   m_Layer: 0
   m_Name: AINodeSingle
   m_TagString: Untagged
@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextNode: {fileID: 0}
---- !u!135 &7901899181193829767
-SphereCollider:
+--- !u!65 &4539993357340449156
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -65,5 +65,5 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 150
+  m_Size: {x: 300, y: 300, z: 50}
   m_Center: {x: 0, y: 0, z: 0}

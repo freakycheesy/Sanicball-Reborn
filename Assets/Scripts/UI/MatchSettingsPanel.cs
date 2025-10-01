@@ -107,7 +107,7 @@ namespace Sanicball.UI
 
         public void IncrementAICount()
         {
-            if (tempSettings.AICount < 12)
+            if (tempSettings.AICount < MatchSettings.maxAICount)
                 tempSettings.AICount++;
             else
                 tempSettings.AICount = 0;
@@ -119,7 +119,7 @@ namespace Sanicball.UI
             if (tempSettings.AICount > 0)
                 tempSettings.AICount--;
             else
-                tempSettings.AICount = 12;
+                tempSettings.AICount = MatchSettings.maxAICount;
             UpdateUiFields();
         }
 
