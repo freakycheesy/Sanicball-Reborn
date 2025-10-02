@@ -231,10 +231,10 @@ namespace Sanicball.Logic
 
                 if (LapRecordsEnabled)
                 {
-                    CharacterTier tier = ActiveData.Characters[Character].tier;
-                    string stage = ActiveData.Stages[MatchManager.Instance.CurrentSettings.StageId].BARCODE;
+                    CharacterTier tier = ActiveData.singleton.characters[Character].tier;
+                    string stage = ActiveData.singleton.stages[MatchManager.Instance.CurrentSettings.StageId].BARCODE;
 
-                    ActiveData.RaceRecords.Add(new RaceRecord(
+                    ActiveData.singleton.raceRecords.Add(new RaceRecord(
                         tier,
                         lapTime,
                         DateTime.Now,

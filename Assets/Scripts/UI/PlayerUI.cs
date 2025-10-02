@@ -93,7 +93,7 @@ namespace Sanicball.UI
                     //Disabled for now, glitchy as fuck
                     //playerMarker.HideImageWhenInSight = true;
 
-                    Data.CharacterInfo character = ActiveData.Characters[p.Character];
+                    Data.CharacterInfo character = ActiveData.singleton.characters[p.Character];
                     //playerMarker.Sprite = character.icon;
                     Color c = character.color;
                     c.a = 0.2f;
@@ -135,12 +135,12 @@ namespace Sanicball.UI
 
             if (TargetPlayer.LapRecordsEnabled)
             {
-				CharacterTier tier = ActiveData.Characters[targetPlayer.Character].tier;
+				CharacterTier tier = ActiveData.singleton.characters[targetPlayer.Character].tier;
                 string stage = MatchManager.CurrentStage.BARCODE;
 
                 float time = (float)e.CurrentLapTime.TotalSeconds;
 
-                RaceRecord bestRecord = ActiveData.RaceRecords
+                RaceRecord bestRecord = ActiveData.singleton.raceRecords
                     .Where(a => a.Tier == tier && a.Stage == stage && a.GameVersion == GameVersion.AS_FLOAT && a.WasTesting == GameVersion.IS_TESTING)
                     .OrderBy(a => a.Time)
                     .FirstOrDefault();
@@ -198,7 +198,7 @@ namespace Sanicball.UI
             string postfix = " ";
 
             //Speed label
-            if (!ActiveData.GameSettings.useImperial)
+            if (!ActiveData.singleton.gameSettings.useImperial)
             {
                 postfix += (Mathf.Floor(speed) == 1f) ? "fast/h" : "fasts/h";
             }

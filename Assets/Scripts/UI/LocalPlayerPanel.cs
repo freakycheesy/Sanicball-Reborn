@@ -167,9 +167,9 @@ namespace Sanicball.UI
 
         private void ShowMainHelp()
         {
-            string kbConfirm = GameInput.GetKeyCodeName(ActiveData.Keybinds[Keybind.Menu]);
+            string kbConfirm = GameInput.GetKeyCodeName(ActiveData.singleton.keybinds[Keybind.Menu]);
             const string joyConfirm = "X";
-            string kbAction = GameInput.GetKeyCodeName(ActiveData.Keybinds[Keybind.Respawn]);
+            string kbAction = GameInput.GetKeyCodeName(ActiveData.singleton.keybinds[Keybind.Respawn]);
             const string joyAction = "Y";
 
             string confirm = AssignedCtrlType == ControlType.Keyboard ? kbConfirm : joyConfirm;
@@ -184,7 +184,7 @@ namespace Sanicball.UI
             const string joyLeft = kbLeft;
             const string kbRight = "Right";
             const string joyRight = kbRight;
-            string kbConfirm = GameInput.GetKeyCodeName(ActiveData.Keybinds[Keybind.Menu]);
+            string kbConfirm = GameInput.GetKeyCodeName(ActiveData.singleton.keybinds[Keybind.Menu]);
             const string joyConfirm = "X";
 
             string left = AssignedCtrlType == ControlType.Keyboard ? kbLeft : joyLeft;

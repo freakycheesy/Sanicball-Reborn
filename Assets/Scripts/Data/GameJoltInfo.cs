@@ -35,8 +35,8 @@ namespace Sanicball.Data
             GJAPI.Data.GetCallback += LoadSpecialUsersCallback;
 
             //Check if current game jolt info is legit
-            string username = ActiveData.GameSettings.gameJoltUsername;
-            string token = ActiveData.GameSettings.gameJoltToken;
+            string username = ActiveData.singleton.gameSettings.gameJoltUsername;
+            string token = ActiveData.singleton.gameSettings.gameJoltToken;
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(token)) return;
 
             GJAPI.Users.Verify(username, token);
@@ -115,8 +115,8 @@ namespace Sanicball.Data
             if (!isLegit)
             {
                 //Not legit! Remove info
-                ActiveData.GameSettings.gameJoltUsername = string.Empty;
-                ActiveData.GameSettings.gameJoltToken = string.Empty;
+                ActiveData.singleton.gameSettings.gameJoltUsername = string.Empty;
+                ActiveData.singleton.gameSettings.gameJoltToken = string.Empty;
             }
             GJAPI.Users.VerifyCallback -= CheckIfSignedInCallback;
         }

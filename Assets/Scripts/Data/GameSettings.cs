@@ -23,11 +23,8 @@ namespace Sanicball.Data
         [Header("Graphics")]
         public int aa = 0;
 
-        public bool trails = true;
-        public bool shadows = true;
         public bool motionBlur = false;
         public bool bloom = false;
-		public ReflectionQuality reflectionQuality = ReflectionQuality.Off;
         public bool eSportsReady = false;
 
         [Header("Gameplay")]
@@ -60,11 +57,8 @@ namespace Sanicball.Data
             showControlsWhileWaiting = original.showControlsWhileWaiting;
 
             aa = original.aa;
-            trails = original.trails;
-            shadows = original.shadows;
             motionBlur = original.motionBlur;
             bloom = original.bloom;
-            reflectionQuality = original.reflectionQuality;
             eSportsReady = original.eSportsReady;
 
             useOldControls = original.useOldControls;
@@ -112,28 +106,15 @@ namespace Sanicball.Data
             QualitySettings.antiAliasing = aa;
             //Vsync
             if (vsync) { QualitySettings.vSyncCount = 1; } else { QualitySettings.vSyncCount = 0; }
-            //Shadows
-            GameObject dl = GameObject.Find("Directional light");
-            if (dl != null)
-            {
-                LightShadows ls;
-                if (shadows) { ls = LightShadows.Hard; } else { ls = LightShadows.None; }
-                dl.GetComponent<Light>().shadows = ls;
-            }
             //Volume
             AudioListener.volume = soundVolume;
+            // Post Processing
+            ActiveData.singleton.bloom.enabled = bloom;
+            ActiveData.singleton.motionBlur.enabled = bloom;
             //Mute
             MusicPlayer music = MusicPlayer.Instance;
             if (music)
                 music.GetComponent<AudioSource>().mute = !music;
         }
-    }
-
-    public enum ReflectionQuality
-    {
-        Off,
-        Low,
-        Medium,
-        High
     }
 }

@@ -28,12 +28,12 @@ namespace Sanicball.UI
         public static ControlsPanel Instance;
         public void Apply()
         {
-            ActiveData.Keybinds.CopyValues(tempKeybinds);
+            ActiveData.singleton.keybinds.CopyValues(tempKeybinds);
         }
 
         public void RevertToCurrent()
         {
-            tempKeybinds.CopyValues(ActiveData.Keybinds);
+            tempKeybinds.CopyValues(ActiveData.singleton.keybinds);
             UpdateFields();
         }
 

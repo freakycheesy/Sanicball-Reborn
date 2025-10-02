@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 449212}
   - component: {fileID: 11452216}
-  - component: {fileID: 4720972701766954254}
   - component: {fileID: 8187857095907108020}
   m_Layer: 0
   m_Name: ActiveData
@@ -31,7 +30,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 6605937820234416044}
+  - {fileID: 352047072575272865}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11452216
@@ -46,30 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bbc2a230d41c7c4188b4ccb438aa1b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  raceRecords: []
-  gameSettings:
-    nickname: 
-    serverListURL: https://sanicball.bdgr.zone/servers/
-    gameJoltUsername: 
-    gameJoltToken: 
-    resolution: 0
-    fullscreen: 1
-    vsync: 0
-    useImperial: 0
-    showControlsWhileWaiting: 1
-    aa: 0
-    trails: 1
-    shadows: 1
-    motionBlur: 0
-    bloom: 0
-    reflectionQuality: 0
-    eSportsReady: 0
-    useOldControls: 0
-    oldControlsMouseSpeed: 3
-    oldControlsKbSpeed: 10
-    soundVolume: 1
-    music: 1
-    fastMusic: 1
+  pallets: []
+  stages: []
+  powerups: []
+  characters: []
+  bloom: {fileID: 6010617636553146551}
+  motionBlur: {fileID: 4138232350900161547}
   gameJoltInfo:
     gameID: 0
     privateKey: 
@@ -81,25 +64,46 @@ MonoBehaviour:
   eSportsMusic:
     BARCODE: Bangarang by Skrillex
     name: Bangarang
+    PlayableStates: 2
     resource: {fileID: 8300000, guid: 44aeddca0c186224090a76d97139eaa4, type: 3}
   eSportsPrefab: {fileID: 11400000, guid: f55190f64bbb0c349bcd0f128756a753, type: 3}
---- !u!114 &4720972701766954254
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 153034}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IsGlobal: 1
-  priority: 0
-  blendDistance: 0
-  weight: 1
-  sharedProfile: {fileID: 11400000, guid: 87c25141e0c992c42a534bb5bd153fd9, type: 2}
+  gameSettings:
+    nickname: 
+    serverListURL: https://sanicball.bdgr.zone/servers/
+    gameJoltUsername: 
+    gameJoltToken: 
+    resolution: 0
+    fullscreen: 1
+    vsync: 0
+    useImperial: 0
+    showControlsWhileWaiting: 1
+    aa: 0
+    motionBlur: 0
+    bloom: 0
+    eSportsReady: 0
+    useOldControls: 0
+    oldControlsMouseSpeed: 3
+    oldControlsKbSpeed: 10
+    soundVolume: 1
+    music: 1
+    fastMusic: 1
+  raceRecords: []
+  matchSettings:
+    StageId: 0
+    Laps: 2
+    PowerupsEnabled: 0
+    AICount: 0
+    AISkill: 1
+    AutoStartTime: 60
+    AutoStartMinPlayers: 2
+    AutoReturnTime: 15
+    VoteRatio: 1
+    StageRotationMode: 0
+    AllowedTiers: 0
+    TierRotationMode: 0
+    DisqualificationTime: 120
+  palletLabels:
+  - m_LabelString: default
 --- !u!114 &8187857095907108020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,3 +116,101 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2a44fc7e189eda4aafcaacb289f56ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2053827831317998331
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6605937820234416044}
+  - component: {fileID: 6010617636553146551}
+  m_Layer: 0
+  m_Name: Bloom
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6605937820234416044
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2053827831317998331}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 449212}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6010617636553146551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2053827831317998331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 87c25141e0c992c42a534bb5bd153fd9, type: 2}
+--- !u!1 &3238817039695805902
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 352047072575272865}
+  - component: {fileID: 4138232350900161547}
+  m_Layer: 0
+  m_Name: Motion Blur
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &352047072575272865
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3238817039695805902}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 449212}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4138232350900161547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3238817039695805902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 1be354b0e32c4af4b8628fc405300e71, type: 2}

@@ -38,7 +38,7 @@ namespace Sanicball
 
         public void Play()
         {
-            if (!ActiveData.GameSettings.music) return;
+            if (!ActiveData.singleton.gameSettings.music) return;
             Song song = Playlist[currentSongID];
             bool InLobby = MatchManager.Instance.InLobby;
             GameState selectedState = InLobby ? GameState.Lobby : GameState.Race;
@@ -72,11 +72,11 @@ namespace Sanicball
             slidePosition = slidePositionMax;
             ShuffleSongs();
 
-            if (ActiveData.ESportsFullyReady)
+            if (ActiveData.singleton.gameSettings.eSportsReady)
             {
                 if (!MatchManager.Instance.InLobby) {
                     List<Song> p = new();
-                    Song s = ActiveData.ESportsMusic;
+                    Song s = ActiveData.singleton.eSportsMusic;
                     p.Add(s);
                     p.Insert(0, s);
                     Playlist = p;
@@ -85,7 +85,7 @@ namespace Sanicball
 
             currentSongID = 0;
             isPlaying = aSource.isPlaying;
-            if (startPlaying && ActiveData.GameSettings.music)
+            if (startPlaying && ActiveData.singleton.gameSettings.music)
             {
                 Play();
             }
@@ -93,7 +93,7 @@ namespace Sanicball
             {
                 aSource.volume = 0f;
             }
-            if (!ActiveData.GameSettings.music)
+            if (!ActiveData.singleton.gameSettings.music)
             {
                 fastSource.Stop();
             }

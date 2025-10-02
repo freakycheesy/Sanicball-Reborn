@@ -33,7 +33,7 @@ namespace Sanicball.UI
         public void Start()
         {
             popupHandler = PopupHandler.Instance;
-            nameInput.text = $"{ActiveData.GameSettings.nickname}'s Game";
+            nameInput.text = $"{ActiveData.singleton.gameSettings.nickname}'s Game";
         }
 
         public void Create(){
@@ -57,7 +57,7 @@ namespace Sanicball.UI
             
             var serverStarter = Instantiate(serverStarterPrefab);
             DontDestroyOnLoad(serverStarter);
-            serverStarter.GetComponent<LocalServerStarter>().InitServer(port, maxPlayers, nameInput.text, isPublicInput.isOn, ActiveData.GameSettings.serverListURL);
+            serverStarter.GetComponent<LocalServerStarter>().InitServer(port, maxPlayers, nameInput.text, isPublicInput.isOn, ActiveData.singleton.gameSettings.serverListURL);
 
             if(popupHandler != null){
                 popupHandler.OpenPopup(connectingPopupPrefab);

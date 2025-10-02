@@ -36,7 +36,7 @@ namespace Sanicball.UI
             discoveryClient.DiscoverLocalPeers(25000);
             latestLocalRefreshTime = DateTime.Now;
 
-			serverBrowserRequester = new UnityWebRequest(ActiveData.GameSettings.serverListURL);
+			serverBrowserRequester = new UnityWebRequest(ActiveData.singleton.gameSettings.serverListURL);
 
             serverCountField.text = "Refreshing servers, hang on...";
             errorField.enabled = false;

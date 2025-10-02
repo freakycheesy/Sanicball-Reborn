@@ -51,8 +51,8 @@ namespace Sanicball.UI
 
         private IEnumerator Start()
         {
-            var charList = ActiveData.Characters.OrderBy(a => a.tier).ToArray();
-            if (ActiveData.GameSettings.eSportsReady)
+            var charList = ActiveData.singleton.characters.OrderBy(a => a.tier).ToArray();
+            if (ActiveData.singleton.gameSettings.eSportsReady)
             {
                 charList = charList.Where(a => a.tier == SanicballCore.CharacterTier.Hyperspeed).ToArray();
             }
@@ -168,7 +168,7 @@ namespace Sanicball.UI
             else
             {
                 if (CharacterSelected != null)
-                    CharacterSelected(this, new CharacterSelectionArgs(Array.IndexOf(ActiveData.Characters.ToArray(), selectedChar)));
+                    CharacterSelected(this, new CharacterSelectionArgs(Array.IndexOf(ActiveData.singleton.characters.ToArray(), selectedChar)));
             }
         }
 

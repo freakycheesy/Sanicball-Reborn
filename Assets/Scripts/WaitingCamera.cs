@@ -45,13 +45,13 @@ namespace Sanicball
             if (vol < 1f)
             {
                 vol = Mathf.Min(1f, vol + Time.deltaTime / 4);
-                AudioListener.volume = Mathf.Lerp(0, Data.ActiveData.GameSettings.soundVolume, vol);
+                AudioListener.volume = Mathf.Lerp(0, Data.ActiveData.singleton.gameSettings.soundVolume, vol);
             }
         }
 
         public void OnDestroy()
         {
-            AudioListener.volume = Data.ActiveData.GameSettings.soundVolume;
+            AudioListener.volume = Data.ActiveData.singleton.gameSettings.soundVolume;
         }
 
         private void AlignWithCurrentOrientation()

@@ -43,13 +43,13 @@ namespace Sanicball.UI
         public static OptionsPanel Instance;
         public void Apply()
         {
-            ActiveData.GameSettings.CopyValues(tempSettings);
-            ActiveData.GameSettings.Apply(true);
+            ActiveData.singleton.gameSettings.CopyValues(tempSettings);
+            ActiveData.singleton.gameSettings.Apply(true);
         }
 
         public void RevertToCurrent()
         {
-            tempSettings.CopyValues(ActiveData.GameSettings);
+            tempSettings.CopyValues(ActiveData.singleton.gameSettings);
             UpdateFields();
         }
 
@@ -86,11 +86,8 @@ namespace Sanicball.UI
             speedUnit.text = tempSettings.useImperial ? "Imperial" : "Metric";
 
             aa.text = tempSettings.aa == 0 ? "Off" : ("x" + tempSettings.aa);
-            trails.text = tempSettings.trails ? "On" : "Off";
-            shadows.text = tempSettings.shadows ? "On" : "Off";
             motionBlur.text = tempSettings.motionBlur ? "On" : "Off";
             bloom.text = tempSettings.bloom ? "On" : "Off";
-            reflectionQuality.text = tempSettings.reflectionQuality.ToString();
             eSportsReady.text = tempSettings.eSportsReady ? "Born ready" : "No way";
 
 			controlMode.text = tempSettings.useOldControls ? "Rotate manually (Precise)" : "Follow velocity (Intuitive)";
@@ -238,18 +235,6 @@ namespace Sanicball.UI
             UpdateFields();
         }
 
-        public void TrailsToggle()
-        {
-            tempSettings.trails = !tempSettings.trails;
-            UpdateFields();
-        }
-
-        public void ShadowsToggle()
-        {
-            tempSettings.shadows = !tempSettings.shadows;
-            UpdateFields();
-        }
-
         public void MotionBlurToggle()
         {
             tempSettings.motionBlur = !tempSettings.motionBlur;
@@ -259,22 +244,6 @@ namespace Sanicball.UI
         public void BloomToggle()
         {
             tempSettings.bloom = !tempSettings.bloom;
-            UpdateFields();
-        }
-
-        public void ReflectionQualityUp()
-        {
-            int q = (int)tempSettings.reflectionQuality;
-            q = Mathf.Min(q + 1, System.Enum.GetNames(typeof(ReflectionQuality)).Length - 1);
-            tempSettings.reflectionQuality = (ReflectionQuality)q;
-            UpdateFields();
-        }
-
-        public void ReflectionQualityDown()
-        {
-            int q = (int)tempSettings.reflectionQuality;
-            q = Mathf.Max(q - 1, 0);
-            tempSettings.reflectionQuality = (ReflectionQuality)q;
             UpdateFields();
         }
 

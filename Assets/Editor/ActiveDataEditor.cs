@@ -16,10 +16,10 @@ public class ActiveDataEditor : Editor
     {
         try
         {
-            CustomStagesPallets = JsonConvert.SerializeObject(ActiveData.CustomStagesPallets).Replace(",", "\n");
-            Stages = JsonConvert.SerializeObject(ActiveData.Stages).Replace(",", "\n");
-            Powerups = JsonConvert.SerializeObject(ActiveData.Powerups).Replace(",", "\n");
-            Characters = JsonConvert.SerializeObject(ActiveData.Characters).Replace(",", "\n");
+            CustomStagesPallets = JsonConvert.SerializeObject(ActiveData.singleton.pallets).Replace(",", "\n");
+            Stages = JsonConvert.SerializeObject(ActiveData.singleton.stages).Replace(",", "\n");
+            Powerups = JsonConvert.SerializeObject(ActiveData.singleton.powerups).Replace(",", "\n");
+            Characters = JsonConvert.SerializeObject(ActiveData.singleton.characters).Replace(",", "\n");
         }
         catch
         {

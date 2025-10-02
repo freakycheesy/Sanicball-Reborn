@@ -139,10 +139,10 @@ namespace Sanicball
             switch (ctrlType)
             {
                 case ControlType.Keyboard:
-                    bool forward = Input.GetKey(ActiveData.Keybinds[Keybind.Forward]) && !KeyboardDisabled;
-                    bool left = Input.GetKey(ActiveData.Keybinds[Keybind.Left]) && !KeyboardDisabled;
-                    bool back = Input.GetKey(ActiveData.Keybinds[Keybind.Back]) && !KeyboardDisabled;
-                    bool right = Input.GetKey(ActiveData.Keybinds[Keybind.Right]) && !KeyboardDisabled;
+                    bool forward = Input.GetKey(ActiveData.singleton.keybinds[Keybind.Forward]) && !KeyboardDisabled;
+                    bool left = Input.GetKey(ActiveData.singleton.keybinds[Keybind.Left]) && !KeyboardDisabled;
+                    bool back = Input.GetKey(ActiveData.singleton.keybinds[Keybind.Back]) && !KeyboardDisabled;
+                    bool right = Input.GetKey(ActiveData.singleton.keybinds[Keybind.Right]) && !KeyboardDisabled;
                     //bool up = Input.GetKey(KeyCode.E) && !KeyboardDisabled;
                     //bool down = Input.GetKey(KeyCode.Q) && !KeyboardDisabled;
                     return KeysToVector3(right, left, false, false, forward, back);
@@ -167,10 +167,10 @@ namespace Sanicball
             switch (ctrlType)
             {
                 case ControlType.Keyboard:
-                    bool up = Input.GetKey(ActiveData.Keybinds[Keybind.CameraUp]) && !KeyboardDisabled;
-                    bool left = Input.GetKey(ActiveData.Keybinds[Keybind.CameraLeft]) && !KeyboardDisabled;
-                    bool down = Input.GetKey(ActiveData.Keybinds[Keybind.CameraDown]) && !KeyboardDisabled;
-                    bool right = Input.GetKey(ActiveData.Keybinds[Keybind.CameraRight]) && !KeyboardDisabled;
+                    bool up = Input.GetKey(ActiveData.singleton.keybinds[Keybind.CameraUp]) && !KeyboardDisabled;
+                    bool left = Input.GetKey(ActiveData.singleton.keybinds[Keybind.CameraLeft]) && !KeyboardDisabled;
+                    bool down = Input.GetKey(ActiveData.singleton.keybinds[Keybind.CameraDown]) && !KeyboardDisabled;
+                    bool right = Input.GetKey(ActiveData.singleton.keybinds[Keybind.CameraRight]) && !KeyboardDisabled;
                     return KeysToVector2(right, left, up, down);
 
                 case ControlType.Joystick1:
@@ -281,7 +281,7 @@ namespace Sanicball
             switch (ctrlType)
             {
                 case ControlType.Keyboard:
-                    return Input.GetKey(ActiveData.Keybinds[Keybind.Brake]) && !KeyboardDisabled;
+                    return Input.GetKey(ActiveData.singleton.keybinds[Keybind.Brake]) && !KeyboardDisabled;
 
                 case ControlType.Joystick1:
                     return Input.GetKey(KeyCode.Joystick1Button1);
@@ -303,7 +303,7 @@ namespace Sanicball
             switch (ctrlType)
             {
                 case ControlType.Keyboard:
-                    return Input.GetKeyDown(ActiveData.Keybinds[Keybind.Jump]) && !KeyboardDisabled;
+                    return Input.GetKeyDown(ActiveData.singleton.keybinds[Keybind.Jump]) && !KeyboardDisabled;
 
                 case ControlType.Joystick1:
                     return Input.GetKeyDown(KeyCode.Joystick1Button0);
@@ -325,7 +325,7 @@ namespace Sanicball
             switch (ctrlType)
             {
                 case ControlType.Keyboard:
-                    return Input.GetKeyDown(ActiveData.Keybinds[Keybind.Respawn]) && !KeyboardDisabled;
+                    return Input.GetKeyDown(ActiveData.singleton.keybinds[Keybind.Respawn]) && !KeyboardDisabled;
 
                 case ControlType.Joystick1:
                     return Input.GetKeyDown(KeyCode.Joystick1Button3);
@@ -347,7 +347,7 @@ namespace Sanicball
             switch (ctrlType)
             {
                 case ControlType.Keyboard:
-                    return Input.GetKeyDown(ActiveData.Keybinds[Keybind.Menu]) && !KeyboardDisabled;
+                    return Input.GetKeyDown(ActiveData.singleton.keybinds[Keybind.Menu]) && !KeyboardDisabled;
 
                 case ControlType.Joystick1:
                     return Input.GetKeyDown(KeyCode.Joystick1Button2);
@@ -370,12 +370,12 @@ namespace Sanicball
 
         public static bool IsChangingSong()
         {
-            return (Input.GetKeyDown(ActiveData.Keybinds[Keybind.NextSong]) && !KeyboardDisabled) || Input.GetKeyDown(KeyCode.JoystickButton6);
+            return (Input.GetKeyDown(ActiveData.singleton.keybinds[Keybind.NextSong]) && !KeyboardDisabled) || Input.GetKeyDown(KeyCode.JoystickButton6);
         }
 
         public static bool IsOpeningChat()
         {
-            return Input.GetKeyDown(ActiveData.Keybinds[Keybind.Chat]) && !KeyboardDisabled;
+            return Input.GetKeyDown(ActiveData.singleton.keybinds[Keybind.Chat]) && !KeyboardDisabled;
         }
 
         #endregion Keyboard only input

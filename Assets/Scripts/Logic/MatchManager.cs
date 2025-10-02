@@ -130,7 +130,12 @@ namespace Sanicball.Logic
         public void RequestSettingsChange(MatchSettings newSettings)
         {
             messenger.SendMessage(new SettingsChangedMessage(newSettings));
-            Server.ServerInstance?.SendToAll(new SettingsChangedMessage(newSettings));
+            if (Server.ServerInstance != null)
+            {
+                ActiveData.singleton.matchSettings = newSettings;
+                ActiveData.singleton.SaveAll();
+                Server.ServerInstance.SendToAll(new SettingsChangedMessage(newSettings));
+            }
         }
 
         public void RequestPlayerJoin(ControlType ctrlType, int initialCharacter)
@@ -287,7 +292,7 @@ namespace Sanicball.Logic
 
         public void InitLocalMatch()
         {
-            currentSettings = ActiveData.MatchSettings;
+            currentSettings = ActiveData.singleton.matchSettings;
 
             messenger = new LocalMatchMessenger();
 
@@ -382,7 +387,7 @@ namespace Sanicball.Logic
             //Create this client
             myGuid = Guid.NewGuid();
             yield return new WaitForSeconds(0.3f);
-            messenger.SendMessage(new ClientJoinedMessage(myGuid, ActiveData.GameSettings.nickname));
+            messenger.SendMessage(new ClientJoinedMessage(myGuid, ActiveData.singleton.gameSettings.nickname));
         }
         private void LocalChatMessageSent(object sender, UI.ChatMessageArgs args)
         {
@@ -488,12 +493,12 @@ namespace Sanicball.Logic
 
             loadingStage = false;
             loadingLobby = true;
-            ActiveData.LoadLevel(lobbyScene);
+            ActiveData.singleton.LoadLevel(lobbyScene);
         }
 
         private void GoToStage()
         {
-            CurrentStage = ActiveData.Stages[currentSettings.StageId];
+            CurrentStage = ActiveData.singleton.stages[currentSettings.StageId];
 
             loadingStage = true;
             loadingLobby = false;
@@ -503,7 +508,7 @@ namespace Sanicball.Logic
                 p.ReadyToRace = false;
             }
 
-            ActiveData.LoadLevel(CurrentStage.scene);
+            ActiveData.singleton.LoadLevel(CurrentStage.scene);
         }
 
         public static StageInfo CurrentStage;

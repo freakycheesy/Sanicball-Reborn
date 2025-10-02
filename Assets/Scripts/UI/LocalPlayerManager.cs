@@ -137,7 +137,7 @@ namespace Sanicball.UI
             {
                 if (!hasKeyboard)
                 {
-                    matchJoiningHelpField.text += "Press <b>" + GameInput.GetKeyCodeName(ActiveData.Keybinds[Keybind.Menu]) + "</b> to join with a keyboard. ";
+                    matchJoiningHelpField.text += "Press <b>" + GameInput.GetKeyCodeName(ActiveData.singleton.keybinds[Keybind.Menu]) + "</b> to join with a keyboard. ";
                 }
                 matchJoiningHelpField.text += "Press <b>X</b> to join with a joystick.";
             }

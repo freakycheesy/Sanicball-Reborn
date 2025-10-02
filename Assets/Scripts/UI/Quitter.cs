@@ -13,7 +13,7 @@ namespace Sanicball.UI
             UnityEditor.EditorApplication.isPlaying = false;
 #endif
             Application.Quit();
-            ActiveData.PalletHandle.Release();
+            ActiveData.singleton.palletHandle.Release();
         }
     }
 }

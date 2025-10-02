@@ -170,9 +170,9 @@ namespace Sanicball.Gameplay
             gameObject.name = type.ToString() + " - " + nickname;
 
             //Set character
-            if (CharacterId >= 0 && CharacterId < ActiveData.Characters.Count)
+            if (CharacterId >= 0 && CharacterId < ActiveData.singleton.characters.Count)
             {
-                SetCharacter(ActiveData.Characters[CharacterId]);
+                SetCharacter(ActiveData.singleton.characters[CharacterId]);
             }
 
             //Set up speed effect
@@ -183,12 +183,12 @@ namespace Sanicball.Gameplay
             DateTime now = DateTime.Now;
             if (now.Month == 12 && now.Day > 20 && now.Day <= 31)
             {
-                hatPrefab = ActiveData.ChristmasHat;
+                hatPrefab = ActiveData.singleton.christmasHat;
             }
 
-            if (ActiveData.GameSettings.eSportsReady)
+            if (ActiveData.singleton.gameSettings.eSportsReady)
             {
-                hatPrefab = ActiveData.ESportsHat;
+                hatPrefab = ActiveData.singleton.eSportsHat;
             }
 
             //Spawn hat
@@ -205,7 +205,7 @@ namespace Sanicball.Gameplay
                 {
                     IBallCamera camera;
                     //Create camera
-                    if (ActiveData.GameSettings.useOldControls)
+                    if (ActiveData.singleton.gameSettings.useOldControls)
                     {
                         camera = Instantiate(prefabs.OldCamera);
                         ((PivotCamera)camera).UseMouse = ctrlType == ControlType.Keyboard;
@@ -246,9 +246,9 @@ namespace Sanicball.Gameplay
         {
             GetComponent<Renderer>().material = c.material;
             GetComponent<TrailRenderer>().material = c.trail;
-            if (c.name == "Super Sanic" && ActiveData.GameSettings.eSportsReady)
+            if (c.name == "Super Sanic" && ActiveData.singleton.gameSettings.eSportsReady)
             {
-                GetComponent<TrailRenderer>().material = ActiveData.ESportsTrail;
+                GetComponent<TrailRenderer>().material = ActiveData.singleton.eSportsTrail;
             }
             transform.localScale = new Vector3(c.ballSize, c.ballSize, c.ballSize);
             if (c.alternativeMesh != null)

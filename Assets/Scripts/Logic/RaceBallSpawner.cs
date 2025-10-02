@@ -24,8 +24,8 @@ namespace Sanicball.Logic
 
         public Ball SpawnBall(int position, BallType ballType, ControlType ctrlType, int character, string nickname, Object context = null)
         {
-            float characterSize = ActiveData.Characters[character].ballSize;
-
+            var info = ActiveData.singleton.characters[character];
+            float characterSize = info.ballSize;
             return SpawnBall(GetSpawnPoint(position, characterSize / 2f), transform.rotation, ballType, ctrlType, character, nickname, context);
         }
 

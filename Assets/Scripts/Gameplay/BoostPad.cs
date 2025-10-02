@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Sanicball.Gameplay
 {
 
-    public class BoostPad : AutoPlacement
+    public class BoostPad : AutoPlacer
     {
         [SerializeField]
         private float speed = 1f;

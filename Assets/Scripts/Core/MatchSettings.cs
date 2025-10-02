@@ -47,7 +47,7 @@ namespace SanicballCore
         public const int maxAICount = 255;
 
         [JsonProperty]
-        private string aiCharacters;
+        public string AICharacters;
 
         public int StageId;
         public int Laps;
@@ -77,7 +77,7 @@ namespace SanicballCore
                 Laps = 2,
                 AICount = 0,
                 AISkill = AISkillLevel.Average,
-                aiCharacters = "1,2,3,4,5,6,7,8",
+                AICharacters = "1,2,3,4,5,6,7,8",
 
                 AutoStartTime = 60,
                 AutoStartMinPlayers = 2,
@@ -98,7 +98,7 @@ namespace SanicballCore
         /// <returns></returns>
         public int GetAICharacter(int pos)
         {
-            string[] charIDs = aiCharacters.Split(',');
+            string[] charIDs = AICharacters.Split(',');
 
             if (pos >= 0 && pos < charIDs.Length)
             {
@@ -118,7 +118,7 @@ namespace SanicballCore
         /// <param name="characterId">Character ID to use there</param>
         public void SetAICharacter(int pos, int characterId)
         {
-            string[] charIDs = aiCharacters.Split(',');
+            string[] charIDs = AICharacters.Split(',');
 
             if (pos >= 0)
             {
@@ -127,7 +127,7 @@ namespace SanicballCore
                     System.Array.Resize(ref charIDs, pos + 1);
                 }
                 charIDs[pos] = characterId.ToString();
-                aiCharacters = string.Join(",", charIDs);
+                AICharacters = string.Join(",", charIDs);
             }
         }
 
@@ -136,11 +136,11 @@ namespace SanicballCore
         /// </summary>
         public void RemoveLastAICharacter()
         {
-            string[] charIDs = aiCharacters.Split(',');
+            string[] charIDs = AICharacters.Split(',');
             if (charIDs.Length > 1)
             {
                 System.Array.Resize(ref charIDs, charIDs.Length - 1);
-                aiCharacters = string.Join(",", charIDs);
+                AICharacters = string.Join(",", charIDs);
             }
         }
     }

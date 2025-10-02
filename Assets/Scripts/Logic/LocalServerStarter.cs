@@ -42,7 +42,7 @@ public class LocalServerStarter : MonoBehaviour
 	{
 		Server serv = new Server(commandQueue, true);
 		Debug.Log("Starting Server");
-		serv.Start(port, maxPlayers, serverName, ActiveData.GameSettings.nickname, matchSettingsPath, showOnList, serverListURL);
+		serv.Start(port, maxPlayers, serverName, ActiveData.singleton.gameSettings.nickname, matchSettingsPath, showOnList, serverListURL);
 		Debug.Log("Stopping Server");
 		serv.Dispose();
 	}

@@ -40,8 +40,8 @@ namespace Sanicball.UI
             MatchSettings s = manager.CurrentSettings;
             int StageId = s.StageId;
             targetStageCamPos = new Vector3(StageId * 50, stageLayoutCamera.transform.position.y, stageLayoutCamera.transform.position.z);
-            stageName.text = ActiveData.Stages[StageId].name;
-            stageImage.sprite = ActiveData.Stages[StageId].picture;
+            stageName.text = ActiveData.singleton.stages[StageId].name;
+            stageImage.sprite = ActiveData.singleton.stages[StageId].picture;
             lapCount.text = s.Laps + (s.Laps == 1 ? " lap" : " laps");
             aiOpponents.text = "";
             /*foreach (var i in s.aiCharacters)

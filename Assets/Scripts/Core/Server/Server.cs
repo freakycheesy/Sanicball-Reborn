@@ -62,7 +62,7 @@ namespace SanicballCore.Server
             get
             {
                 List<CharacterTier> dumped = new();
-                foreach (var info in ActiveData.Characters) {
+                foreach (var info in ActiveData.singleton.characters) {
                     dumped.Add(info.tier);
                 }
                 return dumped.ToArray();
@@ -305,7 +305,7 @@ namespace SanicballCore.Server
                 }
                 else if(cmd.Content is string)
                 {
-                    if(ActiveData.TryGetStageByBarcode(cmd.Content, out StageInfo track))
+                    if(ActiveData.singleton.TryGetStageByBarcode(cmd.Content, out StageInfo track))
                     {
                         matchSettings.StageId = track.id;
                         SaveMatchSettings();
@@ -315,7 +315,7 @@ namespace SanicballCore.Server
                         matchSettings.StageId = aliasInt;
                         SaveMatchSettings();
                         SendToAll(new SettingsChangedMessage(matchSettings));
-                        Log("Stage set to " + cmd.Content + " (" + aliasInt + " / " + (ActiveData.Stages[aliasInt].BARCODE).ToString() + ")");
+                        Log("Stage set to " + cmd.Content + " (" + aliasInt + " / " + (ActiveData.singleton.stages[aliasInt].BARCODE).ToString() + ")");
                     }else
                     {
                         string bestMatch = "";
@@ -349,7 +349,7 @@ namespace SanicballCore.Server
                 }
                 else if(cmd.Content is string)
                 {
-                    if(ActiveData.TryGetStageByBarcode(cmd.Content, out StageInfo track))
+                    if(ActiveData.singleton.TryGetStageByBarcode(cmd.Content, out StageInfo track))
                     {
                         matchSettings.Aliases.Add(alias, track.id);
                         SaveMatchSettings();
@@ -408,7 +408,7 @@ namespace SanicballCore.Server
             "Lists all stages.",	
             cmd =>
             {
-                foreach(var name in ActiveData.Stages){
+                foreach(var name in ActiveData.singleton.stages){
                     Log(name + " -> " + name.id);
                 }
             });
@@ -683,9 +683,9 @@ namespace SanicballCore.Server
         private static string GetBestMatch(Command cmd, string bestMatch)
         {
             double maxScore = 0;
-            for (int i = 0; i <= ActiveData.Stages.Count; i++)
+            for (int i = 0; i <= ActiveData.singleton.stages.Count; i++)
             {
-                string name = ActiveData.Stages[i].BARCODE;
+                string name = ActiveData.singleton.stages[i].BARCODE;
                 double score = Utils.Similarity(cmd.Content, name);
                 if (score > maxScore)
                 {

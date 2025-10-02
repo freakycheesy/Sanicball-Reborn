@@ -1,88 +1,53 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
-using Sanicball.Logic;
 using Sanicball.Powerups;
 using SanicballCore;
-using SanicballCore.Server;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.Audio;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 
 namespace Sanicball.Data
 {
     public class ActiveData : MonoBehaviour
     {
-        #region Fields
+        public static ActiveData singleton;
 
-        public List<RaceRecord> raceRecords = new List<RaceRecord>();
+        
+        [Header("Loaded Data")]
+        public List<SanicPallet> pallets = new List<SanicPallet>();
+        public List<StageInfo> stages = new List<StageInfo>();
+        public List<PowerupLogic> powerups = new List<PowerupLogic>();
+        public List<CharacterInfo> characters = new List<CharacterInfo>();
+        [Header("Post Processing")]
+        public Volume bloom;
+        public Volume motionBlur;
 
-        //Pseudo-singleton pattern - this field accesses the current instance.
-        public static ActiveData Instance;
-
-        //This data is saved to a json file
-        [SerializeField]
-        private GameSettings gameSettings = new GameSettings();
-        [SerializeField]
-        private KeybindCollection keybinds = new KeybindCollection();
-
-        //This data is set from the editor and remains constant
         [Header("Static data")]
-        [SerializeField]
-        private GameJoltInfo gameJoltInfo;
-
-        [SerializeField]
-        private GameObject christmasHat;
-        [SerializeField]
-        private Material eSportsTrail;
-        [SerializeField]
-        private GameObject eSportsHat;
-        [SerializeField]
-        private Song eSportsMusic;
-        [SerializeField]
-        private ESportMode eSportsPrefab;
-
-        #endregion Fields
-
-        #region Properties
-
-        public static GameSettings GameSettings { get { return Instance.gameSettings; } }
-        public static KeybindCollection Keybinds { get { return Instance.keybinds; } }
-        public static MatchSettings MatchSettings = MatchSettings.CreateDefault();
-        public static List<RaceRecord> RaceRecords { get { return Instance.raceRecords; } }
-
-        public static List<SanicPallet> CustomStagesPallets = new List<SanicPallet>();
-        public static List<StageInfo> Stages = new List<StageInfo>();
-        public static List<PowerupLogic> Powerups = new List<PowerupLogic>();
-        public static List<CharacterInfo> Characters = new List<CharacterInfo>();
-        public static GameJoltInfo GameJoltInfo { get { return Instance.gameJoltInfo; } }
-        public static GameObject ChristmasHat { get { return Instance.christmasHat; } }
-        public static Material ESportsTrail { get { return Instance.eSportsTrail; } }
-        public static GameObject ESportsHat { get { return Instance.eSportsHat; } }
-        public static Song ESportsMusic { get { return Instance.eSportsMusic; } }
-        public static ESportMode ESportsPrefab { get { return Instance.eSportsPrefab; } }
-
-        public static bool ESportsFullyReady
-        {
-            get
-            {
-                return GameSettings.eSportsReady;
-            }
-        }
-
-        #endregion Properties
+        public GameJoltInfo gameJoltInfo;
+        public GameObject christmasHat;
+        public Material eSportsTrail;
+        public GameObject eSportsHat;
+        public Song eSportsMusic;
+        public ESportMode eSportsPrefab;
+        public GameSettings gameSettings = new GameSettings();
+        public KeybindCollection keybinds = new KeybindCollection();
+        public List<RaceRecord> raceRecords = new List<RaceRecord>();
+        public MatchSettings matchSettings = MatchSettings.CreateDefault();
 
         #region Unity functions
 
         //Make sure there is never more than one GameData object
         private void Awake()
         {
-            if (Instance == null)
+            FindObjectsByType<UniversalAdditionalCameraData>(FindObjectsSortMode.None).ToList().ForEach(AdditonalCameraDataCallback);
+            if (singleton == null)
             {
-                Instance = this;
+                singleton = this;
                 DontDestroyOnLoad(gameObject);
                 FindPallets();
             }
@@ -91,63 +56,69 @@ namespace Sanicball.Data
                 Destroy(gameObject);
             }
         }
-        public static AsyncOperationHandle<IList<SanicPallet>> PalletHandle = new();
-        public static string[] Keys = new string[]
+
+        public void AdditonalCameraDataCallback(UniversalAdditionalCameraData data)
         {
-            string.Empty,
-            "default"
-        };
-        public static void FindPallets()
-        {
-            foreach (var key in Keys)
-            {
-                PalletHandle = Addressables.LoadAssetsAsync<SanicPallet>(key, LoadPalletCallback);
-            }
-            PalletHandle.Completed += (_) => { MatchSettings = MatchSettings.CreateDefault(); Debug.Log("Completed Loading Pallet!"); };
+            data.renderPostProcessing = true;
+            data.renderShadows = true;
         }
 
-        public static void LoadPalletCallback(SanicPallet pallet)
+        public AsyncOperationHandle<IList<SanicPallet>> palletHandle = new();
+        public List<AssetLabelReference> palletLabels = new();
+        public async void FindPallets()
         {
-            CustomStagesPallets.Add(pallet);
-            Stages.AddRange(pallet.Stages);
-            for (int i = 0; i < Stages.Count; i++) Stages[i].id = i;
+            foreach (var label in palletLabels)
+            {
+                palletHandle = Addressables.LoadAssetsAsync<SanicPallet>(label, LoadPalletCallback);
+                palletHandle.Completed += (_) => { matchSettings = MatchSettings.CreateDefault(); Debug.Log("Completed Loading Pallet!"); };
+                await palletHandle.Task;
+            }
+        }
+
+        public void LoadPalletCallback(SanicPallet pallet)
+        {
+            pallets.Add(pallet);
+            stages.AddRange(pallet.Stages);
+            for (int i = 0; i < stages.Count; i++) stages[i].id = i;
             MusicPlayer.Playlist.AddRange(pallet.Playlist);
-            Characters.AddRange(pallet.Avatars);
-            Powerups.AddRange(pallet.Powerups);
+            characters.AddRange(pallet.Avatars);
+            powerups.AddRange(pallet.Powerups);
 
             Debug.Log($"Loaded Pallet: ({pallet.Author}.{pallet.name})");
         }
-        public static bool TryGetStageByBarcode(string barcode, out StageInfo stage)
+        public bool TryGetStageByBarcode(string barcode, out StageInfo stage)
         {
             stage = GetStageByBarcode(barcode);
             return stage != null;
         }
-        public static StageInfo GetRandomStage()
+        public StageInfo GetRandomStage()
         {
-            return Stages[Random.Range(0, Stages.Count - 1)];
+            return stages[Random.Range(0, stages.Count - 1)];
         }
-        public static int GetIndexFromStageBarcode(string barcode)
+        public int GetIndexFromStageBarcode(string barcode)
         {
-            return Stages.IndexOf(GetStageByBarcode(barcode));
+            return stages.IndexOf(GetStageByBarcode(barcode));
         }
-        public static int GetIndexFromStage(StageInfo stage)
+        public int GetIndexFromStage(StageInfo stage)
         {
-            return Stages.IndexOf(stage);
+            return stages.IndexOf(stage);
         }
-        public static StageInfo GetStageByBarcode(string barcode)
+        public StageInfo GetStageByBarcode(string barcode)
         {
             barcode = barcode.ToLower();
-            var selectedStage = Stages[0];
-            foreach (var stage in Stages)
+            var selectedStage = stages[0];
+            foreach (var stage in stages)
             {
                 if (stage.BARCODE.ToLower().Contains(barcode)) selectedStage = stage;
             }
             return selectedStage;
         }
 
-        public static void LoadLevel(SceneReference level, LoadSceneMode mode = LoadSceneMode.Single)
+        public async void LoadLevel(SceneReference level, LoadSceneMode mode = LoadSceneMode.Single)
         {
-            Addressables.LoadSceneAsync(level, mode);
+            var handle = Addressables.LoadSceneAsync(level, mode);
+            await handle.Task;
+            FindObjectsByType<UniversalAdditionalCameraData>(FindObjectsSortMode.None).ToList().ForEach(AdditonalCameraDataCallback);
         }
 
         private void OnEnable()
@@ -159,7 +130,7 @@ namespace Sanicball.Data
         private void OnApplicationQuit()
         {
             SaveAll();
-            PalletHandle.Release();
+            palletHandle.Release();
         }
 
         #endregion Unity functions
@@ -170,7 +141,7 @@ namespace Sanicball.Data
         {
             Load("GameSettings.json", ref gameSettings);
             Load("GameKeybinds.json", ref keybinds);
-            Load("MatchSettings.json", ref MatchSettings);
+            Load("MatchSettings.json", ref matchSettings);
             Load("Records.json", ref raceRecords);
         }
 
@@ -178,7 +149,7 @@ namespace Sanicball.Data
         {
             Save("GameSettings.json", gameSettings);
             Save("GameKeybinds.json", keybinds);
-            Save("MatchSettings.json", MatchSettings);
+            Save("MatchSettings.json", matchSettings);
             Save("Records.json", raceRecords);
         }
 
