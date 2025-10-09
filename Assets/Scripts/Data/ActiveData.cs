@@ -127,6 +127,22 @@ namespace Sanicball.Data
             gameJoltInfo.Init();
         }
 
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= AddLensFlareLights;
+        }
+
+        private void AddLensFlareLights(Scene arg0, LoadSceneMode arg1)
+        {
+            FindObjectsByType<Light>(FindObjectsSortMode.None).ToList().ForEach(AddLensFlare);
+        }
+
+        private void AddLensFlare(Light light)
+        {
+            if(light.TryGetComponent(out LensFlareComponentSRP lensFlare))
+            lensFlare = light.gameObject.AddComponent<LensFlareComponentSRP>();
+        }
+
         private void OnApplicationQuit()
         {
             SaveAll();

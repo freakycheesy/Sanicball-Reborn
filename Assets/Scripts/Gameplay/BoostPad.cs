@@ -13,6 +13,7 @@ namespace Sanicball.Gameplay
         private float speedLimit = 200f;
 
         private float rampoffset;
+        public Material speedRampTexture;
         
         private void Update()
         {
@@ -22,7 +23,7 @@ namespace Sanicball.Gameplay
             {
                 rampoffset += 1f;
             }
-            GetComponent<Renderer>().materials[1].SetTextureOffset("_MainTex", new Vector2(0f, rampoffset));
+            speedRampTexture.SetTextureOffset("_MainTex", new Vector2(0f, rampoffset));
         }
 
         private void OnTriggerEnter(Collider other)
